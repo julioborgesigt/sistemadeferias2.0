@@ -7,7 +7,6 @@ const MySQLStore = require('express-mysql-session')(session);
 const flash = require('connect-flash');
 const path = require('path');
 
-
 const app = express();
 
 // 📌 Configurações do EJS
@@ -30,18 +29,24 @@ const sessionStore = new MySQLStore({
 });
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'fallback_secret_key', // Usa chave segura
-  resave: false,
-  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET || 'chave_super_secreta',
   store: sessionStore,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production', // Apenas HTTPS em produção
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 // 24 horas
-  }
+  resave: false,
+  saveUninitialized: false
 }));
 
 app.use(flash());
+
+// 📌 Middleware para monitorar a sessão em cada requisição
+app.use((req, res, next) => {
+  console.log("📝 Sessão atual:", req.session);
+  if (req.session.admin) {
+    console.log(`✅ Sessão ativa para o administrador: ${req.session.admin.email}`);
+  } else {
+    console.log("⚠️ Nenhuma sessão ativa.");
+  }
+  next();
+});
 
 // 📌 Variáveis globais para mensagens flash
 app.use((req, res, next) => {
@@ -74,8 +79,8 @@ db.sequelize.sync({ alter: true })
   .then(() => {
     app.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT} (Ambiente: ${process.env.NODE_ENV || 'development'})`);
-    });
-  })
-  .catch(err => {
-    console.error('❌ Erro ao sincronizar o banco:', err);
   });
+})
+.catch(err => {
+  console.error('❌ Erro ao sincronizar o banco:', err);
+});
