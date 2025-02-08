@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Marcação de Férias</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <style>
+    /* Inicialmente, os containers dos períodos estão ocultos */
+    .period-container {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Marcação de Férias para <%= user.matricula %></h2>
+    
+    <% if (success_msg) { %>
+      <div class="alert alert-success"><%= success_msg %></div>
+    <% } %>
+    
+    <% if (error_msg) { %>
+      <div class="alert alert-danger"><%= error_msg %></div>
+    <% } %>
+    
+    <form action="/vacations/mark" method="POST">
+      <!-- Campo oculto para a matrícula -->
+      <input type="hidden" name="matricula" value="<%= user.matricula %>">
+      
+      <!-- Campo para escolher a quantidade de períodos -->
+      <div class="mb-3">
+        <label for="qtd_periodos" class="form-label">Quantidade de Períodos:</label>
+        <select name="qtd_periodos" id="qtd_periodos" class="form-select">
+          <option value="1" <%= old && old.qtd_periodos === '1' ? 'selected' : '' %>>1 Período</option>
+          <option value="2" <%= old && old.qtd_periodos === '2' ? 'selected' : '' %>>2 Períodos</option>
+          <option value="3" <%= old && old.qtd_periodos === '3' ? 'selected' : '' %>>3 Períodos</option>
+        </select>
+      </div>
+      
+      <!-- Container para Período 1 -->
+      <div id="periodo1" class="period-container">
+        <h4>Período 1</h4>
+        <div class="mb-3">
+          <label for="periodo1_inicio" class="form-label">Data de Início:</label>
+          <input type="date" name="periodo1_inicio" id="periodo1_inicio" class="form-control"
+                 value="<%= old && old.periodo1_inicio ? old.periodo1_inicio : '' %>" required>
+        </div>
+        <div class="mb-3">
+          <label for="periodo1_fim" class="form-label">Data de Fim:</label>
+          <input type="date" name="periodo1_fim" id="periodo1_fim" class="form-control"
+                 value="<%= old && old.periodo1_fim ? old.periodo1_fim : '' %>" required>
+        </div>
+      </div>
+      
+      <!-- Container para Período 2 -->
+      <div id="periodo2" class="period-container">
+        <h4>Período 2 (opcional)</h4>
+        <div class="mb-3">
+          <label for="periodo2_inicio" class="form-label">Data de Início:</label>
+          <input type="date" name="periodo2_inicio" id="periodo2_inicio" class="form-control"
+                 value="<%= old && old.periodo2_inicio ? old.periodo2_inicio : '' %>">
+        </div>
+        <div class="mb-3">
+          <label for="periodo2_fim" class="form-label">Data de Fim:</label>
+          <input type="date" name="periodo2_fim" id="periodo2_fim" class="form-control"
+                 value="<%= old && old.periodo2_fim ? old.periodo2_fim : '' %>">
+        </div>
+      </div>
+      
+      <!-- Container para Período 3 -->
+      <div id="periodo3" class="period-container">
+        <h4>Período 3 (opcional)</h4>
+        <div class="mb-3">
+          <label for="periodo3_inicio" class="form-label">Data de Início:</label>
+          <input type="date" name="periodo3_inicio" id="periodo3_inicio" class="form-control"
+                 value="<%= old && old.periodo3_inicio ? old.periodo3_inicio : '' %>">
+        </div>
+        <div class="mb-3">
+          <label for="periodo3_fim" class="form-label">Data de Fim:</label>
+          <input type="date" name="periodo3_fim" id="periodo3_fim" class="form-control"
+                 value="<%= old && old.periodo3_fim ? old.periodo3_fim : '' %>">
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Marcar Férias</button>
+    </form>
+  </div>
+  
+  <!-- Bootstrap JS Bundle -->
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script para exibir/ocultar os campos de períodos -->
+  <script>
+    function updatePeriodFields() {
+      const qtd = document.getElementById('qtd_periodos').value;
+      
+      // Oculta todos os containers inicialmente
+      document.getElementById('periodo1').style.display = 'none';
+      document.getElementById('periodo2').style.display = 'none';
+      document.getElementById('periodo3').style.display = 'none';
+      
+      // Exibe os containers conforme a quantidade selecionada
+      if (parseInt(qtd) >= 1) {
+        document.getElementById('periodo1').style.display = 'block';
+      }
+      if (parseInt(qtd) >= 2) {
+        document.getElementById('periodo2').style.display = 'block';
+      }
+      if (parseInt(qtd) >= 3) {
+        document.getElementById('periodo3').style.display = 'block';
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      updatePeriodFields();
+      document.getElementById('qtd_periodos').addEventListener('change', updatePeriodFields);
+    });
+  </script>
+</body>
+</html>

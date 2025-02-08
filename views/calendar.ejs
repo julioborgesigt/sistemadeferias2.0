@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calendário de Férias</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <style>
+    @media print {
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Calendário de Férias</h2>
+    <button class="btn btn-primary no-print" onclick="window.print()">Imprimir</button>
+    <table class="table table-bordered mt-3">
+      <thead>
+        <tr>
+          <th>Matrícula</th>
+          <th>Período</th>
+          <th>Data de Início</th>
+          <th>Data de Fim</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% vacations.forEach(function(vacation) { %>
+          <tr>
+            <td><%= vacation.matricula %></td>
+            <td><%= vacation.periodo %></td>
+            <td><%= vacation.data_inicio.toISOString().substring(0, 10) %></td>
+            <td><%= vacation.data_fim.toISOString().substring(0, 10) %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

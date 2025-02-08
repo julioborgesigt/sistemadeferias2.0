@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cadastro de Usuário</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Cadastro de Usuário</h2>
+    <% if (error_msg) { %>
+      <div class="alert alert-danger"><%= error_msg %></div>
+    <% } %>
+    <form action="/users/register" method="POST">
+      <div class="mb-3">
+        <label>Matrícula:</label>
+        <input type="text" name="matricula" class="form-control" required>
+      </div>
+
+
+      <!-- Novo campo para Nome -->
+      <div class="mb-3">
+        <label>Nome:</label>
+        <input type="text" name="nome" class="form-control" required>
+      </div>
+
+
+      
+      <div class="mb-3">
+        <label>Ano de Referência:</label>
+        <input type="number" name="ano_referencia" class="form-control" required>
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" name="gestante" class="form-check-input">
+        <label class="form-check-label">Está gestante?</label>
+      </div>
+      <div class="mb-3">
+        <label>Quantidade de filhos em idade escolar (digite 0 se não possuir):</label>
+        <input type="number" name="qtd_filhos" class="form-control" required>
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" name="estudante" class="form-check-input">
+        <label class="form-check-label">É estudante de algum curso de nível técnico ou superior?</label>
+      </div>
+      <div class="mb-3">
+        <label>Data de ingresso na instituição:</label>
+        <input type="date" name="data_ingresso" class="form-control" required>
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" name="possui_conjuge" class="form-check-input">
+        <label class="form-check-label">Possui cônjuge servidor público do Ceará com as mesmas férias?</label>
+      </div>
+      <div class="mb-3">
+        <label>Data de nascimento:</label>
+        <input type="date" name="data_nascimento" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label>Período aquisitivo - Data de início:</label>
+        <input type="date" name="periodo_aquisitivo_inicio" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label>Período aquisitivo - Data de fim:</label>
+        <input type="date" name="periodo_aquisitivo_fim" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Cadastrar Usuário</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Acesso do Usuário para Marcação de Férias</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Acesso do Usuário</h2>
+    <% if (error_msg) { %>
+      <div class="alert alert-danger"><%= error_msg %></div>
+    <% } %>
+    <% if (success_msg) { %>
+      <div class="alert alert-success"><%= success_msg %></div>
+    <% } %>
+    <form action="/user" method="POST">
+      <div class="mb-3">
+        <label>Matrícula:</label>
+        <input type="text" name="matricula" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+  </div>
+</body>
+</html>
