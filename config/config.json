@@ -14,10 +14,10 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": "12341234",
-    "database": "vacation_db_prod",
-    "host": "127.0.0.1",
+    "username": "opapbv_admin",
+    "password": "PyBk6ZopH7",
+    "database": "opapbv_ferias",
+    "host": "177.131.142.224",
     "dialect": "mysql"
   }
 }
