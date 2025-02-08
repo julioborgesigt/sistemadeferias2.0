@@ -1,0 +1,18 @@
+{
+  "name": "vacation-management",
+  "version": "1.0.0",
+  "description": "Sistema de gerenciamento de férias",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "sequelize": "^6.31.1",
+    "mysql2": "^3.2.3",
+    "body-parser": "^1.20.2",
+    "express-session": "^1.17.3",
+    "connect-flash": "^0.1.1"
+  }
+}
