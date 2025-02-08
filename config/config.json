@@ -3,21 +3,21 @@
     "username": "opapbv_admin",
     "password": "PyBk6ZopH7",
     "database": "opapbv_ferias",
-    "host": "177.131.142.224",
+    "host": "mysql-ag-br1-20.conteige.cloud",
     "dialect": "mysql"
   },
   "test": {
     "username": "opapbv_admin",
     "password": "PyBk6ZopH7",
     "database": "opapbv_ferias",
-    "host": "177.131.142.224",
+    "host": "mysql-ag-br1-20.conteige.cloud",
     "dialect": "mysql"
   },
   "production": {
     "username": "opapbv_admin",
     "password": "PyBk6ZopH7",
     "database": "opapbv_ferias",
-    "host": "177.131.142.224",
+    "host": "mysql-ag-br1-20.conteige.cloud",
     "dialect": "mysql"
   }
 }
