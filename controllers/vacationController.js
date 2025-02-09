@@ -48,18 +48,58 @@ module.exports = {
       // Coleta os períodos informados
       const periods = [];
       if (req.body.periodo1_inicio && req.body.periodo1_fim) {
-        periods.push({ inicio: new Date(req.body.periodo1_inicio), fim: new Date(req.body.periodo1_fim) });
+        periods.push({ 
+          inicio: new Date(req.body.periodo1_inicio.replace(/-/g, '/')), 
+          fim: new Date(req.body.periodo1_fim.replace(/-/g, '/'))  });
       }
       if (req.body.periodo2_inicio && req.body.periodo2_fim) {
-        periods.push({ inicio: new Date(req.body.periodo2_inicio), fim: new Date(req.body.periodo2_fim) });
+        periods.push({ 
+          inicio: new Date(req.body.periodo2_inicio.replace(/-/g, '/')), 
+          fim: new Date(req.body.periodo2_fim.replace(/-/g, '/'))  });
       }
       if (req.body.periodo3_inicio && req.body.periodo3_fim) {
-        periods.push({ inicio: new Date(req.body.periodo3_inicio), fim: new Date(req.body.periodo3_fim) });
+        periods.push({ 
+          inicio: new Date(req.body.periodo3_inicio.replace(/-/g, '/')), 
+          fim: new Date(req.body.periodo3_fim.replace(/-/g, '/'))  });
       }
 
       // Verifica se a quantidade de períodos informados confere com a escolha do usuário
       if (!qtd_periodos || periods.length !== parseInt(qtd_periodos)) {
         return res.render('user_dashboard', { error_msg: 'A quantidade de períodos informados não confere com a escolha.', old: req.body, user, vacations: [] });
+      }
+
+      // 2. Validação de duração dos períodos conforme a quantidade escolhida:
+      let durations = periods.map(period => diffInDays(period.inicio, period.fim));
+      // OBSERVAÇÃO: diffInDays retorna a quantidade de dias contando a diferença; 
+      // verifique se deseja considerar "30 dias exatos" como diferença de 30 ou 31 datas marcadas.
+      // Aqui consideramos que 30 dias significa diffInDays === 30.
+      if (qtd_periodos === '1') {
+        if (durations[0] !== 29) {
+          return res.render('user_dashboard', { error_msg: 'Para 1 período, as férias devem ter exatamente 30 dias.', old: req.body, user, vacations: [] });
+          
+
+        }
+      } else if (qtd_periodos === '2') {
+        // Possíveis combinações permitidas: [10,20], [15,15] ou [20,10]
+        const allowedCombos = [
+          [9, 19],
+          [14, 14],
+          [19, 9]
+        ];
+        const comboMatch = allowedCombos.some(combo =>
+          (durations[0] === combo[0] && durations[1] === combo[1])
+        );
+        if (!comboMatch) {
+          return res.render('user_dashboard', { error_msg: 'Para 2 períodos, as durações devem ser 10+20, 15+15 ou 20+10 dias.', old: req.body, user, vacations: [] });
+          
+
+        }
+      } else if (qtd_periodos === '3') {
+        // Cada período deve ter 10 dias
+        if (!durations.every(dur => dur === 9)) {
+          return res.render('user_dashboard', { error_msg: 'Para 3 períodos, cada período deve ter exatamente 10 dias.', old: req.body, user, vacations: [] });
+          
+        }
       }
 
       // Validações para cada período individual
