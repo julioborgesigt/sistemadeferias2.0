@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmação</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>✅ Sucesso!</h2>
+    
+    <% if (success_msg) { %>
+      <div class="alert alert-success"><%= success_msg %></div>
+    <% } %>
+
+    <p>Sua marcação de férias foi confirmada.</p>
+
+    <a href="/vacations/calendar-options" class="btn btn-primary">Ir para o calendário</a>
+  </div>
+</body>
+</html>

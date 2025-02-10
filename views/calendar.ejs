@@ -1,38 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>Calendário de Férias</title>
+  <meta charset="UTF-8">
+  <title>Calendário de Férias - <%= month %>/<%= year %></title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <style>
-    @media print {
-      .no-print { display: none; }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+    .day {
+      border: 1px solid #ccc;
+      min-height: 100px;
+      padding: 5px;
+    }
+    .day-header {
+      font-weight: bold;
+      text-align: center;
+      background-color: #007bff;
+      color: white;
+      padding: 5px 0;
+    }
+    .date-number {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .vacation-names {
+      font-size: 0.85rem;
+      list-style: none;
+      padding-left: 0;
     }
   </style>
 </head>
 <body>
-  <div class="container mt-5">
-    <h2>Calendário de Férias</h2>
-    <button class="btn btn-primary no-print" onclick="window.print()">Imprimir</button>
-    <table class="table table-bordered mt-3">
-      <thead>
-        <tr>
-          <th>Matrícula</th>
-          <th>Período</th>
-          <th>Data de Início</th>
-          <th>Data de Fim</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% vacations.forEach(function(vacation) { %>
-          <tr>
-            <td><%= vacation.matricula %></td>
-            <td><%= vacation.periodo %></td>
-            <td><%= vacation.data_inicio.toISOString().substring(0, 10) %></td>
-            <td><%= vacation.data_fim.toISOString().substring(0, 10) %></td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
+  <div class="container mt-4">
+    <h2>Calendário de Férias - <%= month %>/<%= year %></h2>
+    
+    <div class="calendar">
+      <% 
+         // Cabeçalho dos dias da semana
+         const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+         daysOfWeek.forEach(day => { 
+      %>
+        <div class="day-header"><%= day %></div>
+      <% }); %>
+
+      <% 
+         // Determina o dia da semana do primeiro dia do mês
+         const firstDayOfMonth = new Date(year, month - 1, 1);
+         const startDayOfWeek = firstDayOfMonth.getDay();
+
+         // Preenche os espaços vazios antes do primeiro dia
+         for (let i = 0; i < startDayOfWeek; i++) { 
+      %>
+        <div class="day"></div>
+      <% } %>
+
+      <% 
+         // Loop para cada dia do mês
+         const lastDayOfMonth = new Date(year, month, 0);
+         for (let d = 1; d <= lastDayOfMonth.getDate(); d++) {
+           const currentDate = new Date(year, month - 1, d);
+           const dateStr = currentDate.toISOString().slice(0, 10);
+           const names = calendarData[dateStr] || [];
+      %>
+        <div class="day">
+          <div class="date-number"><%= d %></div>
+          <% if (names.length > 0) { %>
+            <ul class="vacation-names">
+              <% names.forEach(name => { %>
+                <li><%= name %></li>
+              <% }); %>
+            </ul>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
   </div>
 </body>
 </html>

@@ -51,32 +51,118 @@
     <% if (error_msg) { %>
       <div class="alert alert-danger text-center"><%= error_msg %></div>
     <% } %>
+    
+    <div class="container mt-4">
+      <h3>Resetar Férias</h3>
+      <form action="/users/reset-vacations" method="POST">
+        <div class="mb-3">
+          <label for="matricula_reset" class="form-label">Matrícula do usuário:</label>
+          <input type="text" name="matricula" id="matricula_reset" class="form-control" placeholder="Digite a matrícula" required>
+        </div>
+        <button type="submit" class="btn btn-warning">Resetar Férias</button>
+      </form>
+    </div>
+    
+    <div class="container mt-4">
+      <h3>Apagar Matrícula</h3>
+      <form action="/users/delete-user" method="POST">
+        <div class="mb-3">
+          <label for="matricula_delete" class="form-label">Matrícula do usuário:</label>
+          <input type="text" name="matricula" id="matricula_delete" class="form-control" placeholder="Digite a matrícula" required>
+        </div>
+        <button type="submit" class="btn btn-danger">Apagar Matrícula</button>
+      </form>
+    </div>
+    
+    <div class="container mt-4">
+      <h3>Controle de Vagas por Categoria</h3>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th>Máximo Permitido por período</th>
+            <th>Usuários com Férias já marcadas</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IPC</td>
+            <td><%= settings.max_ipc %></td>
+            <td><%= categoryUsage.IPC %></td>
+            
+          </tr>
+          <tr>
+            <td>EPC</td>
+            <td><%= settings.max_epc %></td>
+            <td><%= categoryUsage.EPC %></td>
+            
+          </tr>
+          <tr>
+            <td>DPC</td>
+            <td><%= settings.max_dpc %></td>
+            <td><%= categoryUsage.DPC %></td>
+            
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+
+
+
+    <div class="container">
+      <h3>Configuração de Limites</h3>
+      <form action="/users/update-limits" method="POST">
+        <div class="row">
+          <div class="col-md-4">
+            <label for="max_ipc">Máximo de IPCs em férias:</label>
+            <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label for="max_epc">Máximo de EPCs em férias:</label>
+            <input type="number" name="max_epc" id="max_epc" value="<%= settings.max_epc %>" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label for="max_dpc">Máximo de DPCs em férias:</label>
+            <input type="number" name="max_dpc" id="max_dpc" value="<%= settings.max_dpc %>" class="form-control">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Confirmar</button>
+      </form>
+    </div>
+    
+
+
+
 
     <!-- Tabela responsiva -->
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
         <thead class="table-dark">
           <tr>
+            <th>cargo</th>
             <th>Matrícula</th>
             <th>Nome</th>
-            <th>Ano de Referência</th>
-            <th>Gestante</th>
+            <th>Ano</th>
+            <th>Gest.</th>
             <th>Qtd. Filhos</th>
-            <th>Estudante</th>
+            <th>Estud.</th>
             <th>Data de Ingresso</th>
-            <th>Dias de Ingresso</th>
-            <th>Possui Cônjuge</th>
+            <th>Antig.</th>
+            <th>Cônj. serv</th>
             <th>Data de Nascimento</th>
-            <th>Dias de Nascimento</th>
+            <th>Idade</th>
             <th>Período Aquisitivo (Início)</th>
             <th>Período Aquisitivo (Fim)</th>
-            <th>Classificação</th>
+            <th>Nº</th>
             <th>Férias</th>
           </tr>
         </thead>
         <tbody>
           <% users.forEach(user => { %>
             <tr>
+              <td><%= user.categoria %></td>
               <td><%= user.matricula %></td>
               <td><%= user.nome %></td>
               <td><%= user.ano_referencia %></td>

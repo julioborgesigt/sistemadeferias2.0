@@ -61,6 +61,15 @@
         <label>Período aquisitivo - Data de fim:</label>
         <input type="date" name="periodo_aquisitivo_fim" class="form-control" required>
       </div>
+      <!-- Novo campo para a categoria -->
+      <div class="mb-3">
+        <label>Categoria:</label>
+        <select name="categoria" class="form-select" required>
+          <option value="IPC">IPC</option>
+          <option value="EPC">EPC</option>
+          <option value="DPC">DPC</option>
+        </select>
+      </div>
       <button type="submit" class="btn btn-primary">Cadastrar Usuário</button>
     </form>
   </div>

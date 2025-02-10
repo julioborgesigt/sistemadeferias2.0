@@ -75,12 +75,13 @@ app.get('/', (req, res) => {
 const db = require('./models');
 const PORT = process.env.PORT || 3000;
 
-db.sequelize.sync({ alter: true })
+// Removemos o alter: true para evitar alterações automáticas no esquema
+db.sequelize.sync()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT} (Ambiente: ${process.env.NODE_ENV || 'development'})`);
+    });
+  })
+  .catch(err => {
+    console.error('❌ Erro ao sincronizar o banco:', err);
   });
-})
-.catch(err => {
-  console.error('❌ Erro ao sincronizar o banco:', err);
-});

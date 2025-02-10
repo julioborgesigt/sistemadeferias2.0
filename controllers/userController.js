@@ -1,9 +1,9 @@
 // controllers/userController.js
 const db = require('../models');
 const User = db.User;
-const Vacation = db.Vacation;  // Importando o modelo Vacation
+const Vacation = db.Vacation;
+const Settings = db.Settings;
 const { Op } = require("sequelize");
-
 
 // Função para calcular a diferença em dias entre duas datas
 function diffInDays(date1, date2) {
@@ -12,7 +12,7 @@ function diffInDays(date1, date2) {
 }
 
 module.exports = {
-  // Exibe o dashboard do administrador com a lista de usuários
+  // Exibe o dashboard do administrador com usuários e limites de férias configuráveis
   dashboard: async (req, res) => {
     if (!req.session.admin) {
       req.flash('error_msg', 'Acesso negado.');
@@ -20,23 +20,34 @@ module.exports = {
     }
     try {
       const users = await User.findAll({
-        include: [
-          {
-            model: Vacation,
-            required: false, // Permite que o usuário tenha ou não férias registradas
-          },
-        ],
-        order: [['classificacao', 'ASC']], // Ordena pela classificação
+        include: [{ model: Vacation, required: false }],
+        order: [['classificacao', 'ASC']],
       });
-  
-      res.render('admin_dashboard', { admin: req.session.admin, users });
+
+      const settings = await Settings.findOne({ where: { id: 1 } }) || { max_ipc: 2, max_epc: 2, max_dpc: 2 };
+
+      // Contar quantos usuários de cada categoria estão de férias
+      const vacationCounts = await Vacation.findAll({
+        include: [{ model: User, attributes: ['categoria'] }]
+      });
+
+      let categoryUsage = { IPC: 0, EPC: 0, DPC: 0 };
+      vacationCounts.forEach(vacation => {
+        categoryUsage[vacation.User.categoria]++;
+      });
+
+      res.render('admin_dashboard', {
+        admin: req.session.admin,
+        users,
+        settings,
+        categoryUsage
+      });
     } catch (error) {
       console.error('Erro ao carregar o dashboard:', error);
       req.flash('error_msg', 'Erro ao carregar a lista de usuários.');
       res.redirect('/users/dashboard');
     }
   },
-  
 
   // Exibe o formulário de cadastro de usuário
   showRegistrationForm: (req, res) => {
@@ -47,33 +58,20 @@ module.exports = {
     res.render('user_registration');
   },
 
-  // Processa o cadastro de usuário e realiza os cálculos de dias
+  // Processa o cadastro de usuário
   registerUser: async (req, res) => {
     if (!req.session.admin) {
       req.flash('error_msg', 'Acesso negado.');
       return res.redirect('/auth/login');
     }
     try {
-      const {
-        matricula,
-        nome,
-        ano_referencia,
-        gestante,
-        qtd_filhos,
-        estudante,
-        data_ingresso,
-        possui_conjuge,
-        data_nascimento,
-        periodo_aquisitivo_inicio,
-        periodo_aquisitivo_fim
-      } = req.body;
+      const { matricula, nome, ano_referencia, gestante, qtd_filhos, estudante, data_ingresso, possui_conjuge, data_nascimento, periodo_aquisitivo_inicio, periodo_aquisitivo_fim, categoria } = req.body;
 
-      const isGestante = gestante === 'on' ? true : false;
-      const isEstudante = estudante === 'on' ? true : false;
-      const hasConjuge = possui_conjuge === 'on' ? true : false;
+      const isGestante = gestante === 'on';
+      const isEstudante = estudante === 'on';
+      const hasConjuge = possui_conjuge === 'on';
 
-      // Define a data de referência: 31/12 do ano anterior ao cadastro
-      const referenceDate = new Date(ano_referencia - 1, 11, 31); 
+      const referenceDate = new Date(ano_referencia - 1, 11, 31);
       const ingressoDate = new Date(data_ingresso);
       const nascimentoDate = new Date(data_nascimento);
 
@@ -93,8 +91,10 @@ module.exports = {
         data_nascimento: nascimentoDate,
         data_nascimento_dias,
         periodo_aquisitivo_inicio: new Date(periodo_aquisitivo_inicio),
-        periodo_aquisitivo_fim: new Date(periodo_aquisitivo_fim)
+        periodo_aquisitivo_fim: new Date(periodo_aquisitivo_fim),
+        categoria
       });
+
       await module.exports.updateUserClassification();
       req.flash('success_msg', 'Usuário cadastrado com sucesso!');
       res.redirect('/users/dashboard');
@@ -105,36 +105,54 @@ module.exports = {
     }
   },
 
+  // Atualiza os limites de férias para cada categoria
+  updateLimits: async (req, res) => {
+    if (!req.session.admin) {
+      req.flash('error_msg', 'Acesso negado.');
+      return res.redirect('/auth/login');
+    }
+
+    try {
+      const { max_ipc, max_epc, max_dpc } = req.body;
+
+      let settings = await Settings.findOne({ where: { id: 1 } });
+
+      if (!settings) {
+        settings = await Settings.create({
+          max_ipc: max_ipc || 2,
+          max_epc: max_epc || 2,
+          max_dpc: max_dpc || 2
+        });
+      } else {
+        await settings.update({
+          max_ipc,
+          max_epc,
+          max_dpc
+        });
+      }
+
+      req.flash('success_msg', 'Limites atualizados com sucesso!');
+      res.redirect('/users/dashboard');
+    } catch (error) {
+      console.error('Erro ao atualizar limites:', error);
+      req.flash('error_msg', 'Erro ao atualizar limites.');
+      res.redirect('/users/dashboard');
+    }
+  },
+
   // Atualiza a classificação dos usuários com base nos critérios definidos
   updateUserClassification: async () => {
     try {
       let users = await User.findAll();
       users.sort((a, b) => {
-        // Critério 1: Gestante
-        if (a.gestante !== b.gestante) {
-          return b.gestante - a.gestante;
-        }
-        // Critério 2: Quantidade de filhos (maior primeiro)
-        if (a.qtd_filhos !== b.qtd_filhos) {
-          return b.qtd_filhos - a.qtd_filhos;
-        }
-        // Critério 3: Estudante
-        if (a.estudante !== b.estudante) {
-          return b.estudante - a.estudante;
-        }
-        // Critério 4: Data de ingresso (em dias, menor é melhor)
-        if (a.data_ingresso_dias !== b.data_ingresso_dias) {
-          return a.data_ingresso_dias - b.data_ingresso_dias;
-        }
-        // Critério 5: Possui cônjuge
-        if (a.possui_conjuge !== b.possui_conjuge) {
-          return b.possui_conjuge - a.possui_conjuge;
-        }
-        // Critério 6: Data de nascimento (em dias, menor é melhor)
+        if (a.gestante !== b.gestante) return b.gestante - a.gestante;
+        if (a.qtd_filhos !== b.qtd_filhos) return b.qtd_filhos - a.qtd_filhos;
+        if (a.estudante !== b.estudante) return b.estudante - a.estudante;
+        if (a.data_ingresso_dias !== b.data_ingresso_dias) return a.data_ingresso_dias - b.data_ingresso_dias;
+        if (a.possui_conjuge !== b.possui_conjuge) return b.possui_conjuge - a.possui_conjuge;
         return a.data_nascimento_dias - b.data_nascimento_dias;
       });
 
-      // Atualiza a classificação de cada usuário
       for (let i = 0; i < users.length; i++) {
         users[i].classificacao = i + 1;
         await users[i].save();
@@ -142,5 +160,61 @@ module.exports = {
     } catch (error) {
       console.error("Erro ao atualizar classificação:", error);
     }
+  },
+  resetVacations: async (req, res) => {
+    // Apenas administradores podem resetar as férias
+    if (!req.session.admin) {
+      req.flash('error_msg', 'Acesso negado.');
+      return res.redirect('/auth/login');
+    }
+    try {
+      const { matricula } = req.body;
+      if (!matricula) {
+        req.flash('error_msg', 'Matrícula não informada.');
+        return res.redirect('/users/dashboard');
+      }
+
+      // Apaga todas as férias para o usuário informado
+      const deletedCount = await Vacation.destroy({ where: { matricula } });
+
+      req.flash('success_msg', `Férias resetadas para o usuário ${matricula}. ${deletedCount} registro(s) removido(s).`);
+      res.redirect('/users/dashboard');
+    } catch (error) {
+      console.error("Erro ao resetar férias:", error);
+      req.flash('error_msg', 'Erro ao resetar férias.');
+      res.redirect('/users/dashboard');
+    }
+  },
+  // Função para apagar o usuário (apagar matrícula) e seus registros de férias
+deleteUser: async (req, res) => {
+  if (!req.session.admin) {
+    req.flash('error_msg', 'Acesso negado.');
+    return res.redirect('/auth/login');
   }
+  try {
+    const { matricula } = req.body;
+    if (!matricula) {
+      req.flash('error_msg', 'Matrícula não informada.');
+      return res.redirect('/users/dashboard');
+    }
+    
+    // Opcional: Primeiro, apague as férias associadas se não estiver usando ON DELETE CASCADE
+    await Vacation.destroy({ where: { matricula } });
+    
+    // Apaga o usuário
+    const deleted = await User.destroy({ where: { matricula } });
+    
+    if (deleted) {
+      req.flash('success_msg', `Matrícula ${matricula} apagada com sucesso.`);
+    } else {
+      req.flash('error_msg', `Matrícula ${matricula} não encontrada.`);
+    }
+    res.redirect('/users/dashboard');
+  } catch (error) {
+    console.error('Erro ao apagar matrícula:', error);
+    req.flash('error_msg', 'Erro ao apagar matrícula.');
+    res.redirect('/users/dashboard');
+  }
+}
+
 };

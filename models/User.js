@@ -58,6 +58,12 @@ module.exports = (sequelize, DataTypes) => {
     classificacao: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    // Novo campo para categoria: IPC, EPC ou DPC
+    categoria: {
+      type: DataTypes.ENUM('IPC', 'EPC', 'DPC'),
+      allowNull: false,
+      defaultValue: 'IPC'  // ou escolha um valor padrão conforme sua necessidade
     }
   });
 
