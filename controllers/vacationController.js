@@ -58,7 +58,7 @@ const checkVacationLimits = async (userCategory, startDate, endDate) => {
     const overlapEnd = vacation.data_fim < endDate ? vacation.data_fim : endDate;
     const overlapDays = diffInDays(overlapStart, overlapEnd);
     // Se a sobreposição for de 3 dias ou mais, conta como coincidência no mesmo período
-    if (overlapDays >= 3) {
+    if (overlapDays >= 1) {
       categoryCount[vacation.User.categoria]++;
     }
   }
@@ -114,15 +114,15 @@ module.exports = {
   
       let availableSlotsMessage = "";
       let durations = periods.map(period => diffInDays(period.inicio, period.fim));
-      if (qtd_periodos === '1' && durations[0] !== 30) {
+      if (qtd_periodos === '1' && durations[0] !== 31) {
         return res.render('user_dashboard', { error_msg: 'Para 1 período, as férias devem ter exatamente 30 dias.', old: req.body, user, vacations: [] });
       } else if (qtd_periodos === '2') {
-        const allowedCombos = [[10, 20], [15, 15], [20, 10]];
+        const allowedCombos = [[11, 21], [16, 16], [21, 11]];
         const comboMatch = allowedCombos.some(combo => (durations[0] === combo[0] && durations[1] === combo[1]));
         if (!comboMatch) {
           return res.render('user_dashboard', { error_msg: 'Para 2 períodos, as durações devem ser 10+20, 15+15 ou 20+10 dias.', old: req.body, user, vacations: [] });
         }
-      } else if (qtd_periodos === '3' && !durations.every(dur => dur === 10)) {
+      } else if (qtd_periodos === '3' && !durations.every(dur => dur === 11)) {
         return res.render('user_dashboard', { error_msg: 'Para 3 períodos, cada período deve ter exatamente 10 dias.', old: req.body, user, vacations: [] });
       }
   

@@ -7,12 +7,23 @@
 <body>
   <div class="container mt-5">
     <h2>Acesso do Usuário</h2>
-    <% if (error_msg) { %>
-      <div class="alert alert-danger"><%= error_msg %></div>
-    <% } %>
-    <% if (success_msg) { %>
-      <div class="alert alert-success"><%= success_msg %></div>
-    <% } %>
+    <!-- Mensagens de feedback - Alertas ocultos por padrão -->
+    <div id="flash-messages">
+      <% if (success_msg) { %>
+        <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
+          <%= success_msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+      
+      <% if (error_msg) { %>
+        <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
+          <%= error_msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+    </div>
+
     <form action="/user" method="POST">
       <div class="mb-3">
         <label>Matrícula:</label>
@@ -21,5 +32,24 @@
       <button type="submit" class="btn btn-primary">Entrar</button>
     </form>
   </div>
+  
+  <!-- Script para exibir os alertas com fade in -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      function showAlert(alertId) {
+        const alertEl = document.getElementById(alertId);
+        if (alertEl && alertEl.textContent.trim() !== "") {
+          alertEl.style.display = "block";
+          void alertEl.offsetWidth;
+          alertEl.classList.add("show");
+        }
+      }
+      showAlert("success-alert");
+      showAlert("error-alert");
+    });
+  </script>
+  
+  <!-- Adicione o bootstrap JS para que o botão fechar funcione -->
+  <script src="/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

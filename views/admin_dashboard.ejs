@@ -15,6 +15,8 @@
       margin-bottom: 20px;
     }
   </style>
+  
+  
 </head>
 <body>
   <!-- Navbar -->
@@ -44,13 +46,25 @@
       <h2>Bem-vindo, <%= admin.nome %></h2>
     </div>
 
-    <!-- Mensagens de feedback -->
-    <% if (success_msg) { %>
-      <div class="alert alert-success text-center"><%= success_msg %></div>
-    <% } %>
-    <% if (error_msg) { %>
-      <div class="alert alert-danger text-center"><%= error_msg %></div>
-    <% } %>
+    <!-- Mensagens de feedback - Alertas ocultos por padrão -->
+    <div id="flash-messages">
+      <% if (success_msg) { %>
+        <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
+          <%= success_msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+      
+      <% if (error_msg) { %>
+        <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
+          <%= error_msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+    </div>
+
+
+    
     
     <div class="container mt-4">
       <h3>Resetar Férias</h3>
@@ -81,7 +95,7 @@
           <tr>
             <th>Categoria</th>
             <th>Máximo Permitido por período</th>
-            <th>Usuários com Férias já marcadas</th>
+            
             
           </tr>
         </thead>
@@ -89,19 +103,19 @@
           <tr>
             <td>IPC</td>
             <td><%= settings.max_ipc %></td>
-            <td><%= categoryUsage.IPC %></td>
+            
             
           </tr>
           <tr>
             <td>EPC</td>
             <td><%= settings.max_epc %></td>
-            <td><%= categoryUsage.EPC %></td>
+            
             
           </tr>
           <tr>
             <td>DPC</td>
             <td><%= settings.max_dpc %></td>
-            <td><%= categoryUsage.DPC %></td>
+            
             
           </tr>
         </tbody>
@@ -195,5 +209,24 @@
 
   <!-- Bootstrap 5 JS Bundle -->
   <script src="/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      // Função para exibir o alerta com fade in
+      function showAlert(alertId) {
+        const alertEl = document.getElementById(alertId);
+        if (alertEl && alertEl.textContent.trim() !== "") {
+          alertEl.style.display = "block";
+          // Força o reflow para que a transição ocorra
+          void alertEl.offsetWidth;
+          alertEl.classList.add("show");
+        }
+      }
+  
+      showAlert("success-alert");
+      showAlert("error-alert");
+    });
+  </script>
+  
+  
 </body>
 </html>
