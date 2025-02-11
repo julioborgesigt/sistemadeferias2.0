@@ -10,9 +10,23 @@
   <div class="container mt-4">
     <h2 class="text-center">Cadastro de Usuário</h2>
 
-    <% if (error_msg) { %>
-      <div class="alert alert-danger"><%= error_msg %></div>
-    <% } %>
+    <!-- Mensagens de feedback - Alertas ocultos por padrão -->
+    <div id="flash-messages">
+      <% if (success_msg) { %>
+        <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
+          <%= success_msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+      
+      <% if (error_msg) { %>
+        <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
+          <%= error_msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+    </div>
+
 
     <form action="/users/register" method="POST">
       <div class="row">
@@ -89,5 +103,24 @@
   </div>
 
   <script src="/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      // Função para exibir o alerta com fade in
+      function showAlert(alertId) {
+        const alertEl = document.getElementById(alertId);
+        if (alertEl && alertEl.textContent.trim() !== "") {
+          alertEl.style.display = "block";
+          // Força o reflow para que a transição ocorra
+          void alertEl.offsetWidth;
+          alertEl.classList.add("show");
+        }
+      }
+  
+      showAlert("success-alert");
+      showAlert("error-alert");
+    });
+  </script>
+  
 </body>
 </html>
