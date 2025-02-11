@@ -1,55 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>Acesso do Usuário para Marcação de Férias</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acesso do Usuário</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <style>
+    /* Centraliza o conteúdo na tela */
+    .login-container {
+      max-width: 400px;
+      margin: auto;
+      margin-top: 10vh;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
-<body>
-  <div class="container mt-5">
-    <h2>Acesso do Usuário</h2>
-    <!-- Mensagens de feedback - Alertas ocultos por padrão -->
-    <div id="flash-messages">
-      <% if (success_msg) { %>
-        <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
-          <%= success_msg %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      <% } %>
-      
-      <% if (error_msg) { %>
-        <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
-          <%= error_msg %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      <% } %>
-    </div>
+<body class="bg-light">
+  <div class="container">
+    <div class="login-container">
+      <h2 class="text-center mb-4">Acesso do Usuário</h2>
 
-    <form action="/user" method="POST">
-      <div class="mb-3">
-        <label>Matrícula:</label>
-        <input type="text" name="matricula" class="form-control" required>
+      <!-- Mensagens de feedback - Alertas ocultos por padrão -->
+      <div id="flash-messages">
+        <% if (success_msg) { %>
+          <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
+            <%= success_msg %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+        
+        <% if (error_msg) { %>
+          <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
+            <%= error_msg %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
       </div>
-      <button type="submit" class="btn btn-primary">Entrar</button>
-    </form>
+
+
+      <!-- Formulário de login -->
+      <form action="/user" method="POST">
+        <div class="mb-3">
+          <label for="matricula" class="form-label">Matrícula:</label>
+          <input type="text" name="matricula" id="matricula" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+      </form>
+
+      <!-- Botão Página do Administrador -->
+      <div class="mt-3 text-center">
+        <a href="/auth/login" class="btn btn-secondary w-100">Página do Administrador</a>
+      </div>
+    </div>
   </div>
-  
-  <!-- Script para exibir os alertas com fade in -->
+
+  <script src="/js/bootstrap.bundle.min.js"></script>
+
   <script>
     document.addEventListener("DOMContentLoaded", function(){
+      // Função para exibir o alerta com fade in
       function showAlert(alertId) {
         const alertEl = document.getElementById(alertId);
         if (alertEl && alertEl.textContent.trim() !== "") {
           alertEl.style.display = "block";
+          // Força o reflow para que a transição ocorra
           void alertEl.offsetWidth;
           alertEl.classList.add("show");
         }
       }
+  
       showAlert("success-alert");
       showAlert("error-alert");
     });
   </script>
+
   
-  <!-- Adicione o bootstrap JS para que o botão fechar funcione -->
-  <script src="/js/bootstrap.bundle.min.js"></script>
+  
 </body>
 </html>

@@ -68,7 +68,7 @@ app.use('/user', publicRoutes);
 
 // 📌 Rota padrão
 app.get('/', (req, res) => {
-  res.redirect('/auth/login');
+  res.redirect('/user');
 });
 
 // 📌 Inicializando o servidor e sincronizando o banco
