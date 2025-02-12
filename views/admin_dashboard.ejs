@@ -71,7 +71,7 @@
       <form action="/users/reset-vacations" method="POST">
         <div class="mb-3">
           <label for="matricula_reset" class="form-label">Matrícula do usuário:</label>
-          <input type="text" name="matricula" id="matricula_reset" class="form-control" placeholder="Digite a matrícula" required>
+          <input type="text" name="matricula" id="matricula_reset" class="form-control" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
         </div>
         <button type="submit" class="btn btn-warning">Resetar Férias</button>
       </form>
@@ -82,7 +82,7 @@
       <form action="/users/delete-user" method="POST">
         <div class="mb-3">
           <label for="matricula_delete" class="form-label">Matrícula do usuário:</label>
-          <input type="text" name="matricula" id="matricula_delete" class="form-control" placeholder="Digite a matrícula" required>
+          <input type="text" name="matricula" id="matricula_delete" class="form-control" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
         </div>
         <button type="submit" class="btn btn-danger">Apagar Matrícula</button>
       </form>
@@ -94,6 +94,7 @@
         <thead>
           <tr>
             <th>Categoria</th>
+            <th>Quantidade de servidores</th>
             <th>Máximo Permitido por período</th>
             
             

@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cadastro de Usuário</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <style>
+    .btn-group .btn.active {
+      background-color: #007bff !important;
+      color: white !important;
+    }
+  </style>
 </head>
 <body>
   <div class="container mt-4">
@@ -27,12 +33,11 @@
       <% } %>
     </div>
 
-
     <form action="/users/register" method="POST">
       <div class="row">
         <div class="col-md-6 mb-3">
           <label>Matrícula:</label>
-          <input type="text" name="matricula" class="form-control" required>
+          <input type="text" name="matricula" id="matricula" class="form-control" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
         </div>
 
         <div class="col-md-6 mb-3">
@@ -41,19 +46,23 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label>Ano de Referência:</label>
-          <input type="number" name="ano_referencia" class="form-control" required>
+      <!-- Ano de Referência -->
+      <div class="mb-3">
+        <label>Ano de Referência:</label>
+        <div class="btn-group w-100" role="group">
+          <button type="button" class="btn btn-outline-primary" id="btn-ano-anterior"></button>
+          <button type="button" class="btn btn-outline-primary active" id="btn-ano-atual"></button>
         </div>
-        <div class="col-md-6 mb-3">
-          <label>Categoria:</label>
-          <select name="categoria" class="form-select" required>
-            <option value="IPC">IPC</option>
-            <option value="EPC">EPC</option>
-            <option value="DPC">DPC</option>
-          </select>
-        </div>
+        <input type="hidden" name="ano_referencia" id="ano_referencia">
+      </div>
+
+      <div class="mb-3">
+        <label>Categoria:</label>
+        <select name="categoria" class="form-select" required>
+          <option value="IPC">IPC</option>
+          <option value="EPC">EPC</option>
+          <option value="DPC">DPC</option>
+        </select>
       </div>
 
       <div class="mb-3 form-check">
@@ -62,8 +71,8 @@
       </div>
 
       <div class="mb-3">
-        <label>Quantidade de filhos em idade escolar:</label>
-        <input type="number" name="qtd_filhos" class="form-control" required>
+        <label>Quantidade de filhos em idade escolar(caso não tenha deixe em branco):</label>
+        <input type="number" name="qtd_filhos" class="form-control">
       </div>
 
       <div class="mb-3 form-check">
@@ -74,8 +83,19 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label>Data de ingresso:</label>
-          <input type="date" name="data_ingresso" class="form-control" required>
+          <div class="input-group">
+            <input type="date" name="data_ingresso" id="data_ingresso" class="form-control" required>
+            <button type="button" class="btn btn-secondary" id="btnSelecionarData">Selecionar Data</button>
+          </div>
+          <ul id="listaDatas" class="list-group mt-2" style="display: none; position: absolute; z-index: 10;">
+            <% distinctDates.forEach(dateObj => { %>
+              <li class="list-group-item list-group-item-action selecionar-data" style="cursor: pointer;">
+                <%= new Date(dateObj.data_ingresso).toLocaleDateString('pt-BR') %>
+              </li>
+            <% }); %>
+          </ul>
         </div>
+        
         <div class="col-md-6 mb-3">
           <label>Data de nascimento:</label>
           <input type="date" name="data_nascimento" class="form-control" required>
@@ -90,11 +110,11 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label>Período aquisitivo - Início:</label>
-          <input type="date" name="periodo_aquisitivo_inicio" class="form-control" required>
+          <input type="date" name="periodo_aquisitivo_inicio" id="periodo_aquisitivo_inicio" class="form-control" required>
         </div>
         <div class="col-md-6 mb-3">
           <label>Período aquisitivo - Fim:</label>
-          <input type="date" name="periodo_aquisitivo_fim" class="form-control" required>
+          <input type="date" name="periodo_aquisitivo_fim" id="periodo_aquisitivo_fim" class="form-control" required>
         </div>
       </div>
 
@@ -103,24 +123,89 @@
   </div>
 
   <script src="/js/bootstrap.bundle.min.js"></script>
-
   <script>
-    document.addEventListener("DOMContentLoaded", function(){
-      // Função para exibir o alerta com fade in
-      function showAlert(alertId) {
-        const alertEl = document.getElementById(alertId);
-        if (alertEl && alertEl.textContent.trim() !== "") {
-          alertEl.style.display = "block";
-          // Força o reflow para que a transição ocorra
-          void alertEl.offsetWidth;
-          alertEl.classList.add("show");
-        }
+    document.addEventListener("DOMContentLoaded", function() {
+      const anoAtual = new Date().getFullYear();
+      const anoAnterior = anoAtual - 1;
+      const btnAnoAnterior = document.getElementById("btn-ano-anterior");
+      const btnAnoAtual = document.getElementById("btn-ano-atual");
+      const anoReferenciaInput = document.getElementById("ano_referencia");
+      const dataIngressoInput = document.getElementById("data_ingresso");
+      const periodoInicioInput = document.getElementById("periodo_aquisitivo_inicio");
+      const periodoFimInput = document.getElementById("periodo_aquisitivo_fim");
+
+      btnAnoAnterior.textContent = anoAnterior;
+      btnAnoAtual.textContent = anoAtual;
+      anoReferenciaInput.value = anoAtual;
+
+      btnAnoAnterior.addEventListener("click", function() {
+        anoReferenciaInput.value = anoAnterior;
+        btnAnoAnterior.classList.add("active");
+        btnAnoAtual.classList.remove("active");
+        calcularPeriodoAquisitivo();
+      });
+
+      btnAnoAtual.addEventListener("click", function() {
+        anoReferenciaInput.value = anoAtual;
+        btnAnoAtual.classList.add("active");
+        btnAnoAnterior.classList.remove("active");
+        calcularPeriodoAquisitivo();
+      });
+
+      function calcularPeriodoAquisitivo() {
+        const dataIngresso = dataIngressoInput.value;
+        const anoBase = parseInt(anoReferenciaInput.value);
+
+        if (!dataIngresso || !anoBase) return;
+
+        const inicio = new Date(dataIngresso);
+        inicio.setFullYear(anoBase);
+        const fim = new Date(inicio);
+        fim.setFullYear(fim.getFullYear() + 1);
+        fim.setDate(fim.getDate() - 1);
+
+        periodoInicioInput.value = inicio.toISOString().split("T")[0];
+        periodoFimInput.value = fim.toISOString().split("T")[0];
       }
-  
-      showAlert("success-alert");
-      showAlert("error-alert");
+
+      dataIngressoInput.addEventListener("change", calcularPeriodoAquisitivo);
     });
   </script>
-  
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const btnSelecionarData = document.getElementById("btnSelecionarData");
+    const listaDatas = document.getElementById("listaDatas");
+    const inputData = document.getElementById("data_ingresso");
+
+    // Mostra ou esconde a lista de datas ao clicar no botão
+    btnSelecionarData.addEventListener("click", function () {
+      listaDatas.style.display = listaDatas.style.display === "none" ? "block" : "none";
+    });
+
+    // Adiciona evento para selecionar uma data e preencher o campo corretamente
+    document.querySelectorAll(".selecionar-data").forEach(item => {
+      item.addEventListener("click", function () {
+        const dataBr = this.textContent.trim(); // Ex: "15/08/2023"
+        
+        // Converte para o formato YYYY-MM-DD exigido pelo input date
+        const [dia, mes, ano] = dataBr.split("/");
+        const dataIso = `${ano}-${mes}-${dia}`;
+
+        inputData.value = dataIso; // Define a data no campo
+        listaDatas.style.display = "none"; // Esconde a lista após a seleção
+      });
+    });
+
+    // Fecha a lista ao clicar fora dela
+    document.addEventListener("click", function (event) {
+      if (!btnSelecionarData.contains(event.target) && !listaDatas.contains(event.target)) {
+        listaDatas.style.display = "none";
+      }
+    });
+  });
+</script>
+
+
 </body>
 </html>

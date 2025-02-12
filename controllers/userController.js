@@ -50,12 +50,25 @@ module.exports = {
   },
 
   // Exibe o formulário de cadastro de usuário
-  showRegistrationForm: (req, res) => {
+  showRegistrationForm: async (req, res) => {
     if (!req.session.admin) {
       req.flash('error_msg', 'Acesso negado.');
       return res.redirect('/auth/login');
     }
-    res.render('user_registration');
+
+    try {
+      // Buscar datas de ingresso únicas no banco
+      const distinctDates = await User.findAll({
+        attributes: [[db.sequelize.fn('DISTINCT', db.sequelize.col('data_ingresso')), 'data_ingresso']],
+        raw: true
+      });
+
+      // Enviar as datas formatadas para a view
+      res.render('user_registration', { distinctDates });
+    } catch (error) {
+      console.error("Erro ao carregar as datas de ingresso:", error);
+      res.render('user_registration', { distinctDates: [] });
+    }
   },
 
   // Processa o cadastro de usuário
@@ -67,16 +80,20 @@ module.exports = {
     try {
       const { matricula, nome, ano_referencia, gestante, qtd_filhos, estudante, data_ingresso, possui_conjuge, data_nascimento, periodo_aquisitivo_inicio, periodo_aquisitivo_fim, categoria } = req.body;
 
+      
+
       const isGestante = gestante === 'on';
       const isEstudante = estudante === 'on';
       const hasConjuge = possui_conjuge === 'on';
 
       const referenceDate = new Date(ano_referencia - 1, 11, 31);
-      const ingressoDate = new Date(data_ingresso);
-      const nascimentoDate = new Date(data_nascimento);
+      const ingressoDate = new Date(data_ingresso + "T00:00:00-03:00"); // Define fuso horário de Brasília
+      const nascimentoDate = new Date(data_nascimento + "T00:00:00-03:00");
 
       const data_ingresso_dias = diffInDays(referenceDate, ingressoDate);
       const data_nascimento_dias = diffInDays(referenceDate, nascimentoDate);
+      const aquisitivoInicio = new Date(periodo_aquisitivo_inicio + "T00:00:00-03:00"); 
+      const aquisitivoFim = new Date(periodo_aquisitivo_fim + "T00:00:00-03:00");
 
       await User.create({
         matricula,
@@ -90,8 +107,8 @@ module.exports = {
         possui_conjuge: hasConjuge,
         data_nascimento: nascimentoDate,
         data_nascimento_dias,
-        periodo_aquisitivo_inicio: new Date(periodo_aquisitivo_inicio),
-        periodo_aquisitivo_fim: new Date(periodo_aquisitivo_fim),
+        periodo_aquisitivo_inicio: aquisitivoInicio,
+        periodo_aquisitivo_fim: aquisitivoFim,
         categoria
       });
 
@@ -148,9 +165,9 @@ module.exports = {
         if (a.gestante !== b.gestante) return b.gestante - a.gestante;
         if (a.qtd_filhos !== b.qtd_filhos) return b.qtd_filhos - a.qtd_filhos;
         if (a.estudante !== b.estudante) return b.estudante - a.estudante;
-        if (a.data_ingresso_dias !== b.data_ingresso_dias) return a.data_ingresso_dias - b.data_ingresso_dias;
+        if (a.data_ingresso_dias !== b.data_ingresso_dias) return b.data_ingresso_dias - a.data_ingresso_dias;
         if (a.possui_conjuge !== b.possui_conjuge) return b.possui_conjuge - a.possui_conjuge;
-        return a.data_nascimento_dias - b.data_nascimento_dias;
+        return b.data_nascimento_dias - a.data_nascimento_dias;
       });
 
       for (let i = 0; i < users.length; i++) {
