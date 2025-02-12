@@ -14,9 +14,12 @@
       margin-top: 20px;
       margin-bottom: 20px;
     }
+    /* Garante que as três colunas da tabela tenham a mesma largura */
+    .table thead th, .table tbody td {
+      width: 33.33%;
+      text-align: center;
+    }
   </style>
-  
-  
 </head>
 <body>
   <!-- Navbar -->
@@ -46,7 +49,7 @@
       <h2>Bem-vindo, <%= admin.nome %></h2>
     </div>
 
-    <!-- Mensagens de feedback - Alertas ocultos por padrão -->
+    <!-- Mensagens de feedback -->
     <div id="flash-messages">
       <% if (success_msg) { %>
         <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
@@ -63,9 +66,7 @@
       <% } %>
     </div>
 
-
-    
-    
+    <!-- Resetar Férias -->
     <div class="container mt-4">
       <h3>Resetar Férias</h3>
       <form action="/users/reset-vacations" method="POST">
@@ -77,6 +78,7 @@
       </form>
     </div>
     
+    <!-- Apagar Matrícula -->
     <div class="container mt-4">
       <h3>Apagar Matrícula</h3>
       <form action="/users/delete-user" method="POST">
@@ -88,45 +90,48 @@
       </form>
     </div>
     
+    <!-- Controle de Vagas por Categoria -->
     <div class="container mt-4">
       <h3>Controle de Vagas por Categoria</h3>
+      <!-- Cálculo dos totais de servidores por cargo -->
+      <% 
+        let totalIPC = 0, totalEPC = 0, totalDPC = 0;
+        users.forEach(function(u) {
+          if (u.categoria === 'IPC') totalIPC++;
+          else if (u.categoria === 'EPC') totalEPC++;
+          else if (u.categoria === 'DPC') totalDPC++;
+        });
+      %>
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>Categoria</th>
-            <th>Quantidade de servidores</th>
-            <th>Máximo Permitido por período</th>
-            
-            
+            <th style="width: 33.33%;">Categoria</th>
+            <th style="width: 33.33%;">Máximo Permitido por período</th>
+            <th style="width: 33.33%;">Quantidade de servidores total por cargo</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>IPC</td>
             <td><%= settings.max_ipc %></td>
-            
-            
+            <td><%= totalIPC %></td>
           </tr>
           <tr>
             <td>EPC</td>
             <td><%= settings.max_epc %></td>
-            
-            
+            <td><%= totalEPC %></td>
           </tr>
           <tr>
             <td>DPC</td>
             <td><%= settings.max_dpc %></td>
-            
-            
+            <td><%= totalDPC %></td>
           </tr>
         </tbody>
       </table>
     </div>
     
-
-
-
-    <div class="container">
+    <!-- Configuração de Limites -->
+    <div class="container mt-4">
       <h3>Configuração de Limites</h3>
       <form action="/users/update-limits" method="POST">
         <div class="row">
@@ -147,12 +152,13 @@
       </form>
     </div>
     
+    <div class="dashboard-header text-center">
+      <h2>Cassificação dos servidores já cadastrados</h2>
+    </div>
 
 
-
-
-    <!-- Tabela responsiva -->
-    <div class="table-responsive">
+    <!-- Tabela de Usuários -->
+    <div class="table-responsive mt-4">
       <table class="table table-striped table-bordered">
         <thead class="table-dark">
           <tr>
@@ -210,24 +216,112 @@
 
   <!-- Bootstrap 5 JS Bundle -->
   <script src="/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script para exibir os alertas com fade in -->
   <script>
     document.addEventListener("DOMContentLoaded", function(){
-      // Função para exibir o alerta com fade in
       function showAlert(alertId) {
         const alertEl = document.getElementById(alertId);
         if (alertEl && alertEl.textContent.trim() !== "") {
           alertEl.style.display = "block";
-          // Força o reflow para que a transição ocorra
           void alertEl.offsetWidth;
           alertEl.classList.add("show");
         }
       }
-  
       showAlert("success-alert");
       showAlert("error-alert");
     });
   </script>
   
+  <!-- Script para atualizar os campos de data final com base nos inícios e na opção selecionada -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Função para somar dias a uma data
+      function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+      }
+
+      // Função para formatar a data no formato YYYY-MM-DD
+      function formatDate(date) {
+        return date.toISOString().split("T")[0];
+      }
+
+      // Função para atualizar o campo de data final de um período
+      function updateEndDate(periodIndex, durationDays) {
+        const inicioInput = document.getElementById(`periodo${periodIndex}_inicio`);
+        const fimInput = document.getElementById(`periodo${periodIndex}_fim`);
+        if (inicioInput.value) {
+          const startDate = new Date(inicioInput.value);
+          const endDate = addDays(startDate, durationDays - 1);
+          fimInput.value = formatDate(endDate);
+        }
+      }
+
+      // Função para atualizar os campos de data final com base na opção selecionada
+      function updateAllEndDates() {
+        const qtd = document.getElementById('qtd_periodos').value;
+        if (qtd === "1") {
+          updateEndDate(1, 30);
+        } else if (qtd === "2_10_20") {
+          updateEndDate(1, 10);
+          updateEndDate(2, 20);
+        } else if (qtd === "2_15_15") {
+          updateEndDate(1, 15);
+          updateEndDate(2, 15);
+        } else if (qtd === "2_20_10") {
+          updateEndDate(1, 20);
+          updateEndDate(2, 10);
+        } else if (qtd === "3") {
+          updateEndDate(1, 10);
+          updateEndDate(2, 10);
+          updateEndDate(3, 10);
+        }
+      }
+
+      // Atualiza os campos de data final quando as datas de início mudarem
+      ['periodo1_inicio', 'periodo2_inicio', 'periodo3_inicio'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+          input.addEventListener("change", updateAllEndDates);
+        }
+      });
+
+      // Atualiza os campos de data final ao mudar a opção de períodos
+      document.getElementById("qtd_periodos").addEventListener("change", updateAllEndDates);
+    });
+  </script>
+  
+  <!-- Script para a seleção de data de ingresso via lista suspensa -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const btnSelecionarData = document.getElementById("btnSelecionarData");
+      const listaDatas = document.getElementById("listaDatas");
+      const inputData = document.getElementById("data_ingresso");
+  
+      btnSelecionarData.addEventListener("click", function () {
+        listaDatas.style.display = listaDatas.style.display === "none" ? "block" : "none";
+      });
+  
+      document.querySelectorAll(".selecionar-data").forEach(item => {
+        item.addEventListener("click", function () {
+          const dataBr = this.textContent.trim(); // Ex: "15/08/2023"
+          const [dia, mes, ano] = dataBr.split("/");
+          const dataIso = `${ano}-${mes}-${dia}`;
+          inputData.value = dataIso;
+          listaDatas.style.display = "none";
+          // Atualiza os períodos aquisitivos, se necessário (chame uma função, por exemplo)
+        });
+      });
+  
+      document.addEventListener("click", function (event) {
+        if (!btnSelecionarData.contains(event.target) && !listaDatas.contains(event.target)) {
+          listaDatas.style.display = "none";
+        }
+      });
+    });
+  </script>
   
 </body>
 </html>

@@ -32,7 +32,6 @@
       <% } %>
     </div>
 
-    
     <form action="/vacations/mark" method="POST">
       <!-- Campo oculto para a matrícula -->
       <input type="hidden" name="matricula" value="<%= user.matricula %>">
@@ -42,7 +41,9 @@
         <label for="qtd_periodos" class="form-label">Quantidade de Períodos:</label>
         <select name="qtd_periodos" id="qtd_periodos" class="form-select">
           <option value="1" <%= old && old.qtd_periodos === '1' ? 'selected' : '' %>>1 Período</option>
-          <option value="2" <%= old && old.qtd_periodos === '2' ? 'selected' : '' %>>2 Períodos</option>
+          <option value="2_10_20" <%= old && old.qtd_periodos === '2_10_20' ? 'selected' : '' %>>2 Períodos 10+20</option>
+          <option value="2_15_15" <%= old && old.qtd_periodos === '2_15_15' ? 'selected' : '' %>>2 Períodos 15+15</option>
+          <option value="2_20_10" <%= old && old.qtd_periodos === '2_20_10' ? 'selected' : '' %>>2 Períodos 20+10</option>
           <option value="3" <%= old && old.qtd_periodos === '3' ? 'selected' : '' %>>3 Períodos</option>
         </select>
       </div>
@@ -110,13 +111,14 @@
       document.getElementById('periodo3').style.display = 'none';
       
       // Exibe os containers conforme a quantidade selecionada
-      if (parseInt(qtd) >= 1) {
+      if (qtd === "1") {
         document.getElementById('periodo1').style.display = 'block';
-      }
-      if (parseInt(qtd) >= 2) {
+      } else if (qtd === "2_10_20" || qtd === "2_15_15" || qtd === "2_20_10") {
+        document.getElementById('periodo1').style.display = 'block';
         document.getElementById('periodo2').style.display = 'block';
-      }
-      if (parseInt(qtd) >= 3) {
+      } else if (qtd === "3") {
+        document.getElementById('periodo1').style.display = 'block';
+        document.getElementById('periodo2').style.display = 'block';
         document.getElementById('periodo3').style.display = 'block';
       }
     }
@@ -126,21 +128,110 @@
       document.getElementById('qtd_periodos').addEventListener('change', updatePeriodFields);
     });
   </script>
+  
+  <!-- Script para exibir os alertas com fade in -->
   <script>
     document.addEventListener("DOMContentLoaded", function(){
-      // Função para exibir o alerta com fade in
       function showAlert(alertId) {
         const alertEl = document.getElementById(alertId);
         if (alertEl && alertEl.textContent.trim() !== "") {
           alertEl.style.display = "block";
-          // Força o reflow para que a transição ocorra
           void alertEl.offsetWidth;
           alertEl.classList.add("show");
         }
       }
-  
       showAlert("success-alert");
       showAlert("error-alert");
+    });
+  </script>
+  
+  <!-- Script para preencher automaticamente as datas finais dos períodos com base nos inícios e na opção selecionada -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Função para somar dias a uma data
+      function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+      }
+
+      // Função para formatar a data no formato YYYY-MM-DD
+      function formatDate(date) {
+        return date.toISOString().split("T")[0];
+      }
+
+      // Função para atualizar o campo de data final de um período
+      function updateEndDate(periodIndex, durationDays) {
+        const inicioInput = document.getElementById(`periodo${periodIndex}_inicio`);
+        const fimInput = document.getElementById(`periodo${periodIndex}_fim`);
+        if (inicioInput.value) {
+          const startDate = new Date(inicioInput.value);
+          const endDate = addDays(startDate, durationDays - 1);
+          fimInput.value = formatDate(endDate);
+        }
+      }
+
+      // Função para atualizar os campos de data final de acordo com a opção selecionada
+      function updateAllEndDates() {
+        const qtd = document.getElementById('qtd_periodos').value;
+        if (qtd === "1") {
+          updateEndDate(1, 30); // 30 dias para 1 período
+        } else if (qtd === "2_10_20") {
+          updateEndDate(1, 10); // Primeiro período: 10 dias
+          updateEndDate(2, 20); // Segundo período: 20 dias
+        } else if (qtd === "2_15_15") {
+          updateEndDate(1, 15); // Primeiro período: 15 dias
+          updateEndDate(2, 15); // Segundo período: 15 dias
+        } else if (qtd === "2_20_10") {
+          updateEndDate(1, 20); // Primeiro período: 20 dias
+          updateEndDate(2, 10); // Segundo período: 10 dias
+        } else if (qtd === "3") {
+          updateEndDate(1, 10); // 10 dias para cada período
+          updateEndDate(2, 10);
+          updateEndDate(3, 10);
+        }
+      }
+
+      // Adiciona eventos aos campos de data de início para atualizar automaticamente os finais
+      const periodosInicioIds = ['periodo1_inicio', 'periodo2_inicio', 'periodo3_inicio'];
+      periodosInicioIds.forEach(function(id) {
+        const input = document.getElementById(id);
+        if (input) {
+          input.addEventListener("change", updateAllEndDates);
+        }
+      });
+
+      // Atualiza os finais ao mudar a opção de períodos
+      document.getElementById("qtd_periodos").addEventListener("change", updateAllEndDates);
+    });
+  </script>
+  
+  <!-- Script para a seleção de data de ingresso via lista suspensa -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const btnSelecionarData = document.getElementById("btnSelecionarData");
+      const listaDatas = document.getElementById("listaDatas");
+      const inputData = document.getElementById("data_ingresso");
+  
+      btnSelecionarData.addEventListener("click", function () {
+        listaDatas.style.display = listaDatas.style.display === "none" ? "block" : "none";
+      });
+  
+      document.querySelectorAll(".selecionar-data").forEach(item => {
+        item.addEventListener("click", function () {
+          const dataBr = this.textContent.trim(); // Ex: "15/08/2023"
+          const [dia, mes, ano] = dataBr.split("/");
+          const dataIso = `${ano}-${mes}-${dia}`;
+          inputData.value = dataIso;
+          listaDatas.style.display = "none";
+        });
+      });
+  
+      document.addEventListener("click", function (event) {
+        if (!btnSelecionarData.contains(event.target) && !listaDatas.contains(event.target)) {
+          listaDatas.style.display = "none";
+        }
+      });
     });
   </script>
   
