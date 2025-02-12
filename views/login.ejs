@@ -1,14 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login - Administrador</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <style>
+    /* Container menor e centralizado para o login */
+    .login-container {
+      max-width: 400px;
+      margin: 50px auto;  /* Centraliza e adiciona margem superior/inferior */
+      margin-top: 10vh;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
-<body>
-  <div class="container mt-5">
-    <h2>Login - Administrador</h2>
+<body class="bg-light">
+  <div class="login-container">
+    <h2 class="text-center mb-4">Login - Administrador</h2>
+    
     <!-- Mensagens de feedback - Alertas ocultos por padrão -->
     <div id="flash-messages">
       <% if (success_msg) { %>
@@ -25,7 +38,7 @@
         </div>
       <% } %>
     </div>
-
+    
     <form action="/auth/login" method="POST">
       <div class="mb-3">
         <label>Email:</label>
@@ -35,27 +48,32 @@
         <label>Senha:</label>
         <input type="password" name="password" class="form-control" required>
       </div>
-      <button type="submit" class="btn btn-primary">Entrar</button>
+      <div class="mt-3">
+        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+      </div>
+      <div class="mt-3">
+        <a href="/user" class="btn btn-secondary w-100">Página Inicial</a>
+      </div>
     </form>
   </div>
 
-<!-- Script para exibir os alertas com fade in -->
-<script>
-  document.addEventListener("DOMContentLoaded", function(){
-    function showAlert(alertId) {
-      const alertEl = document.getElementById(alertId);
-      if (alertEl && alertEl.textContent.trim() !== "") {
-        alertEl.style.display = "block";
-        void alertEl.offsetWidth;
-        alertEl.classList.add("show");
+  <!-- Script para exibir os alertas com fade in -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      function showAlert(alertId) {
+        const alertEl = document.getElementById(alertId);
+        if (alertEl && alertEl.textContent.trim() !== "") {
+          alertEl.style.display = "block";
+          void alertEl.offsetWidth;
+          alertEl.classList.add("show");
+        }
       }
-    }
-    showAlert("success-alert");
-    showAlert("error-alert");
-  });
-</script>
-
-<!-- Adicione o bootstrap JS para que o botão fechar funcione -->
-<script src="/js/bootstrap.bundle.min.js"></script>
+      showAlert("success-alert");
+      showAlert("error-alert");
+    });
+  </script>
+  
+  <!-- Bootstrap JS Bundle -->
+  <script src="/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
