@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <style>
+    /* Estilos personalizados, se necessário */
     body {
       background-color: #f8f9fa;
     }
@@ -13,24 +14,16 @@
       margin-top: 20px;
       margin-bottom: 20px;
     }
-    /* Largura igual para as colunas da tabela de controle de vagas */
+    /* Garante que as três colunas da tabela tenham a mesma largura */
     .table thead th, .table tbody td {
       width: 33.33%;
       text-align: center;
     }
-    .small-input {
-      max-width: 100px;
-      display: inline-block;
-    }
-    /* Ajustes para a tabela de servidores: centraliza o texto */
-    .table td, .table th {
-      text-align: center;
-      vertical-align: middle;
-    }
-    /* Estilo para os filtros */
-    .filter-container {
-      margin-bottom: 20px;
-    }
+    .equal-col {
+    width: 33.33%;
+    text-align: center;
+    vertical-align: middle;
+  }
   </style>
 </head>
 <body>
@@ -69,6 +62,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       <% } %>
+      
       <% if (error_msg) { %>
         <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
           <%= error_msg %>
@@ -77,133 +71,107 @@
       <% } %>
     </div>
 
-    <!-- Linha de ações: Resetar Férias, Apagar Matrícula e Configuração de Limites -->
-    <div class="row mt-4">
-      <!-- Resetar Férias -->
-      <div class="col-md-4">
-        <h3>Resetar Férias</h3>
-        <form action="/users/reset-vacations" method="POST">
-          <div class="mb-3">
-            <label for="matricula_reset" class="form-label">Matrícula:</label>
-            <input type="text" name="matricula" id="matricula_reset" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
-          </div>
-          <button type="submit" class="btn btn-warning btn-sm">Resetar Férias</button>
-        </form>
+    <!-- Seção com Resetar Férias, Apagar Matrícula e Configuração de Limites lado a lado -->
+<div class="row mt-4">
+  <!-- Resetar Férias -->
+  <div class="col-md-4">
+    <h3>Resetar Férias</h3>
+    <form action="/users/reset-vacations" method="POST">
+      <div class="mb-3">
+        <label for="matricula_reset" class="form-label">Matrícula:</label>
+        <input type="text" name="matricula" id="matricula_reset" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
       </div>
-      <!-- Apagar Matrícula -->
-      <div class="col-md-4 mt-3 mt-md-0">
-        <h3>Apagar Matrícula</h3>
-        <form action="/users/delete-user" method="POST">
-          <div class="mb-3">
-            <label for="matricula_delete" class="form-label">Matrícula:</label>
-            <input type="text" name="matricula" id="matricula_delete" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
-          </div>
-          <button type="submit" class="btn btn-danger btn-sm">Apagar Matrícula</button>
-        </form>
+      <button type="submit" class="btn btn-warning btn-sm">Resetar Férias</button>
+    </form>
+  </div>
+  <!-- Apagar Matrícula -->
+  <div class="col-md-4 mt-3 mt-md-0">
+    <h3>Apagar Matrícula</h3>
+    <form action="/users/delete-user" method="POST">
+      <div class="mb-3">
+        <label for="matricula_delete" class="form-label">Matrícula:</label>
+        <input type="text" name="matricula" id="matricula_delete" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
       </div>
-      <!-- Configuração de Limites -->
-      <div class="col-md-4 mt-3 mt-md-0">
-        <h3>Configuração de Limites</h3>
-        <form action="/users/update-limits" method="POST">
-          <div class="row">
-            <div class="col-4">
-              <label for="max_ipc" class="form-label">IPC</label>
-              <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_epc" class="form-label">EPC</label>
-              <input type="number" name="max_epc" id="max_epc" value="<%= settings.max_epc %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_dpc" class="form-label">DPC</label>
-              <input type="number" name="max_dpc" id="max_dpc" value="<%= settings.max_dpc %>" class="form-control form-control-sm">
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary btn-sm mt-3">Confirmar</button>
-        </form>
+      <button type="submit" class="btn btn-danger btn-sm">Apagar Matrícula</button>
+    </form>
+  </div>
+  <!-- Configuração de Limites -->
+  <div class="col-md-4 mt-3 mt-md-0">
+    <h3>Configuração de Limites</h3>
+    <form action="/users/update-limits" method="POST">
+      <div class="row">
+        <div class="col-4">
+          <label for="max_ipc" class="form-label">IPC</label>
+          <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control form-control-sm">
+        </div>
+        <div class="col-4">
+          <label for="max_epc" class="form-label">EPC</label>
+          <input type="number" name="max_epc" id="max_epc" value="<%= settings.max_epc %>" class="form-control form-control-sm">
+        </div>
+        <div class="col-4">
+          <label for="max_dpc" class="form-label">DPC</label>
+          <input type="number" name="max_dpc" id="max_dpc" value="<%= settings.max_dpc %>" class="form-control form-control-sm">
+        </div>
       </div>
-    </div>
+      <button type="submit" class="btn btn-primary btn-sm mt-3">Confirmar</button>
+    </form>
+  </div>
+</div>
+
+
 
     
-
-    <!-- Tabela de Controle de Vagas por Categoria -->
-    <div class="container mt-4">
-      <h3>Controle de Vagas por Categoria</h3>
-      <% 
-        let totalIPC = 0, totalEPC = 0, totalDPC = 0;
-        users.forEach(function(u) {
-          if (u.categoria === 'IPC') totalIPC++;
-          else if (u.categoria === 'EPC') totalEPC++;
-          else if (u.categoria === 'DPC') totalDPC++;
-        });
-      %>
-      <table class="table table-bordered text-center">
-        <thead>
-          <tr>
-            <th class="equal-col">Cargo</th>
-            <th class="equal-col">Máximo Permitido</th>
-            <th class="equal-col">Total Servidores</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="equal-col">IPC</td>
-            <td class="equal-col"><%= settings.max_ipc %></td>
-            <td class="equal-col"><%= totalIPC %></td>
-          </tr>
-          <tr>
-            <td class="equal-col">EPC</td>
-            <td class="equal-col"><%= settings.max_epc %></td>
-            <td class="equal-col"><%= totalEPC %></td>
-          </tr>
-          <tr>
-            <td class="equal-col">DPC</td>
-            <td class="equal-col"><%= settings.max_dpc %></td>
-            <td class="equal-col"><%= totalDPC %></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Tabela de Classificação dos Servidores -->
-    <div class="dashboard-header text-center mt-4">
-      <h2>Classificação dos Servidores Cadastrados</h2>
-    </div>
-
-    <!-- Filtros para a Tabela de Servidores -->
-    <div class="row mt-4 filter-container">
-      <div class="col-md-6 mb-2">
-        <label for="filter-cargo" class="form-label">Filtrar por Cargo:</label>
-        <select id="filter-cargo" class="form-select form-select-sm">
-          <option value="">Todos</option>
-          <option value="IPC">IPC</option>
-          <option value="EPC">EPC</option>
-          <option value="DPC">DPC</option>
-        </select>
-      </div>
-      <div class="col-md-6 mb-2">
-        <label for="filter-mes" class="form-label">Filtrar por Mês de Ingresso:</label>
-        <select id="filter-mes" class="form-select form-select-sm">
-          <option value="">Todos</option>
-          <option value="01">Janeiro</option>
-          <option value="02">Fevereiro</option>
-          <option value="03">Março</option>
-          <option value="04">Abril</option>
-          <option value="05">Maio</option>
-          <option value="06">Junho</option>
-          <option value="07">Julho</option>
-          <option value="08">Agosto</option>
-          <option value="09">Setembro</option>
-          <option value="10">Outubro</option>
-          <option value="11">Novembro</option>
-          <option value="12">Dezembro</option>
-        </select>
-      </div>
-    </div>
+    <!-- Controle de Vagas por Categoria -->
+<div class="container mt-4">
+  <h3>Controle de Vagas por Categoria</h3>
+  <% 
+    // Calcula os totais de servidores por cargo
+    let totalIPC = 0, totalEPC = 0, totalDPC = 0;
+    users.forEach(u => {
+      if (u.categoria === 'IPC') totalIPC++;
+      else if (u.categoria === 'EPC') totalEPC++;
+      else if (u.categoria === 'DPC') totalDPC++;
+    });
+  %>
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr>
+        <th class="equal-col">Cargo</th>
+        <th class="equal-col">Máximo por Período</th>
+        <th class="equal-col">Total de Servidores</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="equal-col">IPC</td>
+        <td class="equal-col"><%= settings.max_ipc %></td>
+        <td class="equal-col"><%= totalIPC %></td>
+      </tr>
+      <tr>
+        <td class="equal-col">EPC</td>
+        <td class="equal-col"><%= settings.max_epc %></td>
+        <td class="equal-col"><%= totalEPC %></td>
+      </tr>
+      <tr>
+        <td class="equal-col">DPC</td>
+        <td class="equal-col"><%= settings.max_dpc %></td>
+        <td class="equal-col"><%= totalDPC %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
     
-    <div class="table-responsive mt-4" id="userTableContainer">
-      <table class="table table-striped table-bordered" id="userTable">
+ 
+    
+    <div class="dashboard-header text-center">
+      <h2>Cassificação dos servidores já cadastrados</h2>
+    </div>
+
+
+    <!-- Tabela de Usuários -->
+    <div class="table-responsive mt-4">
+      <table class="table table-striped table-bordered">
         <thead class="table-dark">
           <tr>
             <th>cargo</th>
@@ -218,15 +186,15 @@
             <th>Cônj. serv</th>
             <th>Data de Nascimento</th>
             <th>Idade</th>
-            <th>Per. Aquisitivo (Início)</th>
-            <th>Per. Aquisitivo (Fim)</th>
+            <th>Período Aquisitivo (Início)</th>
+            <th>Período Aquisitivo (Fim)</th>
             <th>Nº</th>
             <th>Férias</th>
           </tr>
         </thead>
         <tbody>
           <% users.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ingresso="<%= new Date(user.data_ingresso).toISOString().split('-')[1] %>">
+            <tr>
               <td><%= user.categoria %></td>
               <td><%= user.matricula %></td>
               <td><%= user.nome %></td>
@@ -280,14 +248,19 @@
   <!-- Script para atualizar os campos de data final com base nos inícios e na opção selecionada -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      // Função para somar dias a uma data
       function addDays(date, days) {
         const result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
       }
+
+      // Função para formatar a data no formato YYYY-MM-DD
       function formatDate(date) {
         return date.toISOString().split("T")[0];
       }
+
+      // Função para atualizar o campo de data final de um período
       function updateEndDate(periodIndex, durationDays) {
         const inicioInput = document.getElementById(`periodo${periodIndex}_inicio`);
         const fimInput = document.getElementById(`periodo${periodIndex}_fim`);
@@ -297,6 +270,8 @@
           fimInput.value = formatDate(endDate);
         }
       }
+
+      // Função para atualizar os campos de data final com base na opção selecionada
       function updateAllEndDates() {
         const qtd = document.getElementById('qtd_periodos').value;
         if (qtd === "1") {
@@ -316,12 +291,16 @@
           updateEndDate(3, 10);
         }
       }
+
+      // Atualiza os campos de data final quando as datas de início mudarem
       ['periodo1_inicio', 'periodo2_inicio', 'periodo3_inicio'].forEach(id => {
         const input = document.getElementById(id);
         if (input) {
           input.addEventListener("change", updateAllEndDates);
         }
       });
+
+      // Atualiza os campos de data final ao mudar a opção de períodos
       document.getElementById("qtd_periodos").addEventListener("change", updateAllEndDates);
     });
   </script>
@@ -339,11 +318,12 @@
   
       document.querySelectorAll(".selecionar-data").forEach(item => {
         item.addEventListener("click", function () {
-          const dataBr = this.textContent.trim();
+          const dataBr = this.textContent.trim(); // Ex: "15/08/2023"
           const [dia, mes, ano] = dataBr.split("/");
           const dataIso = `${ano}-${mes}-${dia}`;
           inputData.value = dataIso;
           listaDatas.style.display = "none";
+          // Atualiza os períodos aquisitivos, se necessário (chame uma função, por exemplo)
         });
       });
   
@@ -355,39 +335,5 @@
     });
   </script>
   
-  <!-- Script para filtrar a tabela de servidores -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const filterCargo = document.getElementById("filter-cargo");
-      const filterMes = document.getElementById("filter-mes");
-      const table = document.getElementById("userTable");
-      const tbody = table.querySelector("tbody");
-
-      function filterTable() {
-        const cargoValue = filterCargo.value;
-        const mesValue = filterMes.value;
-        const rows = tbody.querySelectorAll("tr");
-
-        rows.forEach(row => {
-          // Dados armazenados nos atributos data-cargo e data-mes-ingresso
-          const rowCargo = row.getAttribute("data-cargo");
-          const rowMes = row.getAttribute("data-mes-ingresso");
-          let showRow = true;
-
-          if (cargoValue && rowCargo !== cargoValue) {
-            showRow = false;
-          }
-          if (mesValue && rowMes !== mesValue) {
-            showRow = false;
-          }
-
-          row.style.display = showRow ? "" : "none";
-        });
-      }
-
-      filterCargo.addEventListener("change", filterTable);
-      filterMes.addEventListener("change", filterTable);
-    });
-  </script>
 </body>
 </html>
