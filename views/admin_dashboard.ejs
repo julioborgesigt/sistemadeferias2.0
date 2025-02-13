@@ -19,6 +19,11 @@
       width: 33.33%;
       text-align: center;
     }
+    .equal-col {
+    width: 33.33%;
+    text-align: center;
+    vertical-align: middle;
+  }
   </style>
 </head>
 <body>
@@ -66,91 +71,97 @@
       <% } %>
     </div>
 
-    <!-- Resetar Férias -->
-    <div class="container mt-4">
-      <h3>Resetar Férias</h3>
-      <form action="/users/reset-vacations" method="POST">
-        <div class="mb-3">
-          <label for="matricula_reset" class="form-label">Matrícula do usuário:</label>
-          <input type="text" name="matricula" id="matricula_reset" class="form-control" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
-        </div>
-        <button type="submit" class="btn btn-warning">Resetar Férias</button>
-      </form>
-    </div>
-    
-    <!-- Apagar Matrícula -->
-    <div class="container mt-4">
-      <h3>Apagar Matrícula</h3>
-      <form action="/users/delete-user" method="POST">
-        <div class="mb-3">
-          <label for="matricula_delete" class="form-label">Matrícula do usuário:</label>
-          <input type="text" name="matricula" id="matricula_delete" class="form-control" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
-        </div>
-        <button type="submit" class="btn btn-danger">Apagar Matrícula</button>
-      </form>
+    <!-- Seção com Resetar Férias, Apagar Matrícula e Configuração de Limites lado a lado -->
+    <div class="row mt-4">
+      <!-- Resetar Férias -->
+      <div class="col-md-4">
+        <h3>Resetar Férias</h3>
+        <form action="/users/reset-vacations" method="POST">
+          <div class="mb-3">
+            <label for="matricula_reset" class="form-label">Matrícula:</label>
+            <input type="text" name="matricula" id="matricula_reset" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
+          </div>
+          <button type="submit" class="btn btn-warning btn-sm">Resetar Férias</button>
+        </form>
+      </div>
+      
+      <!-- Apagar Matrícula -->
+      <div class="col-md-4">
+        <h3>Apagar Matrícula</h3>
+        <form action="/users/delete-user" method="POST">
+          <div class="mb-3">
+            <label for="matricula_delete" class="form-label">Matrícula:</label>
+            <input type="text" name="matricula" id="matricula_delete" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
+          </div>
+          <button type="submit" class="btn btn-danger btn-sm">Apagar Matrícula</button>
+        </form>
+      </div>
+      
+      <!-- Configuração de Limites -->
+      <div class="col-md-4">
+        <h3>Configuração de Limites</h3>
+        <form action="/users/update-limits" method="POST">
+          <div class="row">
+            <div class="col-4">
+              <label for="max_ipc" class="form-label">IPC</label>
+              <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control form-control-sm">
+            </div>
+            <div class="col-4">
+              <label for="max_epc" class="form-label">EPC</label>
+              <input type="number" name="max_epc" id="max_epc" value="<%= settings.max_epc %>" class="form-control form-control-sm">
+            </div>
+            <div class="col-4">
+              <label for="max_dpc" class="form-label">DPC</label>
+              <input type="number" name="max_dpc" id="max_dpc" value="<%= settings.max_dpc %>" class="form-control form-control-sm">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm mt-3">Confirmar</button>
+        </form>
+      </div>
     </div>
     
     <!-- Controle de Vagas por Categoria -->
-    <div class="container mt-4">
-      <h3>Controle de Vagas por Categoria</h3>
-      <!-- Cálculo dos totais de servidores por cargo -->
-      <% 
-        let totalIPC = 0, totalEPC = 0, totalDPC = 0;
-        users.forEach(function(u) {
-          if (u.categoria === 'IPC') totalIPC++;
-          else if (u.categoria === 'EPC') totalEPC++;
-          else if (u.categoria === 'DPC') totalDPC++;
-        });
-      %>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th style="width: 33.33%;">cargo</th>
-            <th style="width: 33.33%;">Máximo permitido por período</th>
-            <th style="width: 33.33%;">Quantidade de servidores total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>IPC</td>
-            <td><%= settings.max_ipc %></td>
-            <td><%= totalIPC %></td>
-          </tr>
-          <tr>
-            <td>EPC</td>
-            <td><%= settings.max_epc %></td>
-            <td><%= totalEPC %></td>
-          </tr>
-          <tr>
-            <td>DPC</td>
-            <td><%= settings.max_dpc %></td>
-            <td><%= totalDPC %></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<div class="container mt-4">
+  <h3>Controle de Vagas por Categoria</h3>
+  <% 
+    // Calcula os totais de servidores por cargo
+    let totalIPC = 0, totalEPC = 0, totalDPC = 0;
+    users.forEach(u => {
+      if (u.categoria === 'IPC') totalIPC++;
+      else if (u.categoria === 'EPC') totalEPC++;
+      else if (u.categoria === 'DPC') totalDPC++;
+    });
+  %>
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr>
+        <th class="equal-col">Cargo</th>
+        <th class="equal-col">Máximo por Período</th>
+        <th class="equal-col">Total de Servidores</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="equal-col">IPC</td>
+        <td class="equal-col"><%= settings.max_ipc %></td>
+        <td class="equal-col"><%= totalIPC %></td>
+      </tr>
+      <tr>
+        <td class="equal-col">EPC</td>
+        <td class="equal-col"><%= settings.max_epc %></td>
+        <td class="equal-col"><%= totalEPC %></td>
+      </tr>
+      <tr>
+        <td class="equal-col">DPC</td>
+        <td class="equal-col"><%= settings.max_dpc %></td>
+        <td class="equal-col"><%= totalDPC %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
     
-    <!-- Configuração de Limites -->
-    <div class="container mt-4">
-      <h3>Configuração de Limites</h3>
-      <form action="/users/update-limits" method="POST">
-        <div class="row">
-          <div class="col-md-4">
-            <label for="max_ipc">Máximo de IPCs em férias:</label>
-            <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control">
-          </div>
-          <div class="col-md-4">
-            <label for="max_epc">Máximo de EPCs em férias:</label>
-            <input type="number" name="max_epc" id="max_epc" value="<%= settings.max_epc %>" class="form-control">
-          </div>
-          <div class="col-md-4">
-            <label for="max_dpc">Máximo de DPCs em férias:</label>
-            <input type="number" name="max_dpc" id="max_dpc" value="<%= settings.max_dpc %>" class="form-control">
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Confirmar</button>
-      </form>
-    </div>
+ 
     
     <div class="dashboard-header text-center">
       <h2>Cassificação dos servidores já cadastrados</h2>
