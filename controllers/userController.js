@@ -78,8 +78,9 @@ module.exports = {
       return res.redirect('/auth/login');
     }
     try {
-      const { matricula, nome, ano_referencia, gestante, qtd_filhos, estudante, data_ingresso, possui_conjuge, data_nascimento, periodo_aquisitivo_inicio, periodo_aquisitivo_fim, categoria } = req.body;
-
+      const { matricula, nome, ano_referencia, gestante, qtd_filhos, estudante, doisvinculos, data_ingresso, possui_conjuge, data_nascimento, periodo_aquisitivo_inicio, periodo_aquisitivo_fim, categoria } = req.body;
+      
+      const isdoisvinculos = doisvinculos === 'on'; // Se o checkbox for marcado
       
 
       const isGestante = gestante === 'on';
@@ -95,6 +96,7 @@ module.exports = {
       const aquisitivoInicio = new Date(periodo_aquisitivo_inicio + "T00:00:00-03:00"); 
       const aquisitivoFim = new Date(periodo_aquisitivo_fim + "T00:00:00-03:00");
 
+
       await User.create({
         matricula,
         nome,
@@ -109,7 +111,8 @@ module.exports = {
         data_nascimento_dias,
         periodo_aquisitivo_inicio: aquisitivoInicio,
         periodo_aquisitivo_fim: aquisitivoFim,
-        categoria
+        categoria,
+        doisvinculos: isdoisvinculos
       });
 
       await module.exports.updateUserClassification();
@@ -118,7 +121,7 @@ module.exports = {
     } catch (error) {
       console.error(error);
       req.flash('error_msg', 'Erro ao cadastrar usuário.');
-      res.redirect('/users/dashboard');
+      
     }
   },
 
@@ -165,6 +168,7 @@ module.exports = {
         if (a.gestante !== b.gestante) return b.gestante - a.gestante;
         if (a.qtd_filhos !== b.qtd_filhos) return b.qtd_filhos - a.qtd_filhos;
         if (a.estudante !== b.estudante) return b.estudante - a.estudante;
+        if (a.doisvinculos !== b.doisvinculos) return b.doisvinculos - a.doisvinculos;
         if (a.data_ingresso_dias !== b.data_ingresso_dias) return b.data_ingresso_dias - a.data_ingresso_dias;
         if (a.possui_conjuge !== b.possui_conjuge) return b.possui_conjuge - a.possui_conjuge;
         return b.data_nascimento_dias - a.data_nascimento_dias;

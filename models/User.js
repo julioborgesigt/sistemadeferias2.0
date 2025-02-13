@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false
     },
+    doisvinculos: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     data_ingresso: {
       type: DataTypes.DATE,
       allowNull: false
