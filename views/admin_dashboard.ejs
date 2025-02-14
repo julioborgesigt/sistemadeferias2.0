@@ -13,18 +13,24 @@
       margin-top: 20px;
       margin-bottom: 20px;
     }
-    /* Largura igual para as colunas da tabela de controle de vagas */
-    .table thead th, .table tbody td {
-      width: 33.33%;
+    /* Centraliza texto e verticalmente alinha as células da tabela */
+    .table th, .table td {
       text-align: center;
+      vertical-align: middle;
     }
-    .small-input {
-      max-width: 100px;
-      display: inline-block;
+    /* Em telas pequenas, ocultar colunas indesejadas */
+    @media (max-width: 768px) {
+      .hide-mobile {
+        display: none !important;
+      }
     }
     /* Estilo para os filtros */
     .filter-container {
       margin-bottom: 20px;
+    }
+    /* Inputs pequenos para matrícula e limites */
+    .form-control-sm {
+      max-width: 150px;
     }
   </style>
 </head>
@@ -33,8 +39,9 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
       <a class="navbar-brand" href="#">Sistema de Férias</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarContent" aria-controls="navbarContent" 
+              aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarContent">
@@ -72,7 +79,7 @@
       <% } %>
     </div>
 
-    <!-- Linha de ações: Resetar Férias, Apagar Matrícula e Configuração de Limites -->
+    <!-- Linha de ações: Resetar Férias, Apagar Matrícula e Configuração de Limites (lado a lado) -->
     <div class="row mt-4">
       <!-- Resetar Férias -->
       <div class="col-md-4">
@@ -119,10 +126,9 @@
       </div>
     </div>
 
-   
 
-    <!-- Tabela de Controle de Vagas por Categoria -->
-    <div class="container mt-4">
+     <!-- Tabela de Controle de Vagas por Categoria -->
+     <div class="container mt-4">
       <h3>Controle de Vagas por Categoria</h3>
       <% 
         let totalIPC = 0, totalEPC = 0, totalDPC = 0;
@@ -160,12 +166,8 @@
       </table>
     </div>
 
-    <div class="dashboard-header text-center mt-4">
-      <h2>Classificação dos Servidores Cadastrados</h2>
-    </div>
-
-     <!-- Filtros para a Tabela de Servidores -->
-     <div class="row mt-4 filter-container">
+    <!-- Filtros para a Tabela -->
+    <div class="row mt-4 filter-container">
       <div class="col-md-6 mb-2">
         <label for="filter-cargo" class="form-label">Filtrar por Cargo:</label>
         <select id="filter-cargo" class="form-select form-select-sm">
@@ -195,51 +197,51 @@
       </div>
     </div>
 
-    <!-- Tabela de Classificação dos Servidores -->
+    <!-- Tabela Completa de Servidores (adaptada para dispositivos móveis) -->
     <div class="table-responsive mt-4" id="userTableContainer">
       <table class="table table-striped table-bordered" id="userTable">
         <thead class="table-dark">
           <tr>
-            <th>cargo</th>
+            <th class="hide-mobile">Cargo</th>
             <th>Matrícula</th>
             <th>Nome</th>
-            <th>Ano</th>
-            <th>Gest.</th>
-            <th>Qtd. Filhos</th>
-            <th>Estud.</th>
-            <th>Dois Vinc.</th>
-            <th>Dat. Ingresso</th>
-            <th>Antig.</th>
-            <th>Cônj. serv</th>
-            <th>Dat. de Nasc.</th>
-            <th>Idade</th>
-            <th>P. Aq. (Início)</th>
-            <th>P. Aq. (Fim)</th>
-            <th>Nº</th>
+            <th class="hide-mobile">Ano</th>
+            <th class="hide-mobile">Gest.</th>
+            <th class="hide-mobile">Qtd. Filhos</th>
+            <th class="hide-mobile">Estud.</th>
+            <th class="hide-mobile">Dois Vinc.</th>
+            <th class="hide-mobile">Dat. Ingresso</th>
+            <th class="hide-mobile">Antig.</th>
+            <th class="hide-mobile">Cônj. serv</th>
+            <th class="hide-mobile">Dat. de Nasc.</th>
+            <th class="hide-mobile">Idade</th>
+            <th class="hide-mobile">P. Aq. (Início)</th>
+            <th class="hide-mobile">P. Aq. (Fim)</th>
+            <th class="hide-mobile">Nº</th>
             <th>Férias</th>
           </tr>
         </thead>
         <tbody>
           <% users.forEach(user => { %>
             <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
-              <td><%= user.categoria %></td>
+              <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
               <td><%= user.nome %></td>
-              <td><%= user.ano_referencia %></td>
-              <td><%= user.gestante ? 'Sim' : 'Não' %></td>
-              <td><%= user.qtd_filhos %></td>
-              <td><%= user.estudante ? 'Sim' : 'Não' %></td>
-              <td><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td><%= new Date(user.data_ingresso).toLocaleDateString() %></td>
-              <td><%= user.data_ingresso_dias %></td>
-              <td><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td><%= new Date(user.data_nascimento).toLocaleDateString() %></td>
-              <td><%= user.data_nascimento_dias %></td>
-              <td><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
-              <td><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
-              <td><%= user.classificacao %></td>
+              <td class="hide-mobile"><%= user.ano_referencia %></td>
+              <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
+              <td class="hide-mobile"><%= user.qtd_filhos %></td>
+              <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
+              <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
+              <td class="hide-mobile"><%= new Date(user.data_ingresso).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
+              <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
+              <td class="hide-mobile"><%= new Date(user.data_nascimento).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
+              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= user.classificacao %></td>
               <td>
-                <% if (user.Vacations.length > 0) { %>
+                <% if (user.Vacations && user.Vacations.length > 0) { %>
                   <% user.Vacations.forEach(vacation => { %>
                     <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString() %> até <%= new Date(vacation.data_fim).toLocaleDateString() %></p>
                   <% }); %>
@@ -257,7 +259,7 @@
   <!-- Bootstrap 5 JS Bundle -->
   <script src="/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Script para exibir os alertas com fade in -->
+  <!-- Script para exibir alertas com fade in -->
   <script>
     document.addEventListener("DOMContentLoaded", function(){
       function showAlert(alertId) {
@@ -322,7 +324,7 @@
     });
   </script>
   
-  <!-- Script para a seleção de data de ingresso via lista suspensa -->
+  <!-- Script para seleção de data de ingresso via lista suspensa -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const btnSelecionarData = document.getElementById("btnSelecionarData");
@@ -356,8 +358,8 @@
     document.addEventListener("DOMContentLoaded", function() {
       const filterCargo = document.getElementById("filter-cargo");
       const filterMes = document.getElementById("filter-mes");
-      const table = document.getElementById("userTable");
-      const tbody = table.querySelector("tbody");
+      const userTable = document.getElementById("userTable");
+      const tbody = userTable.querySelector("tbody");
 
       function filterTable() {
         const cargoValue = filterCargo.value;
@@ -368,12 +370,10 @@
           const rowCargo = row.getAttribute("data-cargo");
           const rowMes = row.getAttribute("data-mes-ferias"); // Ex: "07,08" ou ""
           let showRow = true;
-
           if (cargoValue && rowCargo !== cargoValue) {
             showRow = false;
           }
           if (mesValue) {
-            // Verifica se o valor do filtro está presente na lista de meses (separados por vírgula)
             const meses = rowMes.split(',');
             if (!meses.includes(mesValue)) {
               showRow = false;
