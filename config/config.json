@@ -14,10 +14,10 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "opapbv_admin",
+    "username": "opapbv_admin2",
     "password": "PyBk6ZopH7",
-    "database": "opapbv_ferias",
-    "host": "mysql-ag-br1-20.conteige.cloud",
+    "database": "opapbv_ferias2",
+    "host": "db4free.net",
     "dialect": "mysql"
   }
 }

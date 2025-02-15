@@ -9,29 +9,71 @@
     body {
       background-color: #f8f9fa;
     }
+
     .dashboard-header {
       margin-top: 20px;
       margin-bottom: 20px;
     }
-    /* Centraliza texto e verticalmente alinha as células da tabela */
-    .table th, .table td {
-      text-align: center;
-      vertical-align: middle;
+
+    /* Estilização das divs */
+    .dashboard-section {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      border: 2px solid transparent;
+      transition: all 0.3s ease-in-out;
     }
-    /* Em telas pequenas, ocultar colunas indesejadas */
+
+    /* Efeito neon azul ao passar o mouse */
+    .dashboard-section:hover {
+      border-color: #007bff;
+      box-shadow: 0px 0px 15px rgba(0, 123, 255, 0.8);
+    }
+
+    /* Ajuste para telas menores */
     @media (max-width: 768px) {
-      .hide-mobile {
-        display: none !important;
+      .dashboard-section {
+        padding: 15px;
+        margin-bottom: 15px;
       }
     }
-    /* Estilo para os filtros */
-    .filter-container {
-      margin-bottom: 20px;
+
+       
+    .styled-table {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
     }
-    /* Inputs pequenos para matrícula e limites */
-    .form-control-sm {
-      max-width: 150px;
+
+
+    /* Estilização das células da tabela */
+    .styled-table th, 
+    .styled-table td {
+      padding: 12px;
+      border: 1px solid #dee2e6;
     }
+
+    /* Cores para o cabeçalho */
+    .styled-table thead {
+      background-color: #007bff;
+      color: white;
+    }
+
+    /* Ajuste para responsividade */
+    @media (max-width: 768px) {
+      .styled-table th, 
+      .styled-table td {
+        padding: 8px;
+        font-size: 14px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -79,92 +121,125 @@
       <% } %>
     </div>
 
-    <!-- Linha de ações: Resetar Férias, Apagar Matrícula e Configuração de Limites (lado a lado) -->
+    <!-- Sessões do Dashboard -->
     <div class="row mt-4">
       <!-- Resetar Férias -->
       <div class="col-md-4">
-        <h3>Resetar Férias</h3>
-        <form action="/users/reset-vacations" method="POST">
-          <div class="mb-3">
-            <label for="matricula_reset" class="form-label">Matrícula:</label>
-            <input type="text" name="matricula" id="matricula_reset" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
-          </div>
-          <button type="submit" class="btn btn-warning btn-sm">Resetar Férias</button>
-        </form>
+        <div class="dashboard-section">
+          <h3>Resetar Férias</h3>
+          <form action="/users/reset-vacations" method="POST">
+            <div class="mb-3">
+              <label for="matricula_reset" class="form-label">Matrícula:</label>
+              <input type="text" name="matricula" id="matricula_reset" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8">
+            </div>
+            <button type="submit" class="btn btn-warning btn-sm">Resetar</button>
+          </form>
+        </div>
       </div>
+
       <!-- Apagar Matrícula -->
-      <div class="col-md-4 mt-3 mt-md-0">
-        <h3>Apagar Matrícula</h3>
-        <form action="/users/delete-user" method="POST">
-          <div class="mb-3">
-            <label for="matricula_delete" class="form-label">Matrícula:</label>
-            <input type="text" name="matricula" id="matricula_delete" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8" oninput="this.value = this.value.slice(0, 8);">
-          </div>
-          <button type="submit" class="btn btn-danger btn-sm">Apagar Matrícula</button>
-        </form>
+      <div class="col-md-4">
+        <div class="dashboard-section">
+          <h3>Apagar Matrícula</h3>
+          <form action="/users/delete-user" method="POST">
+            <div class="mb-3">
+              <label for="matricula_delete" class="form-label">Matrícula:</label>
+              <input type="text" name="matricula" id="matricula_delete" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8">
+            </div>
+            <button type="submit" class="btn btn-danger btn-sm">Apagar</button>
+          </form>
+        </div>
       </div>
+
       <!-- Configuração de Limites -->
-      <div class="col-md-4 mt-3 mt-md-0">
-        <h3>Configuração de Limites</h3>
-        <form action="/users/update-limits" method="POST">
-          <div class="row">
-            <div class="col-4">
-              <label for="max_ipc" class="form-label">IPC</label>
-              <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control form-control-sm">
+      <div class="col-md-4">
+        <div class="dashboard-section">
+          <h3>Configuração de Limites</h3>
+          <form action="/users/update-limits" method="POST">
+            <div class="row">
+              <div class="col-4">
+                <label for="max_ipc" class="form-label">IPC</label>
+                <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control form-control-sm">
+              </div>
+              <div class="col-4">
+                <label for="max_epc" class="form-label">EPC</label>
+                <input type="number" name="max_epc" id="max_epc" value="<%= settings.max_epc %>" class="form-control form-control-sm">
+              </div>
+              <div class="col-4">
+                <label for="max_dpc" class="form-label">DPC</label>
+                <input type="number" name="max_dpc" id="max_dpc" value="<%= settings.max_dpc %>" class="form-control form-control-sm">
+              </div>
             </div>
-            <div class="col-4">
-              <label for="max_epc" class="form-label">EPC</label>
-              <input type="number" name="max_epc" id="max_epc" value="<%= settings.max_epc %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_dpc" class="form-label">DPC</label>
-              <input type="number" name="max_dpc" id="max_dpc" value="<%= settings.max_dpc %>" class="form-control form-control-sm">
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary btn-sm mt-3">Confirmar</button>
-        </form>
+            <button type="submit" class="btn btn-primary btn-sm mt-3">Confirmar</button>
+          </form>
+        </div>
       </div>
+ 
+ 
+
+
+
     </div>
+
+
+
 
 
      <!-- Tabela de Controle de Vagas por Categoria -->
-     <div class="container mt-4">
-      <h3>Controle de Vagas por Categoria</h3>
-      <% 
-        let totalIPC = 0, totalEPC = 0, totalDPC = 0;
-        users.forEach(function(u) {
-          if (u.categoria === 'IPC') totalIPC++;
-          else if (u.categoria === 'EPC') totalEPC++;
-          else if (u.categoria === 'DPC') totalDPC++;
-        });
-      %>
-      <table class="table table-bordered text-center">
-        <thead>
-          <tr>
-            <th class="equal-col">Cargo</th>
-            <th class="equal-col">Máximo Permitido</th>
-            <th class="equal-col">Total Servidores</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="equal-col">IPC</td>
-            <td class="equal-col"><%= settings.max_ipc %></td>
-            <td class="equal-col"><%= totalIPC %></td>
-          </tr>
-          <tr>
-            <td class="equal-col">EPC</td>
-            <td class="equal-col"><%= settings.max_epc %></td>
-            <td class="equal-col"><%= totalEPC %></td>
-          </tr>
-          <tr>
-            <td class="equal-col">DPC</td>
-            <td class="equal-col"><%= settings.max_dpc %></td>
-            <td class="equal-col"><%= totalDPC %></td>
-          </tr>
-        </tbody>
-      </table>
+
+     <div class="dashboard-header text-center">
+      <h2>Controle de Vagas por Categoria</h2>
     </div>
+
+
+<div class="container mt-4">
+  
+  <% 
+    let totalIPC = 0, totalEPC = 0, totalDPC = 0;
+    users.forEach(function(u) {
+      if (u.categoria === 'IPC') totalIPC++;
+      else if (u.categoria === 'EPC') totalEPC++;
+      else if (u.categoria === 'DPC') totalDPC++;
+    });
+  %>
+  <table class="table table-bordered text-center styled-table">
+    <thead>
+      <tr>
+        <th class="equal-col">Cargo</th>
+        <th class="equal-col">Máximo Permitido</th>
+        <th class="equal-col">Total Servidores</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="equal-col">IPC</td>
+        <td class="equal-col"><%= settings.max_ipc %></td>
+        <td class="equal-col"><%= totalIPC %></td>
+      </tr>
+      <tr>
+        <td class="equal-col">EPC</td>
+        <td class="equal-col"><%= settings.max_epc %></td>
+        <td class="equal-col"><%= totalEPC %></td>
+      </tr>
+      <tr>
+        <td class="equal-col">DPC</td>
+        <td class="equal-col"><%= settings.max_dpc %></td>
+        <td class="equal-col"><%= totalDPC %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+    <div class="dashboard-header text-center">
+      <h2>Cassificação dos servidores já cadastrados</h2>
+    </div>
+
+
+
 
     <!-- Filtros para a Tabela -->
     <div class="row mt-4 filter-container">
