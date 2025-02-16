@@ -10,4 +10,5 @@ router.get('/confirmation', vacationController.confirmVacation);
 router.get('/year-calendar', vacationController.showYearCalendar);
 router.get('/calendar-options', vacationController.showCalendarOptions);
 
+
 module.exports = router;

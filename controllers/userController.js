@@ -236,6 +236,25 @@ deleteUser: async (req, res) => {
     req.flash('error_msg', 'Erro ao apagar matrícula.');
     res.redirect('/users/dashboard');
   }
+},
+// Exibe a página de classificação dos servidores com filtro por cargo
+showClassification: async (req, res) => {
+  if (!req.session.admin) {
+    req.flash('error_msg', 'Acesso negado.');
+    return res.redirect('/auth/login');
+  }
+  try {
+    const users = await User.findAll({
+      include: [{ model: Vacation, required: false }],
+      order: [['classificacao', 'ASC']]
+    });
+    res.render('classification', { admin: req.session.admin, users });
+  } catch (error) {
+    console.error('Erro ao carregar a classificação:', error);
+    req.flash('error_msg', 'Erro ao carregar a classificação.');
+    res.redirect('/users/dashboard');
+  }
 }
+  
 
 };
