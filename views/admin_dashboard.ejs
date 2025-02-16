@@ -73,6 +73,12 @@
         font-size: 14px;
       }
     }
+    /* Em telas pequenas, ocultar colunas indesejadas */
+    @media (max-width: 768px) {
+      .hide-mobile {
+        display: none !important;
+      }
+    }
 
   </style>
 </head>
@@ -277,6 +283,7 @@
       <table class="table table-striped table-bordered" id="userTable">
         <thead class="table-dark">
           <tr>
+            <th>Nº</th>
             <th class="hide-mobile">Cargo</th>
             <th>Matrícula</th>
             <th>Nome</th>
@@ -292,13 +299,14 @@
             <th class="hide-mobile">Idade</th>
             <th class="hide-mobile">P. Aq. (Início)</th>
             <th class="hide-mobile">P. Aq. (Fim)</th>
-            <th class="hide-mobile">Nº</th>
+            
             <th>Férias</th>
           </tr>
         </thead>
         <tbody>
           <% users.forEach(user => { %>
             <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+              <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
               <td><%= user.nome %></td>
@@ -314,7 +322,7 @@
               <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
               <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
               <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= user.classificacao %></td>
+              
               <td>
                 <% if (user.Vacations && user.Vacations.length > 0) { %>
                   <% user.Vacations.forEach(vacation => { %>
