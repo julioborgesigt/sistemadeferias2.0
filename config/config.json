@@ -7,17 +7,17 @@
     "dialect": "mysql"
   },
   "test": {
-    "username": "opapbv_admin",
-    "password": "PyBk6ZopH7",
-    "database": "opapbv_ferias",
-    "host": "mysql-ag-br1-20.conteige.cloud",
-    "dialect": "mysql"
-  },
-  "production": {
     "username": "opapbv_admin2",
     "password": "PyBk6ZopH7",
     "database": "opapbv_ferias2",
     "host": "db4free.net",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "feriasdriguatu2",
+    "password": "gi7287+_XTLNc7_cXy",
+    "database": "feriasdriguatu2_db",
+    "host": "sao.domcloud.co",
     "dialect": "mysql"
   }
 }
