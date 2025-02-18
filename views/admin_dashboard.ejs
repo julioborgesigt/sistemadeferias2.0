@@ -65,6 +65,22 @@
       color: white;
     }
 
+    /* Adicione isto ao seu <style> */
+.classification-table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dee2e6;
+}
+
+
+
+/* Para suavizar a sombra no hover */
+.classification-table:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
     /* Ajuste para responsividade */
     @media (max-width: 768px) {
       .styled-table th, 
@@ -278,7 +294,7 @@
     <!-- Tabela Completa de Servidores IPC (adaptada para dispositivos móveis) -->
     <div class="table-responsive mt-4" id="ipcTableContainer">
       <table class="table classification-table" id="ipcTable">
-        <thead class="table-dark">
+        <thead style="background-color: #007bff; color: white;">
           <tr>
             <th>Nº</th>
             <th class="hide-mobile">Cargo</th>
@@ -343,7 +359,7 @@
     <!-- Tabela Completa de Servidores EPC (adaptada para dispositivos móveis) -->
     <div class="table-responsive mt-4" id="ipcTableContainer">
       <table class="table classification-table" id="epcTable">
-        <thead class="table-dark">
+        <thead style="background-color: #007bff; color: white;">
           <tr>
             <th>Nº</th>
             <th class="hide-mobile">Cargo</th>
@@ -409,7 +425,7 @@
     <!-- Tabela Completa de Servidores DPC (adaptada para dispositivos móveis) -->
     <div class="table-responsive mt-4" id="ipcTableContainer">
       <table class="table classification-table" id="epcTable">
-        <thead class="table-dark">
+        <thead style="background-color: #007bff; color: white;">
           <tr>
             <th>Nº</th>
             <th class="hide-mobile">Cargo</th>
