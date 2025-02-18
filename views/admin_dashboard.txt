@@ -241,7 +241,7 @@
 
 
     <div class="dashboard-header text-center">
-      <h2>Cassificação dos servidores já cadastrados</h2>    
+      <h2>Cassificação dos servidores já cadastrados</h2>
     </div>
 
 
@@ -251,8 +251,8 @@
     <div class="row mt-4 filter-container">
       
       <div class="col-md-6 mb-2">
-        <label for="filter-mes" class="form-label">Filtrar por Mês:</label>
-        <select id="filter-mes" class="form-select form-select-sm w-auto">
+        <label for="filter-mes" class="form-label">Filtrar por Mês das Férias:</label>
+        <select id="filter-mes" class="form-select form-select-sm">
           <option value="">Todos</option>
           <option value="01">Janeiro</option>
           <option value="02">Fevereiro</option>
@@ -272,13 +272,74 @@
 
 
 
-    <div class="dashboard-header text-left">
-      <h3>Cassificação dos IPCs</h3>
+
+
+
+    <!-- Tabela Completa de Servidores (adaptada para dispositivos móveis) -->
+    <div class="table-responsive mt-4" id="userTableContainer">
+      <table class="table table-striped table-bordered" id="userTable">
+        <thead class="table-dark">
+          <tr>
+            <th>Nº</th>
+            <th class="hide-mobile">Cargo</th>
+            <th>Matrícula</th>
+            <th>Nome</th>
+            <th class="hide-mobile">Ano</th>
+            <th class="hide-mobile">Gest.</th>
+            <th class="hide-mobile">Qtd. Filhos</th>
+            <th class="hide-mobile">Estud.</th>
+            <th class="hide-mobile">Dois Vinc.</th>
+            <th class="hide-mobile">Dat. Ingresso</th>
+            <th class="hide-mobile">Antig.</th>
+            <th class="hide-mobile">Cônj. serv</th>
+            <th class="hide-mobile">Dat. de Nasc.</th>
+            <th class="hide-mobile">Idade</th>
+            <th class="hide-mobile">P. Aq. (Início)</th>
+            <th class="hide-mobile">P. Aq. (Fim)</th>
+            
+            <th>Férias</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+              <td><%= user.classificacao %></td>
+              <td class="hide-mobile"><%= user.categoria %></td>
+              <td><%= user.matricula %></td>
+              <td><%= user.nome %></td>
+              <td class="hide-mobile"><%= user.ano_referencia %></td>
+              <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
+              <td class="hide-mobile"><%= user.qtd_filhos %></td>
+              <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
+              <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
+              <td class="hide-mobile"><%= new Date(user.data_ingresso).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
+              <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
+              <td class="hide-mobile"><%= new Date(user.data_nascimento).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
+              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
+              
+              <td>
+                <% if (user.Vacations && user.Vacations.length > 0) { %>
+                  <% user.Vacations.forEach(vacation => { %>
+                    <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString() %> até <%= new Date(vacation.data_fim).toLocaleDateString() %></p>
+                  <% }); %>
+                <% } else { %>
+                  <span class="text-muted">Nenhuma</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
     </div>
+
+
     
     <!-- Tabela Completa de Servidores IPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4" id="ipcTableContainer">
-      <table class="table classification-table" id="ipcTable">
+    <div class="table-responsive mt-4" id="userTableContainer">
+      <table class="table table-striped table-bordered" id="userTable">
         <thead class="table-dark">
           <tr>
             <th>Nº</th>
@@ -322,138 +383,6 @@
               <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
               
               <td>
-
-                <% if (user.Vacations && user.Vacations.length > 0) { %>
-                  <% user.Vacations.forEach(vacation => { %>
-                    <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString() %> até <%= new Date(vacation.data_fim).toLocaleDateString() %></p>
-                  <% }); %>
-                <% } else { %>
-                  <span class="text-muted">Nenhuma</span>
-                <% } %>
-              </td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="dashboard-header text-left">
-      <h3>Cassificação dos EPCs</h3>
-    </div>
-
-    <!-- Tabela Completa de Servidores EPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4" id="ipcTableContainer">
-      <table class="table classification-table" id="epcTable">
-        <thead class="table-dark">
-          <tr>
-            <th>Nº</th>
-            <th class="hide-mobile">Cargo</th>
-            <th>Matrícula</th>
-            <th>Nome</th>
-            <th class="hide-mobile">Ano</th>
-            <th class="hide-mobile">Gest.</th>
-            <th class="hide-mobile">Qtd. Filhos</th>
-            <th class="hide-mobile">Estud.</th>
-            <th class="hide-mobile">Dois Vinc.</th>
-            <th class="hide-mobile">Dat. Ingresso</th>
-            <th class="hide-mobile">Antig.</th>
-            <th class="hide-mobile">Cônj. serv</th>
-            <th class="hide-mobile">Dat. de Nasc.</th>
-            <th class="hide-mobile">Idade</th>
-            <th class="hide-mobile">P. Aq. (Início)</th>
-            <th class="hide-mobile">P. Aq. (Fim)</th>
-            
-            <th>Férias</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% epcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
-              <td><%= user.classificacao %></td>
-              <td class="hide-mobile"><%= user.categoria %></td>
-              <td><%= user.matricula %></td>
-              <td><%= user.nome %></td>
-              <td class="hide-mobile"><%= user.ano_referencia %></td>
-              <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.qtd_filhos %></td>
-              <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_ingresso).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
-              <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_nascimento).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
-              
-              <td>
-
-                <% if (user.Vacations && user.Vacations.length > 0) { %>
-                  <% user.Vacations.forEach(vacation => { %>
-                    <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString() %> até <%= new Date(vacation.data_fim).toLocaleDateString() %></p>
-                  <% }); %>
-                <% } else { %>
-                  <span class="text-muted">Nenhuma</span>
-                <% } %>
-              </td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
-
-
-    <div class="dashboard-header text-left">
-      <h3>Cassificação dos DPCs</h3>
-    </div>
-
-    <!-- Tabela Completa de Servidores DPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4" id="ipcTableContainer">
-      <table class="table classification-table" id="epcTable">
-        <thead class="table-dark">
-          <tr>
-            <th>Nº</th>
-            <th class="hide-mobile">Cargo</th>
-            <th>Matrícula</th>
-            <th>Nome</th>
-            <th class="hide-mobile">Ano</th>
-            <th class="hide-mobile">Gest.</th>
-            <th class="hide-mobile">Qtd. Filhos</th>
-            <th class="hide-mobile">Estud.</th>
-            <th class="hide-mobile">Dois Vinc.</th>
-            <th class="hide-mobile">Dat. Ingresso</th>
-            <th class="hide-mobile">Antig.</th>
-            <th class="hide-mobile">Cônj. serv</th>
-            <th class="hide-mobile">Dat. de Nasc.</th>
-            <th class="hide-mobile">Idade</th>
-            <th class="hide-mobile">P. Aq. (Início)</th>
-            <th class="hide-mobile">P. Aq. (Fim)</th>
-            
-            <th>Férias</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% dpcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
-              <td><%= user.classificacao %></td>
-              <td class="hide-mobile"><%= user.categoria %></td>
-              <td><%= user.matricula %></td>
-              <td><%= user.nome %></td>
-              <td class="hide-mobile"><%= user.ano_referencia %></td>
-              <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.qtd_filhos %></td>
-              <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_ingresso).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
-              <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_nascimento).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
-              
-              <td>
-
                 <% if (user.Vacations && user.Vacations.length > 0) { %>
                   <% user.Vacations.forEach(vacation => { %>
                     <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString() %> até <%= new Date(vacation.data_fim).toLocaleDateString() %></p>
@@ -572,29 +501,42 @@
   
   <!-- Script para filtrar a tabela de servidores -->
   <script>
-   // Script de filtragem corrigido
-document.addEventListener("DOMContentLoaded", function() {
-  const filterMes = document.getElementById("filter-mes");
+    document.addEventListener("DOMContentLoaded", function() {
+      const filterCargo = document.getElementById("filter-cargo");
+      const filterMes = document.getElementById("filter-mes");
+      const userTable = document.getElementById("userTable");
+      const tbody = userTable.querySelector("tbody");
 
-  function filterTable() {
-    const mesValue = filterMes.value;
-    
-    document.querySelectorAll('.classification-table').forEach(table => {
-      const tbody = table.querySelector('tbody');
-      const rows = tbody.querySelectorAll('tr');
+
+      function filterTable() {
+        const rowCargo = row.getAttribute("data-cargo");
+        const mesValue = filterMes.value;
+        document.querySelectorAll('table').forEach(table => {
+          const tbody = table.querySelector('tbody');
+          const rows = tbody.querySelectorAll('tr');
+          
+          rows.forEach(row => {
+            const rowMes = row.getAttribute("data-mes-ferias"); // Ex: "07,08" ou ""
+          let showRow = true;
+          if (cargoValue && rowCargo !== cargoValue) {
+            showRow = false;
+          }
+          if (mesValue) {
+            const meses = rowMes.split(',');
+            if (!meses.includes(mesValue)) {
+              showRow = false;
+            }
+          }
+          row.style.display = showRow ? "" : "none";
+          });
+        });
+      }
+
+
+      filterCargo.addEventListener("change", filterTable);
+      filterMes.addEventListener("change", filterTable);
       
-      rows.forEach(row => {
-        const rowMes = row.getAttribute('data-mes-ferias') || '';
-        const meses = rowMes.split(',');
-        const shouldShow = mesValue === '' || meses.includes(mesValue);
-        
-        row.style.display = shouldShow ? '' : 'none';
-      });
     });
-  }
-
-  filterMes.addEventListener("change", filterTable);
-});
   </script>
   
 </body>

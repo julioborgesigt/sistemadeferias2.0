@@ -21,9 +21,12 @@ module.exports = {
     try {
       const users = await User.findAll({
         include: [{ model: Vacation, required: false }],
-        order: [['classificacao', 'ASC']],
+        order: [['categoria', 'ASC'], ['classificacao', 'ASC']],
       });
-
+      // Separe os usuários por categoria
+      const ipcUsers = users.filter(u => u.categoria === 'IPC');
+      const epcUsers = users.filter(u => u.categoria === 'EPC');
+      const dpcUsers = users.filter(u => u.categoria === 'DPC');
       const settings = await Settings.findOne({ where: { id: 1 } }) || { max_ipc: 2, max_epc: 2, max_dpc: 2 };
 
       // Contar quantos usuários de cada categoria estão de férias
@@ -40,7 +43,10 @@ module.exports = {
         admin: req.session.admin,
         users,
         settings,
-        categoryUsage
+        categoryUsage,
+        ipcUsers,
+        epcUsers,
+        dpcUsers
       });
     } catch (error) {
       console.error('Erro ao carregar o dashboard:', error);
@@ -160,23 +166,30 @@ module.exports = {
     }
   },
 
-  // Atualiza a classificação dos usuários com base nos critérios definidos
+
   updateUserClassification: async () => {
     try {
-      let users = await User.findAll();
-      users.sort((a, b) => {
-        if (a.gestante !== b.gestante) return b.gestante - a.gestante;
+      const categories = ['IPC', 'EPC', 'DPC'];
+      
+      for (const category of categories) {
+        let users = await User.findAll({
+          where: { categoria: category }
+        });
+  
+        users.sort((a, b) => {
+          if (a.gestante !== b.gestante) return b.gestante - a.gestante;
         if (a.qtd_filhos !== b.qtd_filhos) return b.qtd_filhos - a.qtd_filhos;
         if (a.estudante !== b.estudante) return b.estudante - a.estudante;
         if (a.doisvinculos !== b.doisvinculos) return b.doisvinculos - a.doisvinculos;
         if (a.data_ingresso_dias !== b.data_ingresso_dias) return b.data_ingresso_dias - a.data_ingresso_dias;
         if (a.possui_conjuge !== b.possui_conjuge) return b.possui_conjuge - a.possui_conjuge;
         return b.data_nascimento_dias - a.data_nascimento_dias;
-      });
-
-      for (let i = 0; i < users.length; i++) {
-        users[i].classificacao = i + 1;
-        await users[i].save();
+        });
+  
+        for (let i = 0; i < users.length; i++) {
+          users[i].classificacao = i + 1;
+          await users[i].save();
+        }
       }
     } catch (error) {
       console.error("Erro ao atualizar classificação:", error);
@@ -226,6 +239,8 @@ deleteUser: async (req, res) => {
     const deleted = await User.destroy({ where: { matricula } });
     
     if (deleted) {
+      // Recalcula a classificação após a exclusão
+      await module.exports.updateUserClassification();
       req.flash('success_msg', `Matrícula ${matricula} apagada com sucesso.`);
     } else {
       req.flash('error_msg', `Matrícula ${matricula} não encontrada.`);
