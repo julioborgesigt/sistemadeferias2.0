@@ -47,12 +47,16 @@ module.exports = {
         ipcUsers,
         epcUsers,
         dpcUsers,
+        // Modifique a função formatDate para:
         formatDate: (date) => {
           const d = new Date(date);
+          // Ajuste para UTC-3 (Brasília) e previna mudança de dia
+          const adjustedDate = new Date(d.getTime() + (3 * 60 * 60 * 1000)); 
+          
           return [
-            d.getDate().toString().padStart(2, '0'),
-            (d.getMonth() + 1).toString().padStart(2, '0'),
-            d.getFullYear()
+            adjustedDate.getUTCDate().toString().padStart(2, '0'),
+            (adjustedDate.getUTCMonth() + 1).toString().padStart(2, '0'),
+            adjustedDate.getUTCFullYear()
           ].join('/');
         }
       });
