@@ -270,17 +270,38 @@ deleteUser: async (req, res) => {
   }
 },
 // Exibe a página de classificação dos servidores com filtro por cargo
+// controllers/userController.js
 showClassification: async (req, res) => {
-  if (!req.session.admin) {
-    req.flash('error_msg', 'Acesso negado.');
-    return res.redirect('/auth/login');
-  }
   try {
     const users = await User.findAll({
       include: [{ model: Vacation, required: false }],
       order: [['classificacao', 'ASC']]
     });
-    res.render('classification', { admin: req.session.admin, users });
+
+    // Separar usuários por categoria
+    const ipcUsers = users.filter(u => u.categoria === 'IPC');
+    const epcUsers = users.filter(u => u.categoria === 'EPC');
+    const dpcUsers = users.filter(u => u.categoria === 'DPC');
+
+    res.render('classification', { 
+      admin: req.session.admin, 
+      users,
+      ipcUsers,
+      epcUsers,
+      dpcUsers,
+      // Modifique a função formatDate para:
+      formatDate: (date) => {
+        const d = new Date(date);
+        // Ajuste para UTC-3 (Brasília) e previna mudança de dia
+        const adjustedDate = new Date(d.getTime() + (3 * 60 * 60 * 1000)); 
+        
+        return [
+          adjustedDate.getUTCDate().toString().padStart(2, '0'),
+          (adjustedDate.getUTCMonth() + 1).toString().padStart(2, '0'),
+          adjustedDate.getUTCFullYear()
+        ].join('/');
+      }
+    });
   } catch (error) {
     console.error('Erro ao carregar a classificação:', error);
     req.flash('error_msg', 'Erro ao carregar a classificação.');

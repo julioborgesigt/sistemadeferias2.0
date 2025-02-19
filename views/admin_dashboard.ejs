@@ -213,7 +213,7 @@
     </div>
 
 
-<div class="container mt-4">
+  <div class="table-responsive mt-4" >
   
   <% 
     let totalIPC = 0, totalEPC = 0, totalDPC = 0;
@@ -585,31 +585,31 @@
   </script>
   
   <!-- Script para filtrar a tabela de servidores -->
-  <script>
-   // Script de filtragem corrigido
-document.addEventListener("DOMContentLoaded", function() {
-  const filterMes = document.getElementById("filter-mes");
+    <script>
+    // Script de filtragem corrigido
+      document.addEventListener("DOMContentLoaded", function() {
+      const filterMes = document.getElementById("filter-mes");
 
-  function filterTable() {
-    const mesValue = filterMes.value;
-    
-    document.querySelectorAll('.classification-table').forEach(table => {
-      const tbody = table.querySelector('tbody');
-      const rows = tbody.querySelectorAll('tr');
-      
-      rows.forEach(row => {
-        const rowMes = row.getAttribute('data-mes-ferias') || '';
-        const meses = rowMes.split(',');
-        const shouldShow = mesValue === '' || meses.includes(mesValue);
+      function filterTable() {
+        const mesValue = filterMes.value;
         
-        row.style.display = shouldShow ? '' : 'none';
-      });
-    });
-  }
+        document.querySelectorAll('.classification-table').forEach(table => {
+          const tbody = table.querySelector('tbody');
+          const rows = tbody.querySelectorAll('tr');
+          
+          rows.forEach(row => {
+            const rowMes = row.getAttribute('data-mes-ferias') || '';
+            const meses = rowMes.split(',');
+            const shouldShow = mesValue === '' || meses.includes(mesValue);
+            
+            row.style.display = shouldShow ? '' : 'none';
+          });
+        });
+      }
 
-  filterMes.addEventListener("change", filterTable);
-});
-  </script>
+      filterMes.addEventListener("change", filterTable);
+    });
+    </script>
   
 </body>
 </html>

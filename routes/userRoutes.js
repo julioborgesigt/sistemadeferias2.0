@@ -20,7 +20,7 @@ router.post('/update-limits', ensureAuthenticated, userController.updateLimits);
 router.post('/reset-vacations', ensureAuthenticated, userController.resetVacations);
 // Nova rota para apagar matrícula
 router.post('/delete-user', ensureAuthenticated, userController.deleteUser);
-router.get('/classification', ensureAuthenticated, userController.showClassification);
+router.get('/classification', userController.showClassification);
 
 
 module.exports = router;
