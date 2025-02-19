@@ -317,7 +317,7 @@
         </thead>
         <tbody>
           <% ipcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => formatDate(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -382,7 +382,7 @@
         </thead>
         <tbody>
           <% epcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => formatDate(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -448,7 +448,7 @@
         </thead>
         <tbody>
           <% dpcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => formatDate(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -484,6 +484,7 @@
 
 
 
+
   </div>
 
   <!-- Bootstrap 5 JS Bundle -->
@@ -509,7 +510,7 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       function addDays(date, days) {
-        const result = formatDate(date);
+        const result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
       }
@@ -520,7 +521,7 @@
         const inicioInput = document.getElementById(`periodo${periodIndex}_inicio`);
         const fimInput = document.getElementById(`periodo${periodIndex}_fim`);
         if (inicioInput.value) {
-          const startDate = formatDate(inicioInput.value);
+          const startDate = new Date(inicioInput.value);
           const endDate = addDays(startDate, durationDays - 1);
           fimInput.value = formatDate(endDate);
         }

@@ -49,13 +49,13 @@ router.post('/', async (req, res) => {
   const pendingUser = await User.findOne({
     where: {
       matricula: {
-        [Op.notIn]: db.sequelize.literal('(SELECT matricula FROM Vacations)') // Apenas usuários que ainda não marcaram férias
-      }
+        [Op.notIn]: db.sequelize.literal('(SELECT matricula FROM Vacations)')
+      },
+      categoria: user.categoria // Filtro por categoria
     },
-    order: [['classificacao', 'ASC']], // Ordena pela melhor classificação
-    attributes: ['matricula', 'classificacao'], // Apenas as colunas necessárias
+    order: [['classificacao', 'ASC']],
+    attributes: ['matricula', 'classificacao', 'categoria'], // Incluir categoria
   });
-  
 
 
     
@@ -73,8 +73,8 @@ router.post('/', async (req, res) => {
 
     // Se a matrícula não for a do usuário que tem a melhor posição na fila, bloquear o acesso
     if (pendingUser.matricula !== matricula) {
-      console.log(`⛔ A matrícula ${matricula} tentou acessar, mas a vez é do usuário ${pendingUser.matricula}.`);
-      req.flash('error_msg', `Ainda não é sua vez. A vez é do usuário ${pendingUser.matricula}.`);
+      console.log(`⛔ A matrícula ${matricula} (${user.categoria}) tentou acessar. A vez é do ${pendingUser.categoria} ${pendingUser.matricula}.`);
+      req.flash('error_msg', `Ainda não é sua vez na categoria ${user.categoria}. A vez é do usuário ${pendingUser.matricula}.`);
       return res.redirect('/user');
     }
 

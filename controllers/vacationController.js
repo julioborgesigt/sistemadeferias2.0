@@ -23,8 +23,8 @@ function diffInDays(date1, date2) {
  */
 function parseStartDateBR(dateStr) {
   const [year, month, day] = dateStr.split('-').map(Number);
-  // Em Brasília (UTC-3), 00:00 corresponde a 03:00 UTC.
-  return new Date(Date.UTC(year, month - 1, day, 3, 0, 0));
+  // Cria data local e converte para UTC automaticamente
+  return new Date(year, month - 1, day, 0, 0, 0);
 }
 
 /**
@@ -33,7 +33,8 @@ function parseStartDateBR(dateStr) {
  */
 function parseEndDateBR(dateStr) {
   const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day + 1, 2, 59, 0));
+  // 23:59:59 no horário local
+  return new Date(year, month - 1, day, 23, 59, 59);
 }
 
 // Função para verificar os limites de férias para uma categoria no período informado

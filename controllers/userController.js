@@ -98,6 +98,11 @@ module.exports = {
     try {
       const { matricula, nome, ano_referencia, gestante, qtd_filhos, estudante, doisvinculos, data_ingresso, possui_conjuge, data_nascimento, periodo_aquisitivo_inicio, periodo_aquisitivo_fim, categoria } = req.body;
       
+      const ajustaParaUTC = (data) => {
+        return new Date(data.getTime() - (3 * 60 * 60 * 1000)); // Ajusta para UTC-3 antes de salvar
+      };
+
+      
       const isdoisvinculos = doisvinculos === 'on'; // Se o checkbox for marcado
       
 
@@ -111,8 +116,8 @@ module.exports = {
 
       const data_ingresso_dias = diffInDays(referenceDate, ingressoDate);
       const data_nascimento_dias = diffInDays(referenceDate, nascimentoDate);
-      const aquisitivoInicio = new Date(periodo_aquisitivo_inicio + "T00:00:00-03:00"); 
-      const aquisitivoFim = new Date(periodo_aquisitivo_fim + "T00:00:00-03:00");
+      const aquisitivoInicio = ajustaParaUTC(new Date(periodo_aquisitivo_inicio));
+      const aquisitivoFim = ajustaParaUTC(new Date(periodo_aquisitivo_fim));
 
 
       await User.create({
