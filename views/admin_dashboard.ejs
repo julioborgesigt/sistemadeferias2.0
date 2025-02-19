@@ -65,21 +65,20 @@
       color: white;
     }
 
-    /* Adicione isto ao seu <style> */
-.classification-table {
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid #dee2e6;
-}
+    /* Adicione isto ao seu <style> para deixar as bordas redondas */
+    .classification-table {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 1px solid #dee2e6;
+    }
 
 
-
-/* Para suavizar a sombra no hover */
-.classification-table:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-}
+    /* Para suavizar a sombra no hover */
+    .classification-table:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
 
     /* Ajuste para responsividade */
     @media (max-width: 768px) {
@@ -328,19 +327,19 @@
               <td class="hide-mobile"><%= user.qtd_filhos %></td>
               <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
               <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_ingresso).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
               <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
               <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_nascimento).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
               <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
+              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
               
               <td>
 
                 <% if (user.Vacations && user.Vacations.length > 0) { %>
                   <% user.Vacations.forEach(vacation => { %>
-                    <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString() %> até <%= new Date(vacation.data_fim).toLocaleDateString() %></p>
+                    <p>🗓️ <%= formatDate(vacation.data_inicio) %> até <%= formatDate(vacation.data_fim) %></p>
                   <% }); %>
                 <% } else { %>
                   <span class="text-muted">Nenhuma</span>
@@ -393,19 +392,19 @@
               <td class="hide-mobile"><%= user.qtd_filhos %></td>
               <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
               <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_ingresso).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
               <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
               <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_nascimento).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
               <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
+              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
               
               <td>
 
                 <% if (user.Vacations && user.Vacations.length > 0) { %>
                   <% user.Vacations.forEach(vacation => { %>
-                    <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString() %> até <%= new Date(vacation.data_fim).toLocaleDateString() %></p>
+                    <p>🗓️ <%= formatDate(vacation.data_inicio) %> até <%= formatDate(vacation.data_fim) %></p>
                   <% }); %>
                 <% } else { %>
                   <span class="text-muted">Nenhuma</span>
@@ -459,19 +458,19 @@
               <td class="hide-mobile"><%= user.qtd_filhos %></td>
               <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
               <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_ingresso).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
               <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
               <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= new Date(user.data_nascimento).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
               <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_inicio).toLocaleDateString() %></td>
-              <td class="hide-mobile"><%= new Date(user.periodo_aquisitivo_fim).toLocaleDateString() %></td>
+              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
+              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
               
               <td>
 
                 <% if (user.Vacations && user.Vacations.length > 0) { %>
                   <% user.Vacations.forEach(vacation => { %>
-                    <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString() %> até <%= new Date(vacation.data_fim).toLocaleDateString() %></p>
+                    <p>🗓️ <%= formatDate(vacation.data_inicio) %> até <%= formatDate(vacation.data_fim) %></p>
                   <% }); %>
                 <% } else { %>
                   <span class="text-muted">Nenhuma</span>
@@ -482,7 +481,6 @@
         </tbody>
       </table>
     </div>
-
 
 
 

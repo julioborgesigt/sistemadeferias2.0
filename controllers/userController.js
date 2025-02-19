@@ -46,7 +46,15 @@ module.exports = {
         categoryUsage,
         ipcUsers,
         epcUsers,
-        dpcUsers
+        dpcUsers,
+        formatDate: (date) => {
+          const d = new Date(date);
+          return [
+            d.getDate().toString().padStart(2, '0'),
+            (d.getMonth() + 1).toString().padStart(2, '0'),
+            d.getFullYear()
+          ].join('/');
+        }
       });
     } catch (error) {
       console.error('Erro ao carregar o dashboard:', error);
