@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Calendário Anual de Férias - <%= category ? category + ' ' : '' %><%= year %></title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <style>
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin-bottom: 30px;
+    }
+    .day {
+      border: 1px solid #ccc;
+      min-height: 40px;
+      
+      padding: 5px;
+    }
+    .day-header {
+      font-weight: bold;
+      text-align: center;
+      background-color: #007bff;
+      color: white;
+      padding: 5px 0;
+    }
+    .date-number {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .vacation-names {
+      font-size: 0.8rem;
+      list-style: none;
+      padding-left: 0;
+    }
+    .month-title {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">Sistema de Férias</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarContent" aria-controls="navbarContent" 
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ms-auto">
+      
+          <li class="nav-item">
+            <a class="nav-link" href="/user">Início</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/users/dashboard">Página do ADM</a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h2>Calendário de Férias - <%= category ? category + ' ' : '' %><%= year %></h2>
+    
+    <% for (let month = 1; month <= 12; month++) { 
+         const calendarData = calendarByMonth[month];
+         const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    %>
+      <div class="month-title"><%= monthNames[month - 1] %> (<%= month %>)</div>
+      <div class="calendar">
+        <% const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']; %>
+        <% daysOfWeek.forEach(day => { %>
+          <div class="day-header"><%= day %></div>
+        <% }); %>
+        
+        <% const firstDayOfMonth = new Date(year, month - 1, 1); %>
+        <% const startDayOfWeek = firstDayOfMonth.getDay(); %>
+        <% for (let i = 0; i < startDayOfWeek; i++) { %>
+          <div class="day"></div>
+        <% } %>
+        
+        <% const lastDayOfMonth = new Date(year, month, 0); %>
+        <% for (let d = 1; d <= lastDayOfMonth.getDate(); d++) { %>
+          <% const currentDate = new Date(year, month - 1, d); %>
+          <% const dateStr = currentDate.toISOString().slice(0,10); %>
+          <% const names = calendarData[dateStr] || []; %>
+          <div class="day">
+            <div class="date-number"><%= d %></div>
+            <% if (names.length > 0) { %>
+              <ul class="vacation-names">
+                <% names.forEach(name => { %>
+                  <li><%= name %></li>
+                <% }); %>
+              </ul>
+            <% } %>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
