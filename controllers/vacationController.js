@@ -24,7 +24,7 @@ function diffInDays(date1, date2) {
 function parseStartDateBR(dateStr) {
   const [year, month, day] = dateStr.split('-').map(Number);
   // Cria data local e converte para UTC automaticamente
-  return new Date(year, month - 1, day, 0, 0, 0);
+  return new Date(year, month - 1, day, 0, 0, 1);
 }
 
 /**
