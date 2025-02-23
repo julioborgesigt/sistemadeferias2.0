@@ -34,7 +34,7 @@ function parseStartDateBR(dateStr) {
 function parseEndDateBR(dateStr) {
   const [year, month, day] = dateStr.split('-').map(Number);
   // 23:59:59 no horário local
-  return new Date(year, month - 1, day, 23, 59, 59);
+  return new Date(year, month - 1, day, 20, 59, 59);
 }
 
 // Função para verificar os limites de férias para uma categoria no período informado
