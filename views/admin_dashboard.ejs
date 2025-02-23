@@ -377,7 +377,7 @@
 
                 <% if (user.Vacations && user.Vacations.length > 0) { %>
                   <% user.Vacations.forEach(vacation => { %>
-                    <p>🗓️ <%= vacation.data_inicio %> até <%= vacation.data_fim %></p>
+                    <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
                   <% }); %>
                 <% } else { %>
                   <span class="text-muted">Nenhuma</span>
