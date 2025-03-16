@@ -55,7 +55,7 @@
     /* Estilização das células da tabela */
     .styled-table th, 
     .styled-table td {
-      padding: 12px;
+      padding: 11px;
       border: 1px solid #dee2e6;
     }
 
@@ -157,9 +157,9 @@
     <!-- Sessões do Dashboard -->
     <div class="row mt-4">
       <!-- Resetar Férias -->
-      <div class="col-md-4">
+      <div class="col-12 col-md-6 col-xxl-3">
         <div class="dashboard-section">
-          <h3>Resetar Férias</h3>
+          <h4>Resetar Férias</h4>
           <form action="/users/reset-vacations" method="POST">
             <div class="mb-3">
               <label for="matricula_reset" class="form-label">Matrícula:</label>
@@ -171,9 +171,9 @@
       </div>
 
       <!-- Apagar Matrícula -->
-      <div class="col-md-4">
+      <div class="col-12 col-md-6 col-xxl-3">
         <div class="dashboard-section">
-          <h3>Apagar Matrícula</h3>
+          <h4>Apagar Matrícula</h4>
           <form action="/users/delete-user" method="POST">
             <div class="mb-3">
               <label for="matricula_delete" class="form-label">Matrícula:</label>
@@ -185,9 +185,9 @@
       </div>
 
       <!-- Configuração de Limites -->
-      <div class="col-md-4">
+      <div class="col-12 col-md-6 col-xxl-3">
         <div class="dashboard-section">
-          <h3>Configuração de Limites</h3>
+          <h4>Config. Limites</h4>
           <form action="/users/update-limits" method="POST">
             <div class="row">
               <div class="col-4">
@@ -208,60 +208,56 @@
         </div>
       </div>
  
- 
+      
+      <div class="col-12 col-md-6 col-xxl-3">
+       
+          
+        
 
+        <div class="table-responsive" >
+         
+      
+          <% 
+            let totalIPC = 0, totalEPC = 0, totalDPC = 0;
+            users.forEach(function(u) {
+              if (u.categoria === 'IPC') totalIPC++;
+              else if (u.categoria === 'EPC') totalEPC++;
+              else if (u.categoria === 'DPC') totalDPC++;
+            });
+          %>
+          <table class="table table-bordered text-center styled-table">
+            <thead>
+              <tr>
+                <th class="equal-col">Cargo</th>
+                <th class="equal-col">Máximo/Mês</th>
+                <th class="equal-col">Marcados</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="equal-col">IPC</td>
+                <td class="equal-col"><%= settings.max_ipc %></td>
+                <td class="equal-col"><%= totalIPC %></td>
+              </tr>
+              <tr>
+                <td class="equal-col">EPC</td>
+                <td class="equal-col"><%= settings.max_epc %></td>
+                <td class="equal-col"><%= totalEPC %></td>
+              </tr>
+              <tr>
+                <td class="equal-col">DPC</td>
+                <td class="equal-col"><%= settings.max_dpc %></td>
+                <td class="equal-col"><%= totalDPC %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
+      </div>
 
     </div>
 
 
-
-
-
-     <!-- Tabela de Controle de Vagas por Categoria -->
-
-     <div class="dashboard-header text-center">
-      <h2>Controle de Vagas por Categoria</h2>
-    </div>
-
-
-  <div class="table-responsive mt-4" >
-  
-  <% 
-    let totalIPC = 0, totalEPC = 0, totalDPC = 0;
-    users.forEach(function(u) {
-      if (u.categoria === 'IPC') totalIPC++;
-      else if (u.categoria === 'EPC') totalEPC++;
-      else if (u.categoria === 'DPC') totalDPC++;
-    });
-  %>
-  <table class="table table-bordered text-center styled-table">
-    <thead>
-      <tr>
-        <th class="equal-col">Cargo</th>
-        <th class="equal-col">Máximo Permitido</th>
-        <th class="equal-col">Total Servidores</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="equal-col">IPC</td>
-        <td class="equal-col"><%= settings.max_ipc %></td>
-        <td class="equal-col"><%= totalIPC %></td>
-      </tr>
-      <tr>
-        <td class="equal-col">EPC</td>
-        <td class="equal-col"><%= settings.max_epc %></td>
-        <td class="equal-col"><%= totalEPC %></td>
-      </tr>
-      <tr>
-        <td class="equal-col">DPC</td>
-        <td class="equal-col"><%= settings.max_dpc %></td>
-        <td class="equal-col"><%= totalDPC %></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
 
 
 
@@ -327,6 +323,8 @@
     <div class="dashboard-header text-left">
       <h3>Cassificação dos IPCs</h3>
     </div>
+    <button class="btn btn-secondary btn-sm" id="download-ipc">Download PDF</button>
+
     
     <!-- Tabela Completa de Servidores IPC (adaptada para dispositivos móveis) -->
     <div class="table-responsive mt-4" id="ipcTableContainer">
@@ -392,6 +390,7 @@
 
     <div class="dashboard-header text-left">
       <h3>Cassificação dos EPCs</h3>
+      <button class="btn btn-secondary btn-sm" id="download-epc">Download PDF</button>
     </div>
 
     <!-- Tabela Completa de Servidores EPC (adaptada para dispositivos móveis) -->
@@ -458,11 +457,12 @@
 
     <div class="dashboard-header text-left">
       <h3>Cassificação dos DPCs</h3>
+      <button class="btn btn-secondary btn-sm" id="download-dpc">Download PDF</button>
     </div>
 
     <!-- Tabela Completa de Servidores DPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4" id="ipcTableContainer">
-      <table class="table classification-table" id="epcTable">
+    <div class="table-responsive mt-4" id="dpcTableContainer">
+      <table class="table classification-table" id="dpcTable">
         <thead style="background-color: #007bff; color: white;">
           <tr>
             <th>Nº</th>
@@ -528,6 +528,10 @@
 
   <!-- Bootstrap 5 JS Bundle -->
   <script src="/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
   
   <!-- Script para exibir alertas com fade in -->
   <script>
@@ -700,6 +704,109 @@
     // Botão adicional para limpar tudo
     document.getElementById('btn-clear-all')?.addEventListener('click', clearAllFilters);
   });
+  
+
+   // Função que converte a tabela em um array de arrays
+   function getTableData(tableId) {
+      var table = document.getElementById(tableId);
+      var data = [];
+      // Captura os cabeçalhos
+      var headers = [];
+      table.querySelectorAll("thead tr th").forEach(function(th) {
+        headers.push(th.innerText.trim());
+      });
+      data.push(headers);
+      // Captura apenas as linhas visíveis do corpo da tabela
+      table.querySelectorAll("tbody tr").forEach(function(tr) {
+        // Utiliza getComputedStyle para garantir que pega o valor efetivo de display
+        if (window.getComputedStyle(tr).display !== "none") {
+          var rowData = [];
+          tr.querySelectorAll("td").forEach(function(td) {
+            rowData.push(td.innerText.trim());
+          });
+          data.push(rowData);
+        }
+      });
+      return data;
+    }
+
+
+  // Função para obter os filtros aplicados (ajuste conforme os IDs dos seus inputs)
+  function getAppliedFilters() {
+    var filters = [];
+    var filterMes = document.getElementById("filter-mes").value;
+    var filterNome = document.getElementById("filter-nome").value;
+    var filterMatricula = document.getElementById("filter-matricula").value;
+    if (filterMes) filters.push("Mês: " + filterMes);
+    if (filterNome) filters.push("Nome: " + filterNome);
+    if (filterMatricula) filters.push("Matrícula: " + filterMatricula);
+    return filters.length ? filters.join(" | ") : "Sem filtros aplicados";
+  }
+
+  // Função para gerar e baixar o PDF para uma tabela específica
+  function downloadPDF(tableId, title, filename) {
+    var tableData = getTableData(tableId);
+    var filters = getAppliedFilters();
+    var docDefinition = {
+      pageSize: 'A4',
+      pageOrientation: 'landscape',
+      pageMargins: [10, 20, 10, 20],
+      header: {
+        text: title + " - " + filters,
+        margin: [10, 10, 10, 0],
+        fontSize: 8
+      },
+      content: [
+        {
+          table: {
+            headerRows: 1,
+            widths: [
+              25,   // Nº
+              30,   // Cargo
+              50,  // Matrícula
+              50,  // Nome
+              30,   // Ano
+              30,   // Gest.
+              30,  // Qtd. Filhos
+              30,   // Estud.
+              30,  // Dois Vinc.
+              55,  // Dat. Ingresso
+              30,  // Antig.
+              30,  // Cônj. serv
+              55,  // Dat. de Nasc.
+              30,   // Idade
+              55,  // P. Aq. (Início)
+              55,  // P. Aq. (Fim)
+              '*'   // Férias
+            ],
+            body: tableData
+          },
+          layout: {
+            paddingLeft: function(i, node) { return 2; },
+            paddingRight: function(i, node) { return 2; },
+            paddingTop: function(i, node) { return 1; },
+            paddingBottom: function(i, node) { return 1; }
+          }
+        }
+      ],
+      defaultStyle: {
+        fontSize: 10
+      }
+    };
+    pdfMake.createPdf(docDefinition).download(filename);
+  }
+
+  // Eventos para os botões de download
+  document.getElementById("download-ipc").addEventListener("click", function(){
+    downloadPDF("ipcTable", "Classificação dos IPCs", "classificacao_IPC.pdf");
+  });
+  document.getElementById("download-epc").addEventListener("click", function(){
+    downloadPDF("epcTable", "Classificação dos EPCs", "classificacao_EPC.pdf");
+  });
+  document.getElementById("download-dpc").addEventListener("click", function(){
+    downloadPDF("dpcTable", "Classificação dos DPCs", "classificacao_DPC.pdf");
+  });
+
   </script>
 </body>
 </html>
