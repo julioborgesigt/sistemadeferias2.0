@@ -98,28 +98,44 @@ module.exports = {
     try {
       const { matricula, nome, ano_referencia, gestante, qtd_filhos, estudante, doisvinculos, data_ingresso, possui_conjuge, data_nascimento, periodo_aquisitivo_inicio, periodo_aquisitivo_fim, categoria } = req.body;
       
+      // Verifica se já existe um usuário com a mesma matrícula
+      const existingUser = await User.findOne({ where: { matricula } });
+      if (existingUser) {
+        // Busca as datas distintas para passar à view
+        const distinctDates = await User.findAll({
+          attributes: [[db.sequelize.fn('DISTINCT', db.sequelize.col('data_ingresso')), 'data_ingresso']],
+          raw: true
+        });
+        req.flash('error_msg', 'Usuário já cadastrado. Por favor, verifique os dados ou atualize o usuário existente.');
+        return res.render('user_registration', { 
+          old: req.body, 
+          distinctDates, 
+          error_msg: req.flash('error_msg'), 
+          success_msg: req.flash('success_msg')
+        });
+
+        
+      }
+      
       const ajustaParaUTC = (data) => {
         return new Date(data.getTime() - (3 * 60 * 60 * 1000)); // Ajusta para UTC-3 antes de salvar
       };
-
-      
-      const isdoisvinculos = doisvinculos === 'on'; // Se o checkbox for marcado
-      
-
+  
+      const isdoisvinculos = doisvinculos === 'on';
       const isGestante = gestante === 'on';
       const isEstudante = estudante === 'on';
       const hasConjuge = possui_conjuge === 'on';
-
-      const referenceDate = new Date(ano_referencia - 1, 11, 31);
+  
+      // Data de referência: 31 de dezembro do ano corrente (ano_referencia informado)
+      const referenceDate = new Date(ano_referencia, 11, 31);
       const ingressoDate = new Date(data_ingresso + "T00:00:00-03:00"); // Define fuso horário de Brasília
       const nascimentoDate = new Date(data_nascimento + "T00:00:00-03:00");
-
+  
       const data_ingresso_dias = diffInDays(referenceDate, ingressoDate);
       const data_nascimento_dias = diffInDays(referenceDate, nascimentoDate);
       const aquisitivoInicio = ajustaParaUTC(new Date(periodo_aquisitivo_inicio));
       const aquisitivoFim = ajustaParaUTC(new Date(periodo_aquisitivo_fim));
-
-
+  
       await User.create({
         matricula,
         nome,
@@ -137,16 +153,25 @@ module.exports = {
         categoria,
         doisvinculos: isdoisvinculos
       });
-
+  
       await module.exports.updateUserClassification();
       req.flash('success_msg', 'Usuário cadastrado com sucesso!');
-      res.redirect('/users/dashboard');
+      return res.render('user_registration_confirmation', { 
+        success_msg: req.flash('success_msg')
+      });
     } catch (error) {
       console.error(error);
+      // Ao tratar o erro, também busque distinctDates para que a view não quebre
+      const distinctDates = await User.findAll({
+        attributes: [[db.sequelize.fn('DISTINCT', db.sequelize.col('data_ingresso')), 'data_ingresso']],
+        raw: true
+      });
       req.flash('error_msg', 'Erro ao cadastrar usuário.');
-      
+      return res.render('user_registration', { old: req.body, distinctDates });
     }
   },
+  
+  
 
   // Atualiza os limites de férias para cada categoria
   updateLimits: async (req, res) => {
