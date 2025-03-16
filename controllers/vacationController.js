@@ -311,5 +311,136 @@ module.exports = {
   // Exibe a página de opções do calendário (com botões para cada cargo/ano)
   showCalendarOptions: async (req, res) => {
     res.render('calendar_options');
+  },
+
+  // Em controllers/vacationController.js
+
+// Renderiza o formulário de férias para admin
+// Exemplo no seu controlador (vacationController.js ou outro apropriado)
+showAdminVacationForm: async (req, res) => {
+  try {
+    // Buscar usuários que ainda não marcaram férias (ajuste a lógica conforme seu modelo)
+    const users = await User.findAll({
+      include: [{ model: Vacation, required: false }],
+      where: { '$Vacations.id$': null } // Exemplo: somente usuários sem férias
+    });
+    res.render('admin_vacation_form', { users, old: {} });
+  } catch (error) {
+    console.error(error);
+    req.flash('error_msg', 'Erro ao carregar a lista de usuários.');
+    res.redirect('/users/dashboard');
   }
+},
+
+
+  // Processa o cadastro de férias pelo admin
+  // Em controllers/vacationController.js
+
+adminMarkVacation: async (req, res) => {
+  const { matricula, qtd_periodos } = req.body;
+  try {
+    const user = await User.findOne({ where: { matricula } });
+    if (!user) {
+      return res.render('admin_vacation_form', { error_msg: 'Usuário não encontrado.', old: req.body });
+    }
+    const existingVacations = await Vacation.findAll({ where: { matricula } });
+    if (existingVacations.length > 0) {
+      return res.render('admin_vacation_form', { error_msg: 'O usuário já possui férias cadastradas.', old: req.body });
+    }
+
+    const periods = [];
+    for (let i = 1; i <= 3; i++) {
+      const inicio = req.body[`periodo${i}_inicio`];
+      const fim = req.body[`periodo${i}_fim`];
+      if (inicio && fim) {
+        // Usa as funções existentes para converter as datas para o fuso de Brasília
+        periods.push({ inicio: parseStartDateBR(inicio), fim: parseEndDateBR(fim) });
+      }
+    }
+
+    if (!qtd_periodos || periods.length !== parseInt(qtd_periodos)) {
+      return res.render('admin_vacation_form', { error_msg: 'A quantidade de períodos informados não confere com a escolha.', old: req.body });
+    }
+
+    // Após construir o array de períodos a partir dos inputs:
+    if (periods.length >= 2) {
+      if (periods[1].inicio < periods[0].inicio) {
+        return res.render('admin_vacation_form', { 
+          error_msg: 'O início do segundo período não pode ser anterior ao início do primeiro período.', 
+          old: req.body 
+        });
+      }
+    }
+
+
+    let availableSlotsMessage = "";
+    let durations = periods.map(period => diffInDays(period.inicio, period.fim));
+    if (qtd_periodos === '1' && durations[0] !== 31) {
+      return res.render('admin_vacation_form', { error_msg: 'Para 1 período, as férias devem ter exatamente 30 dias.', old: req.body });
+    } else if (qtd_periodos.startsWith('2')) {
+      const allowedCombos = [[11, 21], [16, 16], [21, 11]];
+      const comboMatch = allowedCombos.some(combo => (durations[0] === combo[0] && durations[1] === combo[1]));
+      if (!comboMatch) {
+        return res.render('admin_vacation_form', { error_msg: 'Para 2 períodos, as durações devem ser 10+20, 15+15 ou 20+10 dias.', old: req.body });
+      }
+    } else if (qtd_periodos === '3' && !durations.every(dur => dur === 11)) {
+      return res.render('admin_vacation_form', { error_msg: 'Para 3 períodos, cada período deve ter exatamente 10 dias.', old: req.body });
+    }
+
+    // Valida cada período com as outras regras
+    for (let period of periods) {
+      if (isWeekend(period.inicio)) {
+        return res.render('admin_vacation_form', { error_msg: 'A data inicial não pode ser um dia de final de semana.', old: req.body });
+      }
+      if (period.inicio < new Date(user.periodo_aquisitivo_fim)) {
+        return res.render('admin_vacation_form', { error_msg: 'A data inicial deve ser posterior ao término do período aquisitivo.', old: req.body });
+      }
+      const maxDate = new Date(user.periodo_aquisitivo_fim);
+      maxDate.setFullYear(maxDate.getFullYear() + 1);
+      if (period.fim > maxDate) {
+        const maxDateStr = maxDate.toLocaleDateString('pt-BR');
+        return res.render('admin_vacation_form', {
+          error_msg: `A data final ultrapassa o limite do período aquisitivo acrescido de 1 ano. A data máxima permitida é ${maxDateStr}.`,
+          old: req.body
+        });
+      }
+
+      // Verifica os limites de férias para a categoria no período
+      const limitCheck = await checkVacationLimits(user.categoria, period.inicio, period.fim);
+      if (!limitCheck.allowed) {
+        return res.render('admin_vacation_form', { error_msg: limitCheck.message, old: req.body });
+      }
+
+      availableSlotsMessage = `Férias cadastradas com sucesso, pois existem ${limitCheck.availableSlots} vagas disponíveis para o período.`;
+    }
+
+    // Cria os registros de férias
+    for (let i = 0; i < periods.length; i++) {
+      await Vacation.create({
+        matricula: user.matricula,
+        periodo: i + 1,
+        data_inicio: periods[i].inicio,
+        data_fim: periods[i].fim
+      });
+    }
+
+    
+    return res.render('admin_vacation_confirmation', { 
+      success_msg: availableSlotsMessage 
+    });
+  } catch (error) {
+    console.error(error);
+    return res.render('admin_vacation_form', { error_msg: 'Erro ao cadastrar férias.', old: req.body });
+  }
+}
+
+
+
+
+
+
 };
+
+
+
+

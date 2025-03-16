@@ -121,6 +121,9 @@
             <a class="nav-link" href="/users/register">Cadastrar Usuário</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/vacations/admin-form">Cadastrar Férias </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/vacations/calendar-options">Calendário</a>
           </li>
           <li class="nav-item">
@@ -324,6 +327,7 @@
       <h3>Cassificação dos IPCs</h3>
     </div>
     <button class="btn btn-secondary btn-sm" id="download-ipc">Download PDF</button>
+    <button class="btn btn-secondary btn-sm" id="download-simplificado-ipc">Download Simplificado</button>
 
     
     <!-- Tabela Completa de Servidores IPC (adaptada para dispositivos móveis) -->
@@ -391,6 +395,7 @@
     <div class="dashboard-header text-left">
       <h3>Cassificação dos EPCs</h3>
       <button class="btn btn-secondary btn-sm" id="download-epc">Download PDF</button>
+      <button class="btn btn-secondary btn-sm" id="download-simplificado-epc">Download Simplificado</button>
     </div>
 
     <!-- Tabela Completa de Servidores EPC (adaptada para dispositivos móveis) -->
@@ -458,6 +463,7 @@
     <div class="dashboard-header text-left">
       <h3>Cassificação dos DPCs</h3>
       <button class="btn btn-secondary btn-sm" id="download-dpc">Download PDF</button>
+      <button class="btn btn-secondary btn-sm" id="download-simplificado-dpc">Download Simplificado</button>
     </div>
 
     <!-- Tabela Completa de Servidores DPC (adaptada para dispositivos móveis) -->
@@ -750,10 +756,10 @@
     var docDefinition = {
       pageSize: 'A4',
       pageOrientation: 'landscape',
-      pageMargins: [10, 20, 10, 20],
+      pageMargins: [20, 30, 10, 20],
       header: {
         text: title + " - " + filters,
-        margin: [10, 10, 10, 0],
+        margin: [20, 20, 10, 0],
         fontSize: 8
       },
       content: [
@@ -770,8 +776,8 @@
               30,  // Qtd. Filhos
               30,   // Estud.
               30,  // Dois Vinc.
-              55,  // Dat. Ingresso
-              30,  // Antig.
+              60,  // Dat. Ingresso
+              35,  // Antig.
               30,  // Cônj. serv
               55,  // Dat. de Nasc.
               30,   // Idade
@@ -806,6 +812,96 @@
   document.getElementById("download-dpc").addEventListener("click", function(){
     downloadPDF("dpcTable", "Classificação dos DPCs", "classificacao_DPC.pdf");
   });
+
+
+
+
+  function getSimplifiedTableData(tableId) {
+  var table = document.getElementById(tableId);
+  var data = [];
+  
+  // Extrai somente os cabeçalhos relevantes
+  var headers = [];
+  table.querySelectorAll("thead tr th").forEach(function(th, index) {
+    // Se o índice for 0, 2, 3 ou o último (último índice = total - 1)
+    if (index === 0 || index === 2 || index === 3 || index === table.querySelectorAll("thead tr th").length - 1) {
+      headers.push(th.innerText.trim());
+    }
+  });
+  data.push(headers);
+  
+  // Extrai as linhas do corpo, considerando somente as linhas visíveis
+  table.querySelectorAll("tbody tr").forEach(function(tr) {
+    if (window.getComputedStyle(tr).display !== "none") {
+      var rowData = [];
+      var tds = tr.querySelectorAll("td");
+      tds.forEach(function(td, index) {
+        if (index === 0 || index === 2 || index === 3 || index === tds.length - 1) {
+          rowData.push(td.innerText.trim());
+        }
+      });
+      data.push(rowData);
+    }
+  });
+  
+  return data;
+}
+
+
+function downloadSimplifiedPDF(tableId, title, filename) {
+  var tableData = getSimplifiedTableData(tableId);
+  var filters = getAppliedFilters(); // Supondo que você já tem essa função definida para ler os filtros aplicados
+  var docDefinition = {
+    pageSize: 'A4',
+    pageOrientation: 'portrait',
+    pageMargins: [40, 40, 20, 20],
+    header: {
+      text: title + " - " + filters,
+      margin: [10, 10, 10, 0],
+      fontSize: 8
+    },
+    content: [
+      {
+        table: {
+          headerRows: 1,
+          
+          widths: [
+              25,   // Nº
+              
+              70,  // Matrícula
+              70,  // Nome
+              
+              100   // Férias
+            ],
+          body: tableData
+        },
+        layout: {
+          paddingLeft: function(i, node) { return 2; },
+          paddingRight: function(i, node) { return 2; },
+          paddingTop: function(i, node) { return 1; },
+          paddingBottom: function(i, node) { return 1; }
+        }
+      }
+    ],
+    defaultStyle: {
+      fontSize: 10
+    }
+  };
+  pdfMake.createPdf(docDefinition).download(filename);
+}
+
+  document.getElementById("download-simplificado-ipc").addEventListener("click", function(){
+    downloadSimplifiedPDF("ipcTable", "Classificação Simplificada dos IPCs", "classificacao_simplificada_IPC.pdf");
+  });
+
+  document.getElementById("download-simplificado-epc").addEventListener("click", function(){
+    downloadSimplifiedPDF("epcTable", "Classificação Simplificada dos EPCs", "classificacao_simplificada_EPC.pdf");
+  });
+
+  document.getElementById("download-simplificado-dpc").addEventListener("click", function(){
+    downloadSimplifiedPDF("dpcTable", "Classificação Simplificada dos DPCs", "classificacao_simplificada_DPC.pdf");
+  });
+
 
   </script>
 </body>
