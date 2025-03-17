@@ -144,6 +144,7 @@
     </div>
     <div class="offcanvas-body">
       <ul class="list-group">
+        <% var users = typeof users !== 'undefined' ? users : []; %>
         <% if (users && users.length > 0) { %>
           <% users.forEach(function(u) { %>
             <li class="list-group-item user-item" data-matricula="<%= u.matricula %>">
