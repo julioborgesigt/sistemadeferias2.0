@@ -101,7 +101,7 @@ const checkVacationLimits = async (userCategory, startDate, endDate, ano_referen
   if (availableSlots <= 0) {
     return {
       allowed: false,
-      message: `Sua marcação de férias não foi autorizada, pois o limite de ${userCategory}s para o ano ${ano} foi atingido. Já há ${categoryCount[userCategory]} funcionário(s) nesse período.`,
+      message: `Sua marcação de férias não foi autorizada, pois o limite de ${userCategory}s para o ano ${ano} foi atingido. Já há ${categoryCount[userCategory]} funcionário(s) nesse período. Veja o calendário`,
       availableSlots: 0
     };
   }
@@ -447,7 +447,8 @@ showAdminVacationForm: async (req, res) => {
           return res.render('admin_vacation_form', { error_msg: 'A data inicial não pode ser um dia de final de semana.', old: req.body });
         }
         if (period.inicio < new Date(user.periodo_aquisitivo_fim)) {
-          return res.render('admin_vacation_form', { error_msg: 'A data inicial deve ser posterior ao término do período aquisitivo.', old: req.body });
+          const dataLimite = new Date(user.periodo_aquisitivo_fim).toLocaleDateString('pt-BR');
+          return res.render('admin_vacation_form', { error_msg: `A data inicial deve ser posterior ao término do período aquisitivo, que é ${dataLimite}.`, old: req.body });
         }
         const maxDate = new Date(user.periodo_aquisitivo_fim);
         maxDate.setFullYear(maxDate.getFullYear() + 1);
@@ -465,7 +466,7 @@ showAdminVacationForm: async (req, res) => {
           return res.render('admin_vacation_form', { error_msg: limitCheck.message, old: req.body });
         }
   
-        availableSlotsMessage = `Férias cadastradas com sucesso, pois existem ${limitCheck.availableSlots} vagas disponíveis para o período.`;
+        availableSlotsMessage = `Férias cadastradas com sucesso, pois existiam ${limitCheck.availableSlots} vagas disponíveis para o período.`;
       }
   
       // Cria os registros de férias, atribuindo o ano de referência

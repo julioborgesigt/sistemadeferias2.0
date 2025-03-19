@@ -2,20 +2,16 @@
 <html>
 <head>
   <title>Dashboard do Administrador</title>
-  <!-- Meta tag para responsividade -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <style>
     body {
       background-color: #f8f9fa;
     }
-
     .dashboard-header {
       margin-top: 20px;
       margin-bottom: 20px;
     }
-
-    /* Estilização das divs */
     .dashboard-section {
       background-color: white;
       padding: 20px;
@@ -26,22 +22,16 @@
       border: 2px solid transparent;
       transition: all 0.3s ease-in-out;
     }
-
-    /* Efeito neon azul ao passar o mouse */
     .dashboard-section:hover {
       border-color: #007bff;
       box-shadow: 0px 0px 15px rgba(0, 123, 255, 0.8);
     }
-
-    /* Ajuste para telas menores */
     @media (max-width: 768px) {
       .dashboard-section {
         padding: 15px;
         margin-bottom: 15px;
       }
     }
-
-       
     .styled-table {
       background-color: white;
       border-radius: 10px;
@@ -50,56 +40,39 @@
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease-in-out;
     }
-
-
-    /* Estilização das células da tabela */
-    .styled-table th, 
-    .styled-table td {
+    .styled-table th, .styled-table td {
       padding: 11px;
       border: 1px solid #dee2e6;
     }
-
-    /* Cores para o cabeçalho */
     .styled-table thead {
       background-color: #007bff;
       color: white;
     }
-
-    /* Adicione isto ao seu <style> para deixar as bordas redondas */
     .classification-table {
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border: 1px solid #dee2e6;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border: 1px solid #dee2e6;
     }
-
-
-    /* Para suavizar a sombra no hover */
     .classification-table:hover {
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
     }
-
-    /* Ajuste para responsividade */
     @media (max-width: 768px) {
-      .styled-table th, 
-      .styled-table td {
+      .styled-table th, .styled-table td {
         padding: 8px;
         font-size: 14px;
       }
     }
-    /* Em telas pequenas, ocultar colunas indesejadas */
     @media (max-width: 768px) {
       .hide-mobile {
         display: none !important;
       }
     }
-
     .btn-clear {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-  }
-
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+    }
   </style>
 </head>
 <body>
@@ -121,7 +94,7 @@
             <a class="nav-link" href="/users/register">Cadastrar Usuário</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/vacations/admin-form">Cadastrar Férias </a>
+            <a class="nav-link" href="/vacations/admin-form">Cadastrar Férias</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/vacations/calendar-options">Calendário</a>
@@ -133,14 +106,13 @@
       </div>
     </div>
   </nav>
-
   
   <!-- Conteúdo do Dashboard -->
   <div class="container">
     <div class="dashboard-header text-center">
       <h2>Bem-vindo, <%= admin.nome %></h2>
     </div>
-
+    
     <!-- Mensagens de feedback -->
     <div id="flash-messages">
       <% if (success_msg) { %>
@@ -156,7 +128,7 @@
         </div>
       <% } %>
     </div>
-
+    
     <!-- Sessões do Dashboard -->
     <div class="row mt-4">
       <!-- Resetar Férias -->
@@ -172,7 +144,6 @@
           </form>
         </div>
       </div>
-
       <!-- Apagar Matrícula -->
       <div class="col-12 col-md-6 col-xxl-3">
         <div class="dashboard-section">
@@ -186,7 +157,6 @@
           </form>
         </div>
       </div>
-
       <!-- Configuração de Limites -->
       <div class="col-12 col-md-6 col-xxl-3">
         <div class="dashboard-section">
@@ -210,16 +180,9 @@
           </form>
         </div>
       </div>
- 
-      
+      <!-- Tabela de Controle de Vagas -->
       <div class="col-12 col-md-6 col-xxl-3">
-       
-          
-        
-
-        <div class="table-responsive" >
-         
-      
+        <div class="table-responsive">
           <% 
             let totalIPC = 0, totalEPC = 0, totalDPC = 0;
             users.forEach(function(u) {
@@ -255,23 +218,10 @@
             </tbody>
           </table>
         </div>
-
       </div>
-
     </div>
 
-
-
-
-
-
-
-    <div class="dashboard-header text-center">
-      <h2>Cassificação dos servidores já cadastrados</h2>    
-    </div>
-
-
-
+    <!-- Filtros para a Tabela de Classificação -->
     <div class="container mt-4">
       <div class="row g-3">
         <!-- Filtro por Mês -->
@@ -297,7 +247,6 @@
             <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-mes">×</button>
           </div>
         </div>
-        
         <!-- Filtro por Nome -->
         <div class="col-12 col-md-6 col-lg-3">
           <label for="filter-nome" class="form-label">Filtrar por Nome:</label>
@@ -307,7 +256,6 @@
             <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-nome">×</button>
           </div>
         </div>
-        
         <!-- Filtro por Matrícula -->
         <div class="col-12 col-md-6 col-lg-3">
           <label for="filter-matricula" class="form-label">Filtrar por Matrícula:</label>
@@ -317,8 +265,7 @@
             <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-matricula">×</button>
           </div>
         </div>
-        
-        <!-- Novo Filtro por Ano -->
+        <!-- Filtro por Ano -->
         <div class="col-12 col-md-6 col-lg-3">
           <label for="filter-ano" class="form-label">Filtrar por Ano:</label>
           <div class="input-group">
@@ -334,20 +281,13 @@
         </div>
       </div>
     </div>
-    
-    
 
-
-
-
+    <!-- Tabela de Classificação dos IPCs -->
     <div class="dashboard-header text-left">
       <h3>Cassificação dos IPCs</h3>
     </div>
     <button class="btn btn-secondary btn-sm" id="download-ipc">Download PDF</button>
     <button class="btn btn-secondary btn-sm" id="download-simplificado-ipc">Download Simplificado</button>
-
-    
-    <!-- Tabela Completa de Servidores IPC (adaptada para dispositivos móveis) -->
     <div class="table-responsive mt-4" id="ipcTableContainer">
       <table class="table classification-table" id="ipcTable">
         <thead style="background-color: #007bff; color: white;">
@@ -374,7 +314,6 @@
         <tbody>
           <% ipcUsers.forEach(user => { %>
             <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
-
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -393,7 +332,6 @@
               <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
               <td>
                 <% 
-                  // Filtra os registros de férias com base no campo "ano_referencia" de Vacation
                   let vacationsDoAno = [];
                   if (user.Vacations) {
                     vacationsDoAno = user.Vacations.filter(vac => vac.ano_referencia === user.ano_referencia);
@@ -412,18 +350,14 @@
         </tbody>
       </table>
     </div>
-    
-    
 
-
+    <!-- Tabela de Classificação dos EPCs -->
     <div class="dashboard-header text-left">
       <h3>Cassificação dos EPCs</h3>
       <button class="btn btn-secondary btn-sm" id="download-epc">Download PDF</button>
       <button class="btn btn-secondary btn-sm" id="download-simplificado-epc">Download Simplificado</button>
     </div>
-
-    <!-- Tabela Completa de Servidores EPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4" id="ipcTableContainer">
+    <div class="table-responsive mt-4" id="epcTableContainer">
       <table class="table classification-table" id="epcTable">
         <thead style="background-color: #007bff; color: white;">
           <tr>
@@ -443,14 +377,12 @@
             <th class="hide-mobile">Idade</th>
             <th class="hide-mobile">P. Aq. (Início)</th>
             <th class="hide-mobile">P. Aq. (Fim)</th>
-            
             <th>Férias</th>
           </tr>
         </thead>
         <tbody>
           <% epcUsers.forEach(user => { %>
             <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
-
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -467,11 +399,15 @@
               <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
               <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
               <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
-              
               <td>
-
-                <% if (user.Vacations && user.Vacations.length > 0) { %>
-                  <% user.Vacations.forEach(vacation => { %>
+                <% 
+                  let vacationsDoAno = [];
+                  if (user.Vacations) {
+                    vacationsDoAno = user.Vacations.filter(vac => vac.ano_referencia === user.ano_referencia);
+                  }
+                %>
+                <% if (vacationsDoAno.length > 0) { %>
+                  <% vacationsDoAno.forEach(vacation => { %>
                     <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
                   <% }); %>
                 <% } else { %>
@@ -484,14 +420,12 @@
       </table>
     </div>
 
-
+    <!-- Tabela de Classificação dos DPCs -->
     <div class="dashboard-header text-left">
       <h3>Cassificação dos DPCs</h3>
       <button class="btn btn-secondary btn-sm" id="download-dpc">Download PDF</button>
       <button class="btn btn-secondary btn-sm" id="download-simplificado-dpc">Download Simplificado</button>
     </div>
-
-    <!-- Tabela Completa de Servidores DPC (adaptada para dispositivos móveis) -->
     <div class="table-responsive mt-4" id="dpcTableContainer">
       <table class="table classification-table" id="dpcTable">
         <thead style="background-color: #007bff; color: white;">
@@ -512,14 +446,12 @@
             <th class="hide-mobile">Idade</th>
             <th class="hide-mobile">P. Aq. (Início)</th>
             <th class="hide-mobile">P. Aq. (Fim)</th>
-            
             <th>Férias</th>
           </tr>
         </thead>
         <tbody>
           <% dpcUsers.forEach(user => { %>
             <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
-
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -536,11 +468,15 @@
               <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
               <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
               <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
-              
               <td>
-
-                <% if (user.Vacations && user.Vacations.length > 0) { %>
-                  <% user.Vacations.forEach(vacation => { %>
+                <% 
+                  let vacationsDoAno = [];
+                  if (user.Vacations) {
+                    vacationsDoAno = user.Vacations.filter(vac => vac.ano_referencia === user.ano_referencia);
+                  }
+                %>
+                <% if (vacationsDoAno.length > 0) { %>
+                  <% vacationsDoAno.forEach(vacation => { %>
                     <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
                   <% }); %>
                 <% } else { %>
@@ -552,18 +488,12 @@
         </tbody>
       </table>
     </div>
-
-
-
-
   </div>
 
   <!-- Bootstrap 5 JS Bundle -->
   <script src="/js/bootstrap.bundle.min.js"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
   
   <!-- Script para exibir alertas com fade in -->
   <script>
@@ -620,7 +550,7 @@
           updateEndDate(3, 10);
         }
       }
-      ['periodo1_inicio', 'periodo2_inicio', 'periodo3_inicio'].forEach(id => {
+      ['periodo1_inicio', 'periodo2_inicio', 'periodo3_inicio'].forEach(function(id) {
         const input = document.getElementById(id);
         if (input) {
           input.addEventListener("change", updateAllEndDates);
@@ -660,84 +590,82 @@
   </script>
   
   <!-- Script para filtrar a tabela de servidores -->
-
   <script>
   document.addEventListener("DOMContentLoaded", function() {
-    const filterMes = document.getElementById("filter-mes");
-    const filterNome = document.getElementById("filter-nome");
-    const filterMatricula = document.getElementById("filter-matricula");
-  
-    const applyFilters = () => {
-      const mesValue = filterMes.value;
-      const nomeValue = filterNome.value.trim().toLowerCase();
-      const matriculaValue = filterMatricula.value.trim().toLowerCase();
-  
-      document.querySelectorAll('.classification-table').forEach(table => {
-        const tbody = table.querySelector('tbody');
-        const rows = tbody.querySelectorAll('tr');
-        
-        rows.forEach(row => {
+    function applyAllFilters() {
+      const filterMes = document.getElementById("filter-mes").value;
+      const filterNome = document.getElementById("filter-nome").value.trim().toLowerCase();
+      const filterMatricula = document.getElementById("filter-matricula").value.trim().toLowerCase();
+      const filterAno = document.getElementById("filter-ano").value;
+      
+      const tableIds = ['ipcTable', 'epcTable', 'dpcTable'];
+      tableIds.forEach(function(tableId) {
+        document.querySelectorAll(`#${tableId} tbody tr`).forEach(function(row) {
           const rowMes = row.getAttribute('data-mes-ferias') || '';
-          const nome = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-          const matricula = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+          const rowAno = row.getAttribute('data-ano') || '';
+          const nome = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
+          const matricula = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
           
-          const matchMes = !mesValue || rowMes.split(',').includes(mesValue);
-          const matchNome = !nomeValue || nome.includes(nomeValue);
-          const matchMatricula = !matriculaValue || matricula.includes(matriculaValue);
-  
-          row.style.display = (matchMes && matchNome && matchMatricula) ? '' : 'none';
+          const matchMes = !filterMes || rowMes.split(',').includes(filterMes);
+          const matchNome = !filterNome || nome.includes(filterNome);
+          const matchMatricula = !filterMatricula || matricula.includes(filterMatricula);
+          const matchAno = !filterAno || rowAno === filterAno;
+          
+          row.style.display = (matchMes && matchNome && matchMatricula && matchAno) ? '' : 'none';
         });
       });
-    };
-  
-    // Função para limpar TODOS os filtros
-    const clearAllFilters = () => {
-      filterMes.value = '';
-      filterNome.value = '';
-      filterMatricula.value = '';
-      applyFilters();
-    };
-  
-    // Função para limpar filtros individuais
-    const clearFilter = (type) => {
-      switch(type) {
-        case 'mes':
-          filterMes.value = '';
-          break;
-        case 'nome':
-          filterNome.value = '';
-          break;
-        case 'matricula':
-          filterMatricula.value = '';
-          break;
+    }
+    
+    const filterElements = [
+      document.getElementById("filter-mes"),
+      document.getElementById("filter-nome"),
+      document.getElementById("filter-matricula"),
+      document.getElementById("filter-ano")
+    ];
+    filterElements.forEach(el => {
+      if (el) {
+        el.addEventListener('input', applyAllFilters);
+        el.addEventListener('change', applyAllFilters);
       }
-      applyFilters();
-    };
-  
-    // Event listeners
-    document.querySelectorAll('[id^="btn-filter"]').forEach(btn => {
-      btn.addEventListener('click', applyFilters);
     });
-  
-    document.querySelectorAll('[id^="btn-clear"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const type = e.target.id.split('-')[2];
-        clearFilter(type);
+    
+    const btnFilterAno = document.getElementById("btn-filter-ano");
+    if(btnFilterAno) btnFilterAno.addEventListener('click', applyAllFilters);
+    
+    const btnClearMes = document.getElementById("btn-clear-mes");
+    const btnClearNome = document.getElementById("btn-clear-nome");
+    const btnClearMatricula = document.getElementById("btn-clear-matricula");
+    const btnClearAno = document.getElementById("btn-clear-ano");
+    
+    if(btnClearMes) {
+      btnClearMes.addEventListener('click', function() {
+        document.getElementById("filter-mes").value = '';
+        applyAllFilters();
       });
-    });
-  
-    // Tecla Enter
-    [filterNome, filterMatricula].forEach(input => {
-      input.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') applyFilters();
+    }
+    if(btnClearNome) {
+      btnClearNome.addEventListener('click', function() {
+        document.getElementById("filter-nome").value = '';
+        applyAllFilters();
       });
-    });
-  
-    // Botão adicional para limpar tudo
-    document.getElementById('btn-clear-all')?.addEventListener('click', clearAllFilters);
+    }
+    if(btnClearMatricula) {
+      btnClearMatricula.addEventListener('click', function() {
+        document.getElementById("filter-matricula").value = '';
+        applyAllFilters();
+      });
+    }
+    if(btnClearAno) {
+      btnClearAno.addEventListener('click', function() {
+        document.getElementById("filter-ano").value = '';
+        applyAllFilters();
+      });
+    }
+    
+    applyAllFilters();
   });
-  
 
+    
    // Função que converte a tabela em um array de arrays
    function getTableData(tableId) {
       var table = document.getElementById(tableId);
@@ -763,20 +691,22 @@
     }
 
 
-  // Função para obter os filtros aplicados (ajuste conforme os IDs dos seus inputs)
-  function getAppliedFilters() {
-    var filters = [];
-    var filterMes = document.getElementById("filter-mes").value;
-    var filterNome = document.getElementById("filter-nome").value;
-    var filterMatricula = document.getElementById("filter-matricula").value;
-    if (filterMes) filters.push("Mês: " + filterMes);
-    if (filterNome) filters.push("Nome: " + filterNome);
-    if (filterMatricula) filters.push("Matrícula: " + filterMatricula);
-    return filters.length ? filters.join(" | ") : "Sem filtros aplicados";
-  }
+    // Função para obter os filtros aplicados (ajuste conforme os IDs dos seus inputs)
+    function getAppliedFilters() {
+      var filters = [];
+      var filterMes = document.getElementById("filter-mes").value;
+      var filterNome = document.getElementById("filter-nome").value;
+      var filterMatricula = document.getElementById("filter-matricula").value;
+      var filterAno = document.getElementById("filter-ano").value;
+      if (filterMes) filters.push("Mês: " + filterMes);
+      if (filterNome) filters.push("Nome: " + filterNome);
+      if (filterMatricula) filters.push("Matrícula: " + filterMatricula);
+      if (filterAno) filters.push("Ano: " + filterAno);
+      return filters.length ? filters.join(" | ") : "Sem filtros aplicados";
+    }
 
-  // Função para gerar e baixar o PDF para uma tabela específica
-  function downloadPDF(tableId, title, filename) {
+    // Função para gerar e baixar o PDF para uma tabela específica
+    function downloadPDF(tableId, title, filename) {
     var tableData = getTableData(tableId);
     var filters = getAppliedFilters();
     var docDefinition = {
@@ -927,63 +857,6 @@ function downloadSimplifiedPDF(tableId, title, filename) {
   document.getElementById("download-simplificado-dpc").addEventListener("click", function(){
     downloadSimplifiedPDF("dpcTable", "Classificação Simplificada dos DPCs", "classificacao_simplificada_DPC.pdf");
   });
-
-
-
-  
-
-
-
-  document.addEventListener('DOMContentLoaded', function() {
-  const filterAnoSelect = document.getElementById('filter-ano');
-  const btnFilterAno = document.getElementById('btn-filter-ano');
-  const btnClearAno = document.getElementById('btn-clear-ano');
-
-  // Função que filtra as linhas de todas as tabelas com base no ano selecionado
-  function filterByAno() {
-    const selectedAno = filterAnoSelect.value;
-    // IDs das tabelas a serem filtradas
-    const tableIds = ['ipcTable', 'epcTable', 'dpcTable'];
-    tableIds.forEach(function(tableId) {
-      document.querySelectorAll(`#${tableId} tbody tr`).forEach(function(row) {
-        const rowAno = row.getAttribute('data-ano');
-        // Se nenhum ano estiver selecionado ou se o ano da linha for igual ao selecionado, exibe a linha
-        if (!selectedAno || rowAno === selectedAno) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    });
-  }
-
-  // Aplica o filtro automaticamente ao carregar a página
-  filterByAno();
-
-  // Atualiza o filtro quando o valor do seletor mudar ou o botão for clicado
-  if (filterAnoSelect) {
-    filterAnoSelect.addEventListener('change', filterByAno);
-  }
-  if (btnFilterAno) {
-    btnFilterAno.addEventListener('click', filterByAno);
-  }
-  if (btnClearAno) {
-    btnClearAno.addEventListener('click', function() {
-      filterAnoSelect.value = '';
-      // Exibe todas as linhas de todas as tabelas
-      const tableIds = ['ipcTable', 'epcTable', 'dpcTable'];
-      tableIds.forEach(function(tableId) {
-        document.querySelectorAll(`#${tableId} tbody tr`).forEach(function(row) {
-          row.style.display = '';
-        });
-      });
-    });
-  }
-});
-
-
-
-
 
   </script>
 </body>
