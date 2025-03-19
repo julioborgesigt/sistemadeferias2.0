@@ -1,9 +1,12 @@
-// models/User.js
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     matricula: {
       type: DataTypes.STRING,
-      primaryKey: true,
       allowNull: false
     },
     nome: {
@@ -64,12 +67,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-    // Novo campo para categoria: IPC, EPC ou DPC
     categoria: {
       type: DataTypes.ENUM('IPC', 'EPC', 'DPC'),
       allowNull: false,
-      defaultValue: 'IPC'  // ou escolha um valor padrão conforme sua necessidade
+      defaultValue: 'IPC'
     }
+  }, {
+    indexes: [
+      {
+        unique: true,
+        fields: ['matricula', 'ano_referencia']
+      }
+    ]
   });
 
   User.associate = function(models) {

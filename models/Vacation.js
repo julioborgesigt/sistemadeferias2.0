@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
     data_fim: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    // Novo campo para identificar o ano de referência das férias
+    ano_referencia: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     tableName: 'Vacations',  // Certificando-se de que o nome da tabela seja correto

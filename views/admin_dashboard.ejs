@@ -273,9 +273,9 @@
 
 
     <div class="container mt-4">
-      <div class="row g-3"> <!-- Adicione espaçamento entre os filtros -->
+      <div class="row g-3">
         <!-- Filtro por Mês -->
-        <div class="col-12 col-md-4"> <!-- 12 colunas em mobile, 4 em desktop -->
+        <div class="col-12 col-md-6 col-lg-3">
           <label for="filter-mes" class="form-label">Filtrar por Mês:</label>
           <div class="input-group">
             <select id="filter-mes" class="form-select form-select-sm">
@@ -297,28 +297,45 @@
             <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-mes">×</button>
           </div>
         </div>
-    
+        
         <!-- Filtro por Nome -->
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6 col-lg-3">
           <label for="filter-nome" class="form-label">Filtrar por Nome:</label>
           <div class="input-group">
-            <input type="text" id="filter-nome" class="form-control form-control-sm" placeholder="Digite o nome">
+            <input type="text" id="filter-nome" class="form-control form-select-sm" placeholder="Digite o nome">
             <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-filter-nome">🔍</button>
             <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-nome">×</button>
           </div>
         </div>
-    
+        
         <!-- Filtro por Matrícula -->
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6 col-lg-3">
           <label for="filter-matricula" class="form-label">Filtrar por Matrícula:</label>
           <div class="input-group">
-            <input type="text" id="filter-matricula" class="form-control form-control-sm" placeholder="Digite a matrícula">
+            <input type="text" id="filter-matricula" class="form-control form-select-sm" placeholder="Digite a matrícula">
             <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-filter-matricula">🔍</button>
             <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-matricula">×</button>
           </div>
         </div>
+        
+        <!-- Novo Filtro por Ano -->
+        <div class="col-12 col-md-6 col-lg-3">
+          <label for="filter-ano" class="form-label">Filtrar por Ano:</label>
+          <div class="input-group">
+            <select id="filter-ano" class="form-select form-select-sm">
+              <option value="">Todos</option>
+              <% distinctYears.forEach(function(ano) { %>
+                <option value="<%= ano %>" <%= ano == currentYear ? 'selected' : '' %>><%= ano %></option>
+              <% }); %>
+            </select>
+            <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-filter-ano">🔍</button>
+            <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-ano">×</button>
+          </div>
+        </div>
       </div>
     </div>
+    
+    
 
 
 
@@ -351,13 +368,13 @@
             <th class="hide-mobile">Idade</th>
             <th class="hide-mobile">P. Aq. (Início)</th>
             <th class="hide-mobile">P. Aq. (Fim)</th>
-            
             <th>Férias</th>
           </tr>
         </thead>
         <tbody>
           <% ipcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -374,11 +391,16 @@
               <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
               <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
               <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
-              
               <td>
-
-                <% if (user.Vacations && user.Vacations.length > 0) { %>
-                  <% user.Vacations.forEach(vacation => { %>
+                <% 
+                  // Filtra os registros de férias com base no campo "ano_referencia" de Vacation
+                  let vacationsDoAno = [];
+                  if (user.Vacations) {
+                    vacationsDoAno = user.Vacations.filter(vac => vac.ano_referencia === user.ano_referencia);
+                  }
+                %>
+                <% if (vacationsDoAno.length > 0) { %>
+                  <% vacationsDoAno.forEach(vacation => { %>
                     <p>🗓️ <%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
                   <% }); %>
                 <% } else { %>
@@ -390,6 +412,8 @@
         </tbody>
       </table>
     </div>
+    
+    
 
 
     <div class="dashboard-header text-left">
@@ -425,7 +449,8 @@
         </thead>
         <tbody>
           <% epcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -493,7 +518,8 @@
         </thead>
         <tbody>
           <% dpcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+
               <td><%= user.classificacao %></td>
               <td class="hide-mobile"><%= user.categoria %></td>
               <td><%= user.matricula %></td>
@@ -901,6 +927,62 @@ function downloadSimplifiedPDF(tableId, title, filename) {
   document.getElementById("download-simplificado-dpc").addEventListener("click", function(){
     downloadSimplifiedPDF("dpcTable", "Classificação Simplificada dos DPCs", "classificacao_simplificada_DPC.pdf");
   });
+
+
+
+  
+
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+  const filterAnoSelect = document.getElementById('filter-ano');
+  const btnFilterAno = document.getElementById('btn-filter-ano');
+  const btnClearAno = document.getElementById('btn-clear-ano');
+
+  // Função que filtra as linhas de todas as tabelas com base no ano selecionado
+  function filterByAno() {
+    const selectedAno = filterAnoSelect.value;
+    // IDs das tabelas a serem filtradas
+    const tableIds = ['ipcTable', 'epcTable', 'dpcTable'];
+    tableIds.forEach(function(tableId) {
+      document.querySelectorAll(`#${tableId} tbody tr`).forEach(function(row) {
+        const rowAno = row.getAttribute('data-ano');
+        // Se nenhum ano estiver selecionado ou se o ano da linha for igual ao selecionado, exibe a linha
+        if (!selectedAno || rowAno === selectedAno) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // Aplica o filtro automaticamente ao carregar a página
+  filterByAno();
+
+  // Atualiza o filtro quando o valor do seletor mudar ou o botão for clicado
+  if (filterAnoSelect) {
+    filterAnoSelect.addEventListener('change', filterByAno);
+  }
+  if (btnFilterAno) {
+    btnFilterAno.addEventListener('click', filterByAno);
+  }
+  if (btnClearAno) {
+    btnClearAno.addEventListener('click', function() {
+      filterAnoSelect.value = '';
+      // Exibe todas as linhas de todas as tabelas
+      const tableIds = ['ipcTable', 'epcTable', 'dpcTable'];
+      tableIds.forEach(function(tableId) {
+        document.querySelectorAll(`#${tableId} tbody tr`).forEach(function(row) {
+          row.style.display = '';
+        });
+      });
+    });
+  }
+});
+
+
+
 
 
   </script>

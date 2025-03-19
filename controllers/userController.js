@@ -19,26 +19,37 @@ module.exports = {
       return res.redirect('/auth/login');
     }
     try {
+      // Busca todos os usuários com suas férias
       const users = await User.findAll({
         include: [{ model: Vacation, required: false }],
         order: [['categoria', 'ASC'], ['classificacao', 'ASC']],
       });
-      // Separe os usuários por categoria
+      // Separa os usuários por categoria
       const ipcUsers = users.filter(u => u.categoria === 'IPC');
       const epcUsers = users.filter(u => u.categoria === 'EPC');
       const dpcUsers = users.filter(u => u.categoria === 'DPC');
+  
       const settings = await Settings.findOne({ where: { id: 1 } }) || { max_ipc: 2, max_epc: 2, max_dpc: 2 };
-
-      // Contar quantos usuários de cada categoria estão de férias
+  
+      // Conta quantos usuários de cada categoria estão de férias
       const vacationCounts = await Vacation.findAll({
         include: [{ model: User, attributes: ['categoria'] }]
       });
-
       let categoryUsage = { IPC: 0, EPC: 0, DPC: 0 };
       vacationCounts.forEach(vacation => {
-        categoryUsage[vacation.User.categoria]++;
+        if (vacation.User && vacation.User.categoria) {
+          categoryUsage[vacation.User.categoria]++;
+        }
       });
-
+  
+      // Obtém os anos distintos (ano_referencia) dos usuários
+      const distinctYearsRaw = await User.findAll({
+        attributes: [[db.sequelize.fn('DISTINCT', db.sequelize.col('ano_referencia')), 'ano_referencia']],
+        raw: true
+      });
+      const distinctYears = distinctYearsRaw.map(item => item.ano_referencia).sort();
+      const currentYear = new Date().getFullYear();
+  
       res.render('admin_dashboard', {
         admin: req.session.admin,
         users,
@@ -47,12 +58,12 @@ module.exports = {
         ipcUsers,
         epcUsers,
         dpcUsers,
-        // Modifique a função formatDate para:
+        distinctYears,  // passa o array de anos
+        currentYear,    // passa o ano corrente
         formatDate: (date) => {
           const d = new Date(date);
-          // Ajuste para UTC-3 (Brasília) e previna mudança de dia
-          const adjustedDate = new Date(d.getTime() + (3 * 60 * 60 * 1000)); 
-          
+          // Ajusta para UTC-3 (Brasília)
+          const adjustedDate = new Date(d.getTime() + (3 * 60 * 60 * 1000));
           return [
             adjustedDate.getUTCDate().toString().padStart(2, '0'),
             (adjustedDate.getUTCMonth() + 1).toString().padStart(2, '0'),
@@ -66,6 +77,7 @@ module.exports = {
       res.redirect('/users/dashboard');
     }
   },
+  
 
   // Exibe o formulário de cadastro de usuário
   showRegistrationForm: async (req, res) => {
@@ -99,23 +111,23 @@ module.exports = {
       const { matricula, nome, ano_referencia, gestante, qtd_filhos, estudante, doisvinculos, data_ingresso, possui_conjuge, data_nascimento, periodo_aquisitivo_inicio, periodo_aquisitivo_fim, categoria } = req.body;
       
       // Verifica se já existe um usuário com a mesma matrícula
-      const existingUser = await User.findOne({ where: { matricula } });
+      const existingUser = await User.findOne({ where: { matricula, ano_referencia } });
       if (existingUser) {
-        // Busca as datas distintas para passar à view
+        req.flash('error_msg', 'Usuário já cadastrado para este ano de referência. Por favor, verifique os dados ou atualize o usuário existente.');
+        // Certifique-se de buscar e passar os distinctDates também, se necessário
         const distinctDates = await User.findAll({
           attributes: [[db.sequelize.fn('DISTINCT', db.sequelize.col('data_ingresso')), 'data_ingresso']],
           raw: true
         });
-        req.flash('error_msg', 'Usuário já cadastrado. Por favor, verifique os dados ou atualize o usuário existente.');
         return res.render('user_registration', { 
           old: req.body, 
-          distinctDates, 
-          error_msg: req.flash('error_msg'), 
+          distinctDates,
+          error_msg: req.flash('error_msg'),
           success_msg: req.flash('success_msg')
         });
-
-        
       }
+
+
       
       const ajustaParaUTC = (data) => {
         return new Date(data.getTime() - (3 * 60 * 60 * 1000)); // Ajusta para UTC-3 antes de salvar
@@ -212,31 +224,50 @@ module.exports = {
   updateUserClassification: async () => {
     try {
       const categories = ['IPC', 'EPC', 'DPC'];
-      
+      // Para cada categoria
       for (const category of categories) {
-        let users = await User.findAll({
-          where: { categoria: category }
+        // Obtém os anos distintos para essa categoria
+        const distinctYears = await User.findAll({
+          attributes: [[db.sequelize.fn('DISTINCT', db.sequelize.col('ano_referencia')), 'ano_referencia']],
+          where: { categoria: category },
+          raw: true
         });
-  
-        users.sort((a, b) => {
-          if (a.gestante !== b.gestante) return b.gestante - a.gestante;
-        if (a.qtd_filhos !== b.qtd_filhos) return b.qtd_filhos - a.qtd_filhos;
-        if (a.estudante !== b.estudante) return b.estudante - a.estudante;
-        if (a.doisvinculos !== b.doisvinculos) return b.doisvinculos - a.doisvinculos;
-        if (a.data_ingresso_dias !== b.data_ingresso_dias) return b.data_ingresso_dias - a.data_ingresso_dias;
-        if (a.possui_conjuge !== b.possui_conjuge) return b.possui_conjuge - a.possui_conjuge;
-        return b.data_nascimento_dias - a.data_nascimento_dias;
-        });
-  
-        for (let i = 0; i < users.length; i++) {
-          users[i].classificacao = i + 1;
-          await users[i].save();
+        
+        // Para cada ano distinto, atualiza a classificação dos usuários dessa categoria e ano
+        for (const obj of distinctYears) {
+          const ano = obj.ano_referencia;
+          // Busca os usuários com a categoria e o ano de referência atuais
+          let users = await User.findAll({
+            where: { 
+              categoria: category,
+              ano_referencia: ano
+            }
+          });
+          
+          // Ordena os usuários conforme a lógica existente
+          users.sort((a, b) => {
+            if (a.gestante !== b.gestante) return b.gestante - a.gestante;
+            if (a.qtd_filhos !== b.qtd_filhos) return b.qtd_filhos - a.qtd_filhos;
+            if (a.estudante !== b.estudante) return b.estudante - a.estudante;
+            if (a.doisvinculos !== b.doisvinculos) return b.doisvinculos - a.doisvinculos;
+            if (a.data_ingresso_dias !== b.data_ingresso_dias) return b.data_ingresso_dias - a.data_ingresso_dias;
+            if (a.possui_conjuge !== b.possui_conjuge) return b.possui_conjuge - a.possui_conjuge;
+            return b.data_nascimento_dias - a.data_nascimento_dias;
+          });
+    
+          // Atualiza a classificação para cada usuário do grupo (categoria + ano)
+          for (let i = 0; i < users.length; i++) {
+            users[i].classificacao = i + 1;
+            await users[i].save();
+          }
         }
       }
     } catch (error) {
       console.error("Erro ao atualizar classificação:", error);
     }
   },
+  
+  
   resetVacations: async (req, res) => {
     // Apenas administradores podem resetar as férias
     if (!req.session.admin) {

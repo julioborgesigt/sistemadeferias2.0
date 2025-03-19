@@ -6,20 +6,33 @@
   <title>Cadastro de Férias - Admin</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <style>
-    /* Você pode reutilizar os mesmos estilos do user_dashboard se desejar */
+    /* Estilo para os containers de período */
     .period-container {
       display: none;
     }
+    /* Estilo para o offcanvas: em telas menores, ocupar 80% da largura */
     @media (max-width: 768px) {
       #offcanvasUsers {
-        width: 60% !important;
+        width: 80% !important;
       }
     }
+    /* Ajuste extra para melhorar espaçamentos */
+    .card {
+      margin-bottom: 1rem;
+    }
 
+    .custom-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
   </style>
 </head>
 <body>
-  <!-- Navbar similar à do dashboard -->
+
+  <% var users = typeof users !== 'undefined' ? users : []; %>
+  <% var old = typeof old !== 'undefined' ? old : {}; %>
+
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
       <a class="navbar-brand" href="/users/dashboard">Sistema de Férias - Admin</a>
@@ -40,100 +53,119 @@
       </div>
     </div>
   </nav>
-  
+
   <!-- Conteúdo principal -->
-  <div class="container mt-5">
-    <h2>Cadastro de Férias (Admin)</h2>
-    
-    <!-- Mensagens de feedback -->
-    <div id="flash-messages">
-      <% if (success_msg) { %>
-        <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
-          <%= success_msg %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <div class="container custom-container my-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4">Cadastro de Férias (Admin)</h2>
+        
+        <!-- Mensagens de feedback -->
+        <div id="flash-messages">
+          <% if (success_msg && success_msg.length > 0) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <%= success_msg.join(', ') %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          <% if (error_msg && error_msg.length > 0) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <%= error_msg.join(', ') %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
         </div>
-      <% } %>
-      <% if (error_msg) { %>
-        <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
-          <%= error_msg %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      <% } %>
+
+        <!-- Formulário -->
+        <form action="/vacations/admin-mark" method="POST">
+          <!-- Linha 1: Seleção de Usuário e Ano de Referência -->
+          <div class="row g-3 mb-3">
+            <!-- Matrícula do Usuário -->
+            <div class="col-12 col-md-4">
+              <label for="matricula" class="form-label">Matrícula do Usuário:</label>
+              <input type="text" name="matricula" id="matricula" class="form-control" 
+                     placeholder="Clique para selecionar o usuário" required maxlength="8" readonly
+                     value="<%= old.matricula ? old.matricula : '' %>">
+            </div>
+            <!-- Ano de Referência -->
+            <div class="col-12 col-md-4">
+              <label for="ano_referencia" class="form-label">Ano de Referência:</label>
+              <input type="text" name="ano_referencia" id="ano_referencia" class="form-control" 
+                     placeholder="Ano de referência" required
+                     value="<%= old.ano_referencia ? old.ano_referencia : new Date().getFullYear() %>">
+            </div>
+            <!-- Quantidade de Períodos -->
+            <div class="col-12 col-md-4">
+              <label for="qtd_periodos" class="form-label">Quantidade de Períodos:</label>
+              <select name="qtd_periodos" id="qtd_periodos" class="form-select">
+                <option value="1" <%= old.qtd_periodos === '1' ? 'selected' : '' %>>1 Período</option>
+                <option value="2_10_20" <%= old.qtd_periodos === '2_10_20' ? 'selected' : '' %>>2 Períodos (10+20)</option>
+                <option value="2_15_15" <%= old.qtd_periodos === '2_15_15' ? 'selected' : '' %>>2 Períodos (15+15)</option>
+                <option value="2_20_10" <%= old.qtd_periodos === '2_20_10' ? 'selected' : '' %>>2 Períodos (20+10)</option>
+                <option value="3" <%= old.qtd_periodos === '3' ? 'selected' : '' %>>3 Períodos</option>
+              </select>
+            </div>
+          </div>
+          
+
+          <!-- Linha 3: Períodos -->
+          <div id="periodos">
+            <!-- Período 1 -->
+            <div id="periodo1" class="mb-3 period-container">
+              <h5>Período 1</h5>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="periodo1_inicio" class="form-label">Data de Início:</label>
+                  <input type="date" name="periodo1_inicio" id="periodo1_inicio" class="form-control" required
+                         value="<%= old.periodo1_inicio ? old.periodo1_inicio : '' %>">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="periodo1_fim" class="form-label">Data de Fim:</label>
+                  <input type="date" name="periodo1_fim" id="periodo1_fim" class="form-control" required
+                         value="<%= old.periodo1_fim ? old.periodo1_fim : '' %>">
+                </div>
+              </div>
+            </div>
+            <!-- Período 2 -->
+            <div id="periodo2" class="mb-3 period-container">
+              <h5>Período 2 (opcional)</h5>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="periodo2_inicio" class="form-label">Data de Início:</label>
+                  <input type="date" name="periodo2_inicio" id="periodo2_inicio" class="form-control"
+                         value="<%= old.periodo2_inicio ? old.periodo2_inicio : '' %>">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="periodo2_fim" class="form-label">Data de Fim:</label>
+                  <input type="date" name="periodo2_fim" id="periodo2_fim" class="form-control"
+                         value="<%= old.periodo2_fim ? old.periodo2_fim : '' %>">
+                </div>
+              </div>
+            </div>
+            <!-- Período 3 -->
+            <div id="periodo3" class="mb-3 period-container">
+              <h5>Período 3 (opcional)</h5>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="periodo3_inicio" class="form-label">Data de Início:</label>
+                  <input type="date" name="periodo3_inicio" id="periodo3_inicio" class="form-control"
+                         value="<%= old.periodo3_inicio ? old.periodo3_inicio : '' %>">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="periodo3_fim" class="form-label">Data de Fim:</label>
+                  <input type="date" name="periodo3_fim" id="periodo3_fim" class="form-control"
+                         value="<%= old.periodo3_fim ? old.periodo3_fim : '' %>">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Cadastrar Férias</button>
+          </div>
+        </form>
+      </div>
     </div>
-    
-
-      
-
-    <!-- Formulário -->
-    <form action="/vacations/admin-mark" method="POST">
-      <% var old = typeof old !== 'undefined' ? old : {}; %>
-      <!-- Matrícula -->
-      <div class="mb-3">
-        <label for="matricula" class="form-label">Matrícula do Usuário:</label>
-        <input type="text" name="matricula" id="matricula" class="form-control"
-               placeholder="Digite a matrícula do usuário" required maxlength="8"
-               value="<%= old && old.matricula ? old.matricula : '' %>">
-      </div>
-      
-      <!-- Quantidade de Períodos -->
-      <div class="mb-3">
-        <label for="qtd_periodos" class="form-label">Quantidade de Períodos:</label>
-        <select name="qtd_periodos" id="qtd_periodos" class="form-select">
-          <option value="1" <%= old && old.qtd_periodos === '1' ? 'selected' : '' %>>1 Período</option>
-          <option value="2_10_20" <%= old && old.qtd_periodos === '2_10_20' ? 'selected' : '' %>>2 Períodos (10+20)</option>
-          <option value="2_15_15" <%= old && old.qtd_periodos === '2_15_15' ? 'selected' : '' %>>2 Períodos (15+15)</option>
-          <option value="2_20_10" <%= old && old.qtd_periodos === '2_20_10' ? 'selected' : '' %>>2 Períodos (20+10)</option>
-          <option value="3" <%= old && old.qtd_periodos === '3' ? 'selected' : '' %>>3 Períodos</option>
-        </select>
-      </div>
-      
-      <!-- Período 1 -->
-      <div id="periodo1" class="mb-3 period-container">
-        <h4>Período 1</h4>
-        <div class="mb-3">
-          <label for="periodo1_inicio" class="form-label">Data de Início:</label>
-          <input type="date" name="periodo1_inicio" id="periodo1_inicio" class="form-control" required
-                 value="<%= old && old.periodo1_inicio ? old.periodo1_inicio : '' %>">
-        </div>
-        <div class="mb-3">
-          <label for="periodo1_fim" class="form-label">Data de Fim:</label>
-          <input type="date" name="periodo1_fim" id="periodo1_fim" class="form-control" required
-                 value="<%= old && old.periodo1_fim ? old.periodo1_fim : '' %>">
-        </div>
-      </div>
-      
-      <!-- Período 2 -->
-      <div id="periodo2" class="mb-3 period-container">
-        <h4>Período 2 (opcional)</h4>
-        <div class="mb-3">
-          <label for="periodo2_inicio" class="form-label">Data de Início:</label>
-          <input type="date" name="periodo2_inicio" id="periodo2_inicio" class="form-control"
-                 value="<%= old && old.periodo2_inicio ? old.periodo2_inicio : '' %>">
-        </div>
-        <div class="mb-3">
-          <label for="periodo2_fim" class="form-label">Data de Fim:</label>
-          <input type="date" name="periodo2_fim" id="periodo2_fim" class="form-control"
-                 value="<%= old && old.periodo2_fim ? old.periodo2_fim : '' %>">
-        </div>
-      </div>
-      
-      <!-- Período 3 -->
-      <div id="periodo3" class="mb-3 period-container">
-        <h4>Período 3 (opcional)</h4>
-        <div class="mb-3">
-          <label for="periodo3_inicio" class="form-label">Data de Início:</label>
-          <input type="date" name="periodo3_inicio" id="periodo3_inicio" class="form-control"
-                 value="<%= old && old.periodo3_inicio ? old.periodo3_inicio : '' %>">
-        </div>
-        <div class="mb-3">
-          <label for="periodo3_fim" class="form-label">Data de Fim:</label>
-          <input type="date" name="periodo3_fim" id="periodo3_fim" class="form-control"
-                 value="<%= old && old.periodo3_fim ? old.periodo3_fim : '' %>">
-        </div>
-      </div>
-      
-      <button type="submit" class="btn btn-primary">Cadastrar Férias</button>
-    </form>
   </div>
 
   <!-- Offcanvas para seleção de usuário -->
@@ -144,11 +176,10 @@
     </div>
     <div class="offcanvas-body">
       <ul class="list-group">
-        <% var users = typeof users !== 'undefined' ? users : []; %>
         <% if (users && users.length > 0) { %>
           <% users.forEach(function(u) { %>
-            <li class="list-group-item user-item" data-matricula="<%= u.matricula %>">
-              <strong><%= u.matricula %></strong> - <%= u.nome %>
+            <li class="list-group-item user-item" data-matricula="<%= u.matricula %>" data-ano="<%= u.ano_referencia %>">
+              <strong><%= u.matricula %></strong> - <%= u.nome %> (<%= u.ano_referencia %>)
             </li>
           <% }); %>
         <% } else { %>
@@ -156,14 +187,12 @@
         <% } %>
       </ul>
     </div>
+  </div>
 
-
-  
-  <!-- Scripts: exibição condicional dos períodos e atualização automática das datas finais -->
+  <!-- Scripts -->
   <script src="/js/bootstrap.bundle.min.js"></script>
   <script>
-
-
+    // Exibe alertas de feedback
     document.addEventListener("DOMContentLoaded", function(){
       function showAlert(alertId) {
         const alertEl = document.getElementById(alertId);
@@ -177,28 +206,36 @@
       showAlert("error-alert");
     });
 
-
     // Abre o offcanvas ao clicar no campo da matrícula
     document.getElementById('matricula').addEventListener('click', function(){
       var offcanvasEl = document.getElementById('offcanvasUsers');
       var offcanvas = new bootstrap.Offcanvas(offcanvasEl);
       offcanvas.show();
     });
-    
-    // Preenche o campo matrícula quando um usuário é selecionado
+
+    // Preenche os campos ao selecionar um usuário na lista
     document.querySelectorAll('.user-item').forEach(function(item){
       item.addEventListener('click', function(){
         var matricula = this.getAttribute('data-matricula');
+        var ano = this.getAttribute('data-ano');
         document.getElementById('matricula').value = matricula;
-        // Fecha o offcanvas
+        document.getElementById('ano_referencia').value = ano;
         var offcanvasEl = document.getElementById('offcanvasUsers');
         var offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasEl);
         offcanvasInstance.hide();
       });
     });
 
+    // Validação do formulário: verifica se o ano está preenchido
+    document.querySelector('form').addEventListener('submit', function(e){
+      const ano = document.getElementById('ano_referencia').value;
+      if (!ano) {
+        e.preventDefault();
+        alert("Por favor, selecione um usuário da lista para definir o ano de referência.");
+      }
+    });
 
-
+    // Atualiza os containers de período conforme a quantidade selecionada
     function updatePeriodFields() {
       const qtd = document.getElementById('qtd_periodos').value;
       document.getElementById('periodo1').style.display = 'none';
@@ -216,21 +253,18 @@
         document.getElementById('periodo3').style.display = 'block';
       }
     }
-    
     document.getElementById('qtd_periodos').addEventListener('change', updatePeriodFields);
     document.addEventListener('DOMContentLoaded', updatePeriodFields);
-    
+
     // (Opcional) Atualização automática dos campos de data final
     function addDays(date, days) {
       const result = new Date(date);
       result.setDate(result.getDate() + days);
       return result;
     }
-    
     function formatDate(date) {
       return date.toISOString().split("T")[0];
     }
-    
     function updateEndDate(periodIndex, durationDays) {
       const inicioInput = document.getElementById(`periodo${periodIndex}_inicio`);
       const fimInput = document.getElementById(`periodo${periodIndex}_fim`);
@@ -240,7 +274,6 @@
         fimInput.value = formatDate(endDate);
       }
     }
-    
     function updateAllEndDates() {
       const qtd = document.getElementById('qtd_periodos').value;
       if (qtd === "1") {
@@ -260,7 +293,6 @@
         updateEndDate(3, 10);
       }
     }
-    
     ['periodo1_inicio', 'periodo2_inicio', 'periodo3_inicio'].forEach(function(id) {
       const input = document.getElementById(id);
       if (input) {
