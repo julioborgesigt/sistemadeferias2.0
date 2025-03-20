@@ -68,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     categoria: {
-      type: DataTypes.ENUM('IPC', 'EPC', 'DPC'),
+      type: DataTypes.ENUM('IPC', 'EPC', 'DPC', 'IPC-P', 'EPC-P', 'DPC-P'),
       allowNull: false,
       defaultValue: 'IPC'
     }

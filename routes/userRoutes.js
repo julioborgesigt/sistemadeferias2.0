@@ -21,6 +21,7 @@ router.post('/reset-vacations', ensureAuthenticated, userController.resetVacatio
 // Nova rota para apagar matrícula
 router.post('/delete-user', ensureAuthenticated, userController.deleteUser);
 router.get('/classification', userController.showClassification);
+router.post('/migrate', ensureAuthenticated, userController.migrateUsers);
 
 
 module.exports = router;

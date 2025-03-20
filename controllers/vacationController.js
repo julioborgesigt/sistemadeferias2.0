@@ -52,15 +52,29 @@ const checkVacationLimits = async (userCategory, startDate, endDate, ano_referen
   const ano = Number(ano_referencia);
   console.log('Valor convertido de ano_referencia:', ano);
 
+  // Mapeamento de grupo: tanto o cargo sem sufixo quanto com "-P" pertencem ao mesmo grupo
+  const groupMapping = {
+    'IPC': ['IPC', 'IPC-P'],
+    'IPC-P': ['IPC', 'IPC-P'],
+    'EPC': ['EPC', 'EPC-P'],
+    'EPC-P': ['EPC', 'EPC-P'],
+    'DPC': ['DPC', 'DPC-P'],
+    'DPC-P': ['DPC', 'DPC-P']
+  };
+
+  // Define o grupo para a categoria corrente
+  const userGroup = groupMapping[userCategory];
+
+  // Consulta todas as férias para o ano especificado que se sobrepõem ao período desejado
   const vacations = await Vacation.findAll({
     include: [{
       model: User,
       attributes: ['categoria'],
-      where: { ano_referencia: ano },  // somente o usuário com o mesmo ano
+      where: { ano_referencia: ano },
       required: true
     }],
     where: {
-      ano_referencia: ano,  // filtra as férias para o ano desejado
+      ano_referencia: ano,
       [Op.or]: [
         { data_inicio: { [Op.between]: [startDate, endDate] } },
         { data_fim: { [Op.between]: [startDate, endDate] } }
@@ -76,7 +90,8 @@ const checkVacationLimits = async (userCategory, startDate, endDate, ano_referen
     categoria: v.User ? v.User.categoria : 'N/A'
   })));
 
-  let categoryCount = { IPC: 0, EPC: 0, DPC: 0 };
+  // Calcula a contagem individual para a categoria informada
+  let individualCount = 0;
   vacations.forEach(vacation => {
     if (vacation.User && vacation.User.categoria === userCategory) {
       const overlapStart = vacation.data_inicio > startDate ? vacation.data_inicio : startDate;
@@ -84,29 +99,57 @@ const checkVacationLimits = async (userCategory, startDate, endDate, ano_referen
       const overlapDays = diffInDays(overlapStart, overlapEnd);
       console.log(`Vacação de ${vacation.matricula} - sobreposição (${userCategory}): ${overlapDays} dias`);
       if (overlapDays >= 1) {
-        categoryCount[userCategory]++;
+        individualCount++;
       }
     }
   });
+  console.log('Contagem individual para', userCategory, ':', individualCount);
 
-  console.log('Contagem para categoria', userCategory, ':', categoryCount[userCategory]);
+  // Calcula a contagem total para o grupo (ex: IPC e IPC-P juntos)
+  let groupCount = 0;
+  vacations.forEach(vacation => {
+    if (vacation.User && userGroup.includes(vacation.User.categoria)) {
+      const overlapStart = vacation.data_inicio > startDate ? vacation.data_inicio : startDate;
+      const overlapEnd = vacation.data_fim < endDate ? vacation.data_fim : endDate;
+      const overlapDays = diffInDays(overlapStart, overlapEnd);
+      if (overlapDays >= 1) {
+        groupCount++;
+      }
+    }
+  });
+  console.log('Contagem total para grupo', userGroup.join('/'), ':', groupCount);
 
-  let availableSlots = 0;
-  if (userCategory === 'IPC') availableSlots = settings.max_ipc - categoryCount.IPC;
-  else if (userCategory === 'EPC') availableSlots = settings.max_epc - categoryCount.EPC;
-  else if (userCategory === 'DPC') availableSlots = settings.max_dpc - categoryCount.DPC;
+  // Limite individual disponível para a categoria
+  let availableIndividual = 0;
+  if (userCategory === 'IPC') availableIndividual = settings.max_ipc - individualCount;
+  else if (userCategory === 'EPC') availableIndividual = settings.max_epc - individualCount;
+  else if (userCategory === 'DPC') availableIndividual = settings.max_dpc - individualCount;
+  else if (userCategory === 'IPC-P') availableIndividual = settings.max_ipc_p - individualCount;
+  else if (userCategory === 'EPC-P') availableIndividual = settings.max_epc_p - individualCount;
+  else if (userCategory === 'DPC-P') availableIndividual = settings.max_dpc_p - individualCount;
 
-  console.log('Vagas disponíveis para', userCategory, ':', availableSlots);
+  // Limite total disponível para o grupo – determina o campo de configuração adequado
+  let availableGroup = 0;
+  if (userGroup[0] === 'IPC') availableGroup = settings.max_ipc_t - groupCount;
+  else if (userGroup[0] === 'EPC') availableGroup = settings.max_epc_t - groupCount;
+  else if (userGroup[0] === 'DPC') availableGroup = settings.max_dpc_t - groupCount;
 
+  console.log('Vagas disponíveis individualmente para', userCategory, ':', availableIndividual);
+  console.log('Vagas disponíveis no grupo', userGroup.join('/'), ':', availableGroup);
+
+  // O número de vagas disponíveis é o mínimo entre o limite individual e o limite total do grupo
+  const availableSlots = Math.min(availableIndividual, availableGroup);
   if (availableSlots <= 0) {
     return {
       allowed: false,
-      message: `Sua marcação de férias não foi autorizada, pois o limite de ${userCategory}s para o ano ${ano} foi atingido. Já há ${categoryCount[userCategory]} funcionário(s) nesse período. Veja o calendário`,
+      message: `Sua marcação de férias não foi autorizada, pois o limite total para o grupo ${userGroup.join('/')} para o ano ${ano} foi atingido. Já há ${groupCount} funcionário(s) nesse período.`,
       availableSlots: 0
     };
   }
   return { allowed: true, availableSlots };
 };
+
+
 
 
 
