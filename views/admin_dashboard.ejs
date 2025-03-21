@@ -41,7 +41,7 @@
       transition: all 0.3s ease-in-out;
     }
     .styled-table th, .styled-table td {
-      padding: 11px;
+      padding: 5px;
       border: 1px solid #dee2e6;
     }
     .styled-table thead {
@@ -66,7 +66,7 @@
     }
     @media (max-width:440px) {
       .styled-table th, .styled-table td {
-        padding: 6px;
+        padding: 4px;
         font-size: 12px;
       }
     }
@@ -900,6 +900,42 @@
       };
       pdfMake.createPdf(docDefinition).download(filename);
     }
+
+
+    
+
+    function getSimplifiedTableData(tableId) {
+      var table = document.getElementById(tableId);
+      var data = [];
+    
+      // Extrai somente os cabeçalhos relevantes
+     var headers = [];
+     table.querySelectorAll("thead tr th").forEach(function(th, index) {
+        // Se o índice for 0, 2, 3 ou o último (último índice = total - 1)
+        if (index === 0 || index === 2 || index === 3 || index === table.querySelectorAll("thead tr th").length - 1) {
+          headers.push(th.innerText.trim());
+        }
+      });
+      data.push(headers);
+    
+      // Extrai as linhas do corpo, considerando somente as linhas visíveis
+      table.querySelectorAll("tbody tr").forEach(function(tr) {
+        if (window.getComputedStyle(tr).display !== "none") {
+          var rowData = [];
+          var tds = tr.querySelectorAll("td");
+          tds.forEach(function(td, index) {
+            if (index === 0 || index === 2 || index === 3 || index === tds.length - 1) {
+              rowData.push(td.innerText.trim());
+            }
+          });
+          data.push(rowData);
+        }
+      });
+      
+      return data;
+    }
+
+
     function downloadSimplifiedPDF(tableId, title, filename) {
       var tableData = getSimplifiedTableData(tableId);
       var filters = getAppliedFilters();
@@ -935,6 +971,9 @@
       };
       pdfMake.createPdf(docDefinition).download(filename);
     }
+
+
+
     document.getElementById("download-ipc").addEventListener("click", function(){
       downloadPDF("ipcTable", "Classificação dos IPCs", "classificacao_IPC.pdf");
     });
@@ -953,6 +992,14 @@
     document.getElementById("download-simplificado-dpc").addEventListener("click", function(){
       downloadSimplifiedPDF("dpcTable", "Classificação Simplificada dos DPCs", "classificacao_simplificada_DPC.pdf");
     });
+
+
+
+
+
+
+
+
   </script>
 </body>
 </html>
