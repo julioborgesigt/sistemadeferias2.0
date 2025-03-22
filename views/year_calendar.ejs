@@ -12,16 +12,19 @@
     }
     /* Estilos para visualização web */
     .calendar-table {
-      margin-bottom: 40px;
-      width: 100%; /* Força a tabela a ocupar toda a largura */
+    margin-bottom: 40px;
+    border-collapse: collapse;
+    width: 100%;
     }
-    .calendar-table th, 
+    .calendar-table th,
     .calendar-table td {
       border: 1px solid #ddd;
       padding: 5px;
       text-align: center;
       vertical-align: top;
+      width: 14.2857%; /* 100% dividido por 7 colunas */
     }
+
     /* Define que cada célula (dos 7 dias da semana) ocupará 14,2857% da largura */
     .fixed-cell {
       width: 14.2857%;
@@ -41,10 +44,23 @@
       font-size: 0.85rem;
     }
     .month-title {
-      margin-bottom: 10px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      text-align: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    }
+    /* Para dispositivos móveis: */
+    @media (max-width: 768px) {
+      .calendar-table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+      }
+      /* Define um tamanho mínimo para as células para evitar que se expandam demais */
+      .calendar-table th,
+      .calendar-table td {
+        min-width: 70px;
+      }
     }
     /* Estilos para impressão (opcional) */
     @media print {
