@@ -6,120 +6,59 @@
   <title>Calendário Anual de Férias - <%= category ? category + ' ' : '' %><%= year %></title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <style>
-    /* Estilos para versão web */
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
-      margin-bottom: 30px;
+
+    .container {
+      max-width: 900px;
     }
-    .day {
-      border: 1px solid #ccc;
-      min-height: 40px;
+    /* Estilos para visualização web */
+    .calendar-table {
+      margin-bottom: 40px;
+      width: 100%; /* Força a tabela a ocupar toda a largura */
+    }
+    .calendar-table th, 
+    .calendar-table td {
+      border: 1px solid #ddd;
       padding: 5px;
-    }
-    .day-header {
-      font-weight: bold;
       text-align: center;
+      vertical-align: top;
+    }
+    /* Define que cada célula (dos 7 dias da semana) ocupará 14,2857% da largura */
+    .fixed-cell {
+      width: 14.2857%;
+    }
+    .calendar-table th {
       background-color: #007bff;
-      color: white;
-      padding: 5px 0;
-    }
-    .date-number {
+      color: #fff;
       font-weight: bold;
-      margin-bottom: 5px;
     }
-    .vacation-names {
-      font-size: 0.8rem;
+    .day-number {
+      font-weight: bold;
+    }
+    .names-list {
       list-style: none;
       padding-left: 0;
+      margin: 0;
+      font-size: 0.85rem;
     }
     .month-title {
-      margin-top: 30px;
       margin-bottom: 10px;
       font-size: 1.5rem;
       font-weight: bold;
+      text-align: center;
     }
-    .print-button {
-      margin-bottom: 20px;
-    }
-
-    /* Estilos específicos para impressão */
+    /* Estilos para impressão (opcional) */
     @media print {
-      body {
-        padding: 0 !important;
-        margin: 0 !important;
-        font-size: 12pt;
-      }
-      
-      .navbar,
-      .print-button {
+      .navbar, #download-calendar {
         display: none !important;
-      }
-
-      .print-container {
-        display: grid;
-        grid-template-columns: repeat(1, 2fr);
-        gap: 15px;
-        width: 100%;
-      }
-
-      .month-container {
-        width: 100%;
-        page-break-inside: avoid;
-        break-inside: avoid-page;
-        margin-bottom: 20px;
-      }
-
-      .month-title {
-        font-size: 10pt !important;
-        margin: 5px 0 !important;
-        padding: 2px;
-        background: #f0f0f0;
-      }
-
-      .calendar {
-        grid-template-columns: repeat(7, 1fr);
-        gap: 1px;
-        margin-bottom: 0;
-      }
-
-      .day {
-        min-height: 25px;
-        padding: 1px;
-        border-width: 0.5px;
-      }
-
-      .day-header {
-        font-size: 6pt;
-        padding: 2px 0;
-      }
-
-      .date-number {
-        font-size: 6pt;
-        margin-bottom: 1px;
-      }
-
-      .vacation-names {
-        font-size: 8pt;
-        line-height: 1;
-        margin: 0;
-      }
-
-      @page {
-        size: A4 portrait;
-        margin: 0.5cm;
-      }
-
-      /* Quebra de página após cada grupo de 2 meses */
-      .month-container:nth-child(2n) {
-        page-break-after: always;
       }
     }
   </style>
+  <!-- Bibliotecas para PDF (usando Unpkg) -->
+  <script src="https://unpkg.com/pdfmake/build/pdfmake.min.js"></script>
+  <script src="https://unpkg.com/pdfmake/build/vfs_fonts.js"></script>
+  <script src="https://unpkg.com/html-to-pdfmake/browser.js"></script>
 </head>
 <body>
-
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -143,51 +82,128 @@
     </div>
   </nav>
 
+  <!-- Conteúdo -->
   <div class="container mt-4">
     <h2>Calendário de Férias - <%= category ? category + ' ' : '' %><%= year %></h2>
-    <button class="btn btn-primary print-button" onclick="window.print()">Imprimir Calendário</button>
+    <button class="btn btn-primary mb-3" id="download-calendar">Download PDF</button>
     
+    <!-- Container que será convertido para PDF -->
     <div class="print-container">
-      <% for (let month = 1; month <= 12; month++) { 
-           const calendarData = calendarByMonth[month];
-           const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+      <% 
+        // Array com os nomes dos meses
+        const monthNames = [
+          'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+          'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'
+        ];
+
+        // Função auxiliar para construir a matriz do calendário (6 semanas x 7 dias)
+        function buildCalendarMatrix(y, m) {
+          var matrix = [];
+          var firstDay = new Date(y, m-1, 1);
+          var lastDay = new Date(y, m, 0).getDate();
+          var startDayOfWeek = firstDay.getDay(); // 0=Dom, 1=Seg, etc.
+          for (var row = 0; row < 6; row++) {
+            var week = [];
+            for (var col = 0; col < 7; col++) {
+              var cellIndex = row * 7 + col;
+              var dayNum = cellIndex - startDayOfWeek + 1;
+              if (dayNum > 0 && dayNum <= lastDay) {
+                week.push(dayNum);
+              } else {
+                week.push(null);
+              }
+            }
+            matrix.push(week);
+          }
+          return matrix;
+        }
+      %>
+
+      <% for (var month = 1; month <= 12; month++) { 
+           var calendarData = calendarByMonth[month] || {};
+           var monthMatrix = buildCalendarMatrix(year, month);
       %>
         <div class="month-container">
           <div class="month-title"><%= monthNames[month - 1] %> (<%= month %>)</div>
-          <div class="calendar">
-            <% const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']; %>
-            <% daysOfWeek.forEach(day => { %>
-              <div class="day-header"><%= day %></div>
-            <% }); %>
-            
-            <% const firstDayOfMonth = new Date(year, month - 1, 1); %>
-            <% const startDayOfWeek = firstDayOfMonth.getDay(); %>
-            <% for (let i = 0; i < startDayOfWeek; i++) { %>
-              <div class="day"></div>
-            <% } %>
-            
-            <% const lastDayOfMonth = new Date(year, month, 0); %>
-            <% for (let d = 1; d <= lastDayOfMonth.getDate(); d++) { %>
-              <% const currentDate = new Date(year, month - 1, d); %>
-              <% const dateStr = currentDate.toISOString().slice(0,10); %>
-              <% const names = calendarData[dateStr] || []; %>
-              <div class="day">
-                <div class="date-number"><%= d %></div>
-                <% if (names.length > 0) { %>
-                  <ul class="vacation-names">
-                    <% names.forEach(name => { %>
-                      <li><%= name %></li>
-                    <% }); %>
-                  </ul>
-                <% } %>
-              </div>
-            <% } %>
-          </div>
+          <table class="table table-bordered text-center calendar-table" style="width:100%;">
+            <thead>
+              <tr>
+                <th class="fixed-cell">Dom</th>
+                <th class="fixed-cell">Seg</th>
+                <th class="fixed-cell">Ter</th>
+                <th class="fixed-cell">Qua</th>
+                <th class="fixed-cell">Qui</th>
+                <th class="fixed-cell">Sex</th>
+                <th class="fixed-cell">Sáb</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (var i = 0; i < monthMatrix.length; i++) { 
+                   var week = monthMatrix[i];
+                   if (week.every(function(day){ return day === null; })) continue;
+              %>
+                <tr>
+                  <% for (var j = 0; j < 7; j++) { 
+                       var dayNum = week[j];
+                       if (dayNum) {
+                         var currentDate = new Date(year, month - 1, dayNum);
+                         var dateStr = currentDate.toISOString().split('T')[0];
+                         var names = calendarData[dateStr] || [];
+                  %>
+                    <td class="fixed-cell">
+                      <div class="day-number"><%= dayNum %></div>
+                      <% if (names.length > 0) { %>
+                        <ul class="names-list">
+                          <% names.forEach(function(name) { %>
+                            <li><%= name %></li>
+                          <% }); %>
+                        </ul>
+                      <% } %>
+                    </td>
+                  <% } else { %>
+                    <td class="fixed-cell"></td>
+                  <% } } %>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
         </div>
       <% } %>
     </div>
   </div>
 
   <script src="/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('download-calendar').addEventListener('click', function(){
+      // Captura os containers de cada mês
+      var monthContainers = document.querySelectorAll('.month-container');
+      var contentArray = [];
+      // Neste exemplo, vamos converter todos os meses (você pode agrupar dois em dois se desejar)
+      monthContainers.forEach(function(monthDiv, index) {
+        var groupHtml = monthDiv.outerHTML;
+        // Converter o HTML para o formato pdfMake
+        var converted = htmlToPdfmake(groupHtml);
+        // Adiciona o conteúdo com quebra de página "after"
+        contentArray.push({ stack: converted, pageBreak: 'after' });
+      });
+      
+      var docDefinition = {
+        header: {
+          text: "Calendário de Férias - " + ("<%= category ? category + ' ' : '' %>") + "<%= year %>",
+          alignment: 'center',
+          margin: [0, 10, 0, 10]
+        },
+        pageSize: 'A4',
+        pageOrientation: 'portrait',
+        pageMargins: [40, 60, 40, 60],
+        content: contentArray,
+        defaultStyle: {
+          fontSize: 12
+        }
+      };
+      
+      pdfMake.createPdf(docDefinition).download('calendario.pdf');
+    });
+  </script>
 </body>
 </html>

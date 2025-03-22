@@ -41,7 +41,7 @@
       transition: all 0.3s ease-in-out;
     }
     .styled-table th, .styled-table td {
-      padding: 5px;
+      padding: 10px;
       border: 1px solid #dee2e6;
     }
     .styled-table thead {
@@ -58,10 +58,10 @@
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
       transition: all 0.3s ease;
     }
-    @media (max-width:768px) {
+    @media (max-width:992px) {
       .styled-table th, .styled-table td {
-        padding: 8px;
-        font-size: 14px;
+        padding: 10px;
+        font-size: 12px;
       }
     }
     @media (max-width:440px) {
@@ -80,6 +80,25 @@
       font-size: 0.875rem;
     }
 
+
+     /* Para telas abaixo de 990px */
+  @media (max-width: 990px) {
+    .filter-container label,
+    .filter-container input,
+    .filter-container select {
+      font-size: 0.85rem;
+      padding: 0.25rem;
+    }
+  }
+  /* Para telas abaixo de 768px */
+  @media (max-width: 768px) {
+    .filter-container label,
+    .filter-container input,
+    .filter-container select {
+      font-size: 0.75rem;
+      padding: 0.2rem;
+    }
+  }
     
 
   </style>
@@ -272,9 +291,7 @@
   
   <!-- Conteúdo do Dashboard -->
   <div class="container">
-    <div class="dashboard-header text-center">
-      <h2>Bem-vindo, <%= admin.nome %></h2>
-    </div>
+    
     
     <!-- Mensagens de feedback -->
     <div id="flash-messages">
@@ -292,149 +309,134 @@
       <% } %>
     </div>
     
-    <!-- Sessões do Dashboard -->
-    <div class="row mt-4">
+    
+    
             
       
     
 
-      <!-- Tabela de Controle de Vagas -->
-      <div class="col-12 col-md-12 ">
-        
+    <div class="container mt-4">
+      <div class="row">
+        <!-- Tabela de Limites (60% da largura) -->
+        <div class="col-12 col-md-7">
+          <div class="dashboard-header text-left">
+            <h3>Tabela de Limites</h3>
+          </div>
           <%
             // Obtém o ano corrente
             let currentYear = new Date().getFullYear();
-            // Inicializa os contadores apenas para os usuários com ano_referencia igual ao ano corrente
+            // Inicializa os contadores para usuários com ano_referencia igual ao ano corrente
             let totalIPC = 0, totalIPC_P = 0, totalEPC = 0, totalEPC_P = 0, totalDPC = 0, totalDPC_P = 0;
             users.forEach(function(u) {
-              if (u.ano_referencia == currentYear) {
-                if (u.categoria === 'IPC') totalIPC++;
-                else if (u.categoria === 'IPC-P') totalIPC_P++;
-                else if (u.categoria === 'EPC') totalEPC++;
-                else if (u.categoria === 'EPC-P') totalEPC_P++;
-                else if (u.categoria === 'DPC') totalDPC++;
-                else if (u.categoria === 'DPC-P') totalDPC_P++;
+              if(u.ano_referencia == currentYear) {
+                if(u.categoria === 'IPC') totalIPC++;
+                else if(u.categoria === 'IPC-P') totalIPC_P++;
+                else if(u.categoria === 'EPC') totalEPC++;
+                else if(u.categoria === 'EPC-P') totalEPC_P++;
+                else if(u.categoria === 'DPC') totalDPC++;
+                else if(u.categoria === 'DPC-P') totalDPC_P++;
               }
             });
           %>
-
-          
-            <div class="table-responsive">
-              <table class="table table-bordered text-center styled-table">
-                <thead>
-                  <tr>
-                    <th>Atributo</th>
-                    <th>IPC</th>
-                    <th>IPC‑P</th>
-                    <th>EPC</th>
-                    <th>EPC‑P</th>
-                    <th>DPC</th>
-                    <th>DPC‑P</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Limite Individual</td>
-                    <td><%= settings.max_ipc %></td>
-                    <td><%= settings.max_ipc_p %></td>
-                    <td><%= settings.max_epc %></td>
-                    <td><%= settings.max_epc_p %></td>
-                    <td><%= settings.max_dpc %></td>
-                    <td><%= settings.max_dpc_p %></td>
-                  </tr>
-                  <tr>
-                    <td>Limite Total</td>
-                    <!-- Para cada grupo, o total é compartilhado; se desejar exibir individualmente, ajuste aqui -->
-                    <td colspan="2"><%= settings.max_ipc_t %></td>
-                    <td colspan="2"><%= settings.max_epc_t %></td>
-                    <td colspan="2"><%= settings.max_dpc_t %></td>
-                  </tr>
-                  <tr>
-                    <td>Já Cadastrados</td>
-                    <td><%= totalIPC %></td>
-                    <td><%= totalIPC_P %></td>
-                    <td><%= totalEPC %></td>
-                    <td><%= totalEPC_P %></td>
-                    <td><%= totalDPC %></td>
-                    <td><%= totalDPC_P %></td>
-                  </tr>
-                </tbody>
-              </table>
+          <div class="table-responsive">
+            <table class="table table-bordered text-center styled-table">
+              <thead>
+                <tr>
+                  <th>Atributo</th>
+                  <th>IPC</th>
+                  <th>IPC‑P</th>
+                  <th>EPC</th>
+                  <th>EPC‑P</th>
+                  <th>DPC</th>
+                  <th>DPC‑P</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Limite Individual</td>
+                  <td><%= settings.max_ipc %></td>
+                  <td><%= settings.max_ipc_p %></td>
+                  <td><%= settings.max_epc %></td>
+                  <td><%= settings.max_epc_p %></td>
+                  <td><%= settings.max_dpc %></td>
+                  <td><%= settings.max_dpc_p %></td>
+                </tr>
+                <tr>
+                  <td>Limite Total</td>
+                  <td colspan="2"><%= settings.max_ipc_t %></td>
+                  <td colspan="2"><%= settings.max_epc_t %></td>
+                  <td colspan="2"><%= settings.max_dpc_t %></td>
+                </tr>
+                <tr>
+                  <td>Cadastrados Total</td>
+                  <td><%= totalIPC %></td>
+                  <td><%= totalIPC_P %></td>
+                  <td><%= totalEPC %></td>
+                  <td><%= totalEPC_P %></td>
+                  <td><%= totalDPC %></td>
+                  <td><%= totalDPC_P %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Filtros (40% da largura) -->
+        <div class="col-12 col-md-5">
+          <div class="dashboard-header text-left">
+            <h3>Filtros</h3>
+          </div>
+          <div class="card shadow-sm">
+            <div class="card-body filter-container">
+              <!-- Primeira linha: Filtros por Mês e Nome -->
+              <div class="row g-3">
+                <div class="col-6">
+                  <label for="filter-mes" class="form-label">por mês:</label>
+                  <select id="filter-mes" class="form-select form-select-sm">
+                    <option value="">Todos</option>
+                    <option value="01">Janeiro</option>
+                    <option value="02">Fevereiro</option>
+                    <option value="03">Março</option>
+                    <option value="04">Abril</option>
+                    <option value="05">Maio</option>
+                    <option value="06">Junho</option>
+                    <option value="07">Julho</option>
+                    <option value="08">Agosto</option>
+                    <option value="09">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <label for="filter-nome" class="form-label">por nome:</label>
+                  <input type="text" id="filter-nome" class="form-control form-select-sm" placeholder="Digite o nome">
+                </div>
+              </div>
+              <!-- Segunda linha: Filtros por Matrícula e Ano -->
+              <div class="row g-3 mt-2">
+                <div class="col-6">
+                  <label for="filter-matricula" class="form-label">por matrícula:</label>
+                  <input type="text" id="filter-matricula" class="form-control form-select-sm" placeholder="Digite a matrícula">
+                </div>
+                <div class="col-6">
+                  <label for="filter-ano" class="form-label">por ano:</label>
+                  <select id="filter-ano" class="form-select form-select-sm">
+                    <option value="">Todos</option>
+                    <% distinctYears.forEach(function(ano) { %>
+                      <option value="<%= ano %>" <%= ano == currentYear ? 'selected' : '' %>><%= ano %></option>
+                    <% }); %>
+                  </select>
+                </div>
+              </div>
             </div>
-         
-          
-        </div>
-      
-      
-    </div>
-    
-    <!-- Filtros para a Tabela de Classificação -->
-    <div class="dashboard-header text-left">
-      <h3>Filtros</h3>
-    </div>
-    
-      <div class="card shadow-sm">
-        <div class="card-body">
-      <div class="row g-3">
-        <!-- Filtro por Mês -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <label for="filter-mes" class="form-label">Filtrar por Mês:</label>
-          <div class="input-group">
-            <select id="filter-mes" class="form-select form-select-sm">
-              <option value="">Todos</option>
-              <option value="01">Janeiro</option>
-              <option value="02">Fevereiro</option>
-              <option value="03">Março</option>
-              <option value="04">Abril</option>
-              <option value="05">Maio</option>
-              <option value="06">Junho</option>
-              <option value="07">Julho</option>
-              <option value="08">Agosto</option>
-              <option value="09">Setembro</option>
-              <option value="10">Outubro</option>
-              <option value="11">Novembro</option>
-              <option value="12">Dezembro</option>
-            </select>
-            <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-filter-mes">🔍</button>
-            <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-mes">×</button>
-          </div>
-        </div>
-        <!-- Filtro por Nome -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <label for="filter-nome" class="form-label">Filtrar por Nome:</label>
-          <div class="input-group">
-            <input type="text" id="filter-nome" class="form-control form-select-sm" placeholder="Digite o nome">
-            <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-filter-nome">🔍</button>
-            <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-nome">×</button>
-          </div>
-        </div>
-        <!-- Filtro por Matrícula -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <label for="filter-matricula" class="form-label">Filtrar por Matrícula:</label>
-          <div class="input-group">
-            <input type="text" id="filter-matricula" class="form-control form-select-sm" placeholder="Digite a matrícula">
-            <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-filter-matricula">🔍</button>
-            <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-matricula">×</button>
-          </div>
-        </div>
-        <!-- Filtro por Ano -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <label for="filter-ano" class="form-label">Filtrar por Ano:</label>
-          <div class="input-group">
-            <select id="filter-ano" class="form-select form-select-sm">
-              <option value="">Todos</option>
-              <% distinctYears.forEach(function(ano) { %>
-                <option value="<%= ano %>" <%= ano == currentYear ? 'selected' : '' %>><%= ano %></option>
-              <% }); %>
-            </select>
-            <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-filter-ano">🔍</button>
-            <button class="btn btn-sm btn-outline-danger" type="button" id="btn-clear-ano">×</button>
           </div>
         </div>
       </div>
-   
-  </div>
     </div>
+    
+    
+    
     
     <!-- Classificação dos usuários -->
     <!-- Para facilitar, vamos filtrar os usuários em cada categoria no template -->
