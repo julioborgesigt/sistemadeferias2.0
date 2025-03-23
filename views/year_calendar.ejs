@@ -5,16 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calendário Anual de Férias - <%= category ? category + ' ' : '' %><%= year %></title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
-  <style>
 
-    .container {
-      max-width: 900px;
-    }
+
+<style>
     /* Estilos para visualização web */
     .calendar-table {
-    margin-bottom: 40px;
-    border-collapse: collapse;
-    width: 100%;
+      margin-bottom: 40px;
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed; /* Garante larguras iguais para as colunas */
     }
     .calendar-table th,
     .calendar-table td {
@@ -22,53 +21,51 @@
       padding: 5px;
       text-align: center;
       vertical-align: top;
-      width: 14.2857%; /* 100% dividido por 7 colunas */
-    }
-
-    /* Define que cada célula (dos 7 dias da semana) ocupará 14,2857% da largura */
-    .fixed-cell {
-      width: 14.2857%;
-    }
-    .calendar-table th {
-      background-color: #007bff;
-      color: #fff;
-      font-weight: bold;
-    }
-    .day-number {
-      font-weight: bold;
-    }
-    .names-list {
-      list-style: none;
-      padding-left: 0;
-      margin: 0;
-      font-size: 0.85rem;
+      width: 14.2857%; /* 100/7 colunas */
+      word-wrap: break-word; /* Permite quebra de linha */
     }
     .month-title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      background-color: #007bff;
+      color: white;
     }
-    /* Para dispositivos móveis: */
-    @media (max-width: 768px) {
-      .calendar-table {
-        display: block;
-        overflow-x: auto;
-        width: 100%;
-      }
-      /* Define um tamanho mínimo para as células para evitar que se expandam demais */
+    .calendar-table thead th {
+      background-color: #535353c0; /* Cor de fundo desejada */
+      color: #fff;              /* Cor do texto */
+      font-weight: bold;
+    }
+
+    /* Responsividade: reduz fontes e espaçamentos para telas menores */
+    @media (max-width: 990px) {
       .calendar-table th,
       .calendar-table td {
-        min-width: 70px;
+        font-size: 11px;
+        padding: 3px;
+      }
+      .month-title {
+        font-size: 1.3rem;
       }
     }
-    /* Estilos para impressão (opcional) */
-    @media print {
-      .navbar, #download-calendar {
-        display: none !important;
+    @media (max-width: 768px) {
+      .calendar-table th,
+      .calendar-table td {
+        font-size: 9px;
+        padding: 2px;
+      }
+      .month-title {
+        font-size: 1.1rem;
       }
     }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
   </style>
+  
   <!-- Bibliotecas para PDF (usando Unpkg) -->
   <script src="https://unpkg.com/pdfmake/build/pdfmake.min.js"></script>
   <script src="https://unpkg.com/pdfmake/build/vfs_fonts.js"></script>
