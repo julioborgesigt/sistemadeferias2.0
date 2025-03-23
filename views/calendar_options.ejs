@@ -5,11 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Opções de Calendário</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <style>
+    /* Estiliza os botões para que fiquem com espaçamento adequado */
+    .btn-calendario {
+      margin-bottom: 15px;
+    }
+  </style>
 </head>
 <body>
-
-   <!-- Navbar -->
-   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
       <a class="navbar-brand" href="#">Sistema de Férias</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
@@ -19,41 +24,40 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ms-auto">
-      
           <li class="nav-item">
-            <a class="nav-link" href="/user">Início</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/users/dashboard">Página do ADM</a>
+            <a class="nav-link" href="/users/dashboard">Início</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-
   <div class="container mt-4">
-    <h2 class="text-center mb-4">Selecione a Opção do Calendário</h2> <!-- Título centralizado -->
-    <div class="row justify-content-center"> <!-- Linha centralizada -->
-      <!-- Cada botão em uma coluna centralizada -->
-      <div class="col-12 col-md-6 col-lg-4 mb-3"> <!-- Ajuste de largura responsiva -->
-        <a href="/vacations/year-calendar?year=2025&category=DPC" class="btn btn-danger d-block">DPC 2025</a>
+    <h2 class="text-center mb-4">Selecione a Opção do Calendário</h2>
+    <div class="row justify-content-center">
+      <% 
+         // Calcula os anos desejados dinamicamente: ano corrente e os dois seguintes.
+         const currentYear = new Date().getFullYear();
+         const years = [currentYear, currentYear + 1, currentYear + 2];
+         // Define os grupos de cargos com os dois valores de categoria em um array
+         const groups = [
+           { category: ["DPC", "DPC-P"], btnClass: "btn-danger", display: "DPC / DPC‑P" },
+           { category: ["IPC", "IPC-P"], btnClass: "btn-primary", display: "IPC / IPC‑P" },
+           { category: ["EPC", "EPC-P"], btnClass: "btn-success", display: "EPC / EPC‑P" }
+         ];
+         // Para cada grupo e para cada ano, cria um link que inclua dois parâmetros "category"
+         groups.forEach(function(group) {
+           years.forEach(function(yr) {
+      %>
+      <div class="col-12 col-md-6 col-lg-4 btn-calendario">
+        <a href="/vacations/year-calendar?year=<%= yr %><%= group.category.map(cat => '&category=' + encodeURIComponent(cat)).join('') %>" class="btn <%= group.btnClass %> d-block">
+          <%= group.display %> - <%= yr %>
+        </a>
+        
       </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <a href="/vacations/year-calendar?year=2026&category=DPC" class="btn btn-danger d-block">DPC 2026</a>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <a href="/vacations/year-calendar?year=2025&category=IPC" class="btn btn-primary d-block">IPC 2025</a>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <a href="/vacations/year-calendar?year=2026&category=IPC" class="btn btn-primary d-block">IPC 2026</a>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <a href="/vacations/year-calendar?year=2025&category=EPC" class="btn btn-success d-block">EPC 2025</a>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <a href="/vacations/year-calendar?year=2026&category=EPC" class="btn btn-success d-block">EPC 2026</a>
-      </div>
+      <%       });
+         });
+      %>
     </div>
   </div>
 

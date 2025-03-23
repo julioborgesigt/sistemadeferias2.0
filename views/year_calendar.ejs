@@ -59,10 +59,10 @@
         font-size: 1.1rem;
       }
     }
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
 
   </style>
   
@@ -85,11 +85,9 @@
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/user">Início</a>
+            <a class="nav-link" href="/users/dashboard">Início</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/users/dashboard">Página do ADM</a>
-          </li>
+        
         </ul>
       </div>
     </div>
@@ -98,7 +96,11 @@
   <!-- Conteúdo -->
   <div class="container mt-4">
     <h2>Calendário de Férias - <%= category ? category + ' ' : '' %><%= year %></h2>
-    <button class="btn btn-primary mb-3" id="download-calendar">Download PDF</button>
+    <div class="d-flex justify-content-between mb-3">
+      <button class="btn btn-primary" id="download-calendar">Download PDF</button>
+      <a class="btn btn-secondary" href="/vacations/calendar-options">Escolher outro</a>
+    </div>
+    
     
     <!-- Container que será convertido para PDF -->
     <div class="print-container">
@@ -166,7 +168,7 @@
                     <td class="fixed-cell">
                       <div class="day-number"><%= dayNum %></div>
                       <% if (names.length > 0) { %>
-                        <ul class="names-list">
+                        <ul class="names-list" style="list-style: none; padding-left: 0;">
                           <% names.forEach(function(name) { %>
                             <li><%= name %></li>
                           <% }); %>
@@ -186,37 +188,61 @@
   </div>
 
   <script src="/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.getElementById('download-calendar').addEventListener('click', function(){
-      // Captura os containers de cada mês
-      var monthContainers = document.querySelectorAll('.month-container');
-      var contentArray = [];
-      // Neste exemplo, vamos converter todos os meses (você pode agrupar dois em dois se desejar)
-      monthContainers.forEach(function(monthDiv, index) {
-        var groupHtml = monthDiv.outerHTML;
-        // Converter o HTML para o formato pdfMake
-        var converted = htmlToPdfmake(groupHtml);
-        // Adiciona o conteúdo com quebra de página "after"
-        contentArray.push({ stack: converted, pageBreak: 'after' });
-      });
+  <script src="https://unpkg.com/pdfmake/build/pdfmake.min.js"></script>
+<script src="https://unpkg.com/pdfmake/build/vfs_fonts.js"></script>
+<script src="https://unpkg.com/html-to-pdfmake/browser.js"></script>
+
+<script>
+  document.getElementById('download-calendar').addEventListener('click', function(){
+    // Captura os containers de cada mês
+    var monthContainers = document.querySelectorAll('.month-container');
+    var contentArray = [];
+    monthContainers.forEach(function(monthDiv, index) {
+      var groupHtml = monthDiv.outerHTML;
+      var converted = htmlToPdfmake(groupHtml);
       
-      var docDefinition = {
-        header: {
-          text: "Calendário de Férias - " + ("<%= category ? category + ' ' : '' %>") + "<%= year %>",
-          alignment: 'center',
-          margin: [0, 10, 0, 10]
-        },
-        pageSize: 'A4',
-        pageOrientation: 'portrait',
-        pageMargins: [40, 60, 40, 60],
-        content: contentArray,
-        defaultStyle: {
-          fontSize: 12
+      // Função recursiva que ajusta os "widths" de cada tabela para que cada coluna ocupe espaço igual (100% da largura)
+      function adjustTableWidths(content) {
+        if (Array.isArray(content)) {
+          content.forEach(adjustTableWidths);
+        } else if (typeof content === 'object' && content !== null) {
+          if (content.table && content.table.body && content.table.body.length > 0) {
+            // Define a largura de cada coluna como '*'
+            var numCols = content.table.body[0].length;
+            content.table.widths = Array(numCols).fill('*');
+          }
+          for (var key in content) {
+            if (content.hasOwnProperty(key) && typeof content[key] === 'object') {
+              adjustTableWidths(content[key]);
+            }
+          }
         }
-      };
+      }
       
-      pdfMake.createPdf(docDefinition).download('calendario.pdf');
+      adjustTableWidths(converted);
+      
+      // Adiciona o conteúdo do mês com quebra de página "after"
+      contentArray.push({ stack: converted, pageBreak: 'after' });
     });
-  </script>
+    
+    var docDefinition = {
+      header: {
+        text: "Calendário de Férias - " + ("<%= category ? category + ' ' : '' %>") + "<%= year %>",
+        alignment: 'center',
+        margin: [0, 10, 0, 10]
+      },
+      pageSize: 'A4',
+      pageOrientation: 'portrait',
+      pageMargins: [40, 60, 40, 60],
+      content: contentArray,
+      defaultStyle: {
+        fontSize: 10
+      }
+    };
+    
+    pdfMake.createPdf(docDefinition).download('calendario.pdf');
+  });
+</script>
+
 </body>
 </html>
