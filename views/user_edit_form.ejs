@@ -1,0 +1,62 @@
+
+
+<div class="container mt-1">
+  <h2>Editar Usuário <%= user.nome %> (<%= user.matricula %>)</h2>
+
+  <form action="/users/update/<%= user.matricula %>/<%= user.ano_referencia %>" method="POST">
+    <input type="hidden" name="_method" value="PUT" />
+
+    <div class="mb-3">
+      <label for="nome" class="form-label">Nome</label>
+      <input type="text" class="form-control" name="nome" id="nome" value="<%= user.nome %>" required />
+    </div>
+
+    <div class="mb-3">
+      <label for="matricula" class="form-label">Matrícula</label>
+      <input type="text" class="form-control" name="matricula" id="matricula" value="<%= user.matricula %>" required />
+    </div>
+
+    <div class="mb-3">
+      <label for="data_nascimento" class="form-label">Data de Nascimento</label>
+      <input type="date" class="form-control" name="data_nascimento" id="data_nascimento" value="<%= user.data_nascimento.toISOString().split('T')[0] %>" required />
+    </div>
+
+    <div class="mb-3">
+      <label for="data_ingresso" class="form-label">Data de Ingresso</label>
+      <input type="date" class="form-control" name="data_ingresso" id="data_ingresso" value="<%= user.data_ingresso.toISOString().split('T')[0] %>" required />
+    </div>
+
+    <div class="mb-3">
+      <label for="categoria" class="form-label">Categoria</label>
+      <input type="text" class="form-control" name="categoria" id="categoria" value="<%= user.categoria %>" />
+    </div>
+
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="gestante" id="gestante" <%= user.gestante ? 'checked' : '' %> />
+      <label class="form-check-label" for="gestante">Gestante</label>
+    </div>
+
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="estudante" id="estudante" <%= user.estudante ? 'checked' : '' %> />
+      <label class="form-check-label" for="estudante">Estudante</label>
+    </div>
+
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="doisvinculos" id="doisvinculos" <%= user.doisvinculos ? 'checked' : '' %> />
+      <label class="form-check-label" for="doisvinculos">Dois Vínculos</label>
+    </div>
+
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="possui_conjuge" id="possui_conjuge" <%= user.possui_conjuge ? 'checked' : '' %> />
+      <label class="form-check-label" for="possui_conjuge">Possui Cônjuge</label>
+    </div>
+
+    <div class="mb-3">
+      <label for="qtd_filhos" class="form-label">Quantidade de Filhos</label>
+      <input type="number" class="form-control" name="qtd_filhos" id="qtd_filhos" value="<%= user.qtd_filhos %>" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+  </form>
+</div>
+

@@ -23,5 +23,14 @@ router.post('/delete-user', ensureAuthenticated, userController.deleteUser);
 router.get('/classification', userController.showClassification);
 router.post('/migrate', ensureAuthenticated, userController.migrateUsers);
 
+router.post('/update/:matricula/:ano', userController.updateUser);
+
+
+// Atualizar dados do 
+router.get('/edit/:matricula/:ano', userController.editUserForm);
+router.post('/update/:matricula/:ano', userController.updateUser);
+
+
+
 
 module.exports = router;

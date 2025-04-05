@@ -530,7 +530,89 @@ showAdminVacationForm: async (req, res) => {
       console.error(error);
       return res.render('admin_vacation_form', { error_msg: 'Erro ao cadastrar férias.', old: req.body });
     }
+  },
+
+  // Exibir formulário de edição das férias
+  editVacationForm: async (req, res) => {
+    const { matricula, ano } = req.params;
+  
+    try {
+      const user = await User.findOne({
+        where: { matricula, ano_referencia: ano },
+        include: [{
+          model: Vacation,
+          as: 'Vacations' // Certifique-se que esse alias é o mesmo usado em User.js
+        }]
+      });
+  
+      if (!user) {
+        console.log('Usuário não encontrado:', matricula, ano);
+        req.flash('error_msg', 'Usuário não encontrado.');
+        return res.redirect('/users/dashboard');
+      }
+  
+      if (!user.Vacations || user.Vacations.length === 0) {
+        console.log('Nenhuma férias encontradas para o usuário:', matricula, ano);
+        req.flash('error_msg', 'Dados de férias não encontrados.');
+        return res.redirect('/users/dashboard');
+      }
+  
+      console.log('Usuário e férias encontrados:', user.Vacations);
+  
+      res.render('vacation_edit_form', {
+        user,
+        ferias: user.Vacations
+      });
+    } catch (err) {
+      console.error('Erro ao buscar dados de férias:', err);
+      req.flash('error_msg', 'Erro ao carregar dados de férias.');
+      res.redirect('/users/dashboard');
+    }
+  },
+
+// Atualizar os dados de férias
+updateVacation: async (req, res) => {
+  const { matricula, ano } = req.params;
+  const { data_inicio, data_fim, periodo } = req.body;
+
+  console.log(`[UPDATE] Iniciando atualização de férias`);
+  console.log(`Matrícula: ${matricula}, Ano: ${ano}`);
+  console.log(`Dados recebidos no body:`, req.body);
+
+  try {
+    // Verifica se há férias para o período informado
+    const vacation = await Vacation.findOne({
+      where: {
+        matricula,
+        ano_referencia: ano,
+        periodo
+      }
+    });
+
+    if (!vacation) {
+      console.log('[ERRO] Férias não encontradas para o usuário/período.');
+      req.flash('error_msg', 'Férias não encontradas.');
+      return res.redirect('/users/dashboard');
+    }
+
+    console.log('[SUCESSO] Férias encontradas:', vacation.toJSON());
+
+    // Atualiza os campos
+    vacation.data_inicio = data_inicio;
+    vacation.data_fim = data_fim;
+
+    await vacation.save();
+
+    console.log('[SUCESSO] Férias atualizadas com sucesso!');
+    req.flash('success_msg', 'Férias atualizadas com sucesso!');
+    res.redirect('/users/dashboard');
+  } catch (err) {
+    console.error('[EXCEPTION] Erro ao atualizar férias:', err);
+    req.flash('error_msg', 'Erro ao atualizar férias.');
+    res.redirect('/users/dashboard');
   }
+}
+
   
 
 
@@ -538,7 +620,9 @@ showAdminVacationForm: async (req, res) => {
 
 
 
+
 };
+
 
 
 

@@ -15,5 +15,12 @@ router.get('/admin-form', vacationController.showAdminVacationForm);
 router.post('/admin-mark', vacationController.adminMarkVacation);
 
 
+// Exibir formulário de edição de férias
+router.get('/edit/:matricula/:ano', vacationController.editVacationForm);
+router.post('/edit/:matricula/:ano', vacationController.updateVacation);
+
+
+
+
 
 module.exports = router;

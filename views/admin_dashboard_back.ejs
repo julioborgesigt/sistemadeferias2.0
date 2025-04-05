@@ -147,9 +147,8 @@
 
 <!-- NavBar -->
 <!-- Navbar com Offcanvas (Menu Lateral) -->
-<nav class="navbar navbar-dark bg-primary" >
-  <div class="container" style="max-width: 1400px;">
-
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container">
     <a class="navbar-brand" href="#">Sistema de Férias</a>
     <!-- Botão que dispara o offcanvas -->
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
@@ -377,8 +376,7 @@
 
   
   <!-- Conteúdo do Dashboard -->
-  <div class="container mt-4" style="max-width: 1400px;">
-
+  <div class="container">
     
     
     <!-- Mensagens de feedback -->
@@ -403,8 +401,7 @@
       
     
 
-    <div class="container mt-4" style="max-width: 1400px;">
-
+    <div class="container mt-4">
       <div class="row">
         <!-- Tabela de Limites (60% da largura) -->
         <div class="col-12 col-md-7">
@@ -436,7 +433,7 @@
                   <th>IPC‑P</th>
                   <th>EPC</th>
                   <th>EPC‑P</th>
-                  <th>DPC</th>    
+                  <th>DPC</th>
                   <th>DPC‑P</th>
                 </tr>
               </thead>
@@ -466,7 +463,7 @@
                   <td><%= totalDPC_P %></td>
                 </tr>
               </tbody>
-            </table>
+            </table></div>
           </div>
         </div>
         
@@ -544,7 +541,7 @@
     </div>
 
     <!-- Tabela Completa de Servidores IPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4 small" id="ipcTableContainer">
+    <div class="table-responsive mt-4" id="ipcTableContainer">
       <table class="table classification-table" id="ipcTable">
         <thead style="background-color: #007bff; color: white;">
           <tr>
@@ -608,7 +605,6 @@
                 -->
                 <button
                   class="btn btn-info btn-sm"
-                  style="font-size: 0.75rem; padding: 2px 6px;"
                   data-toggle="modal"
                   data-target="#editUsuarioModal"
                   data-matricula="<%= user.matricula %>"
@@ -646,7 +642,7 @@
     </div>
 
     <!-- Tabela Completa de Servidores EPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4 small" id="ipcTableContainer">
+    <div class="table-responsive mt-4" id="ipcTableContainer">
       <table class="table classification-table" id="epcTable">
         <thead style="background-color: #007bff; color: white;">
           <tr>
@@ -706,7 +702,6 @@
                 -->
                 <button
                   class="btn btn-info btn-sm"
-                  style="font-size: 0.75rem; padding: 2px 6px;"
                   data-toggle="modal"
                   data-target="#editUsuarioModal"
                   data-matricula="<%= user.matricula %>"
@@ -741,7 +736,7 @@
     </div>
 
     <!-- Tabela Completa de Servidores DPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive small mt-4" id="dpcTableContainer">
+    <div class="table-responsive mt-4" id="dpcTableContainer">
       <table class="table classification-table" id="dpcTable">
         <thead style="background-color: #007bff; color: white;">
           <tr>
@@ -801,7 +796,6 @@
                 -->
                 <button
                   class="btn btn-info btn-sm"
-                  style="font-size: 0.75rem; padding: 2px 6px;"
                   data-toggle="modal"
                   data-target="#editUsuarioModal"
                   data-matricula="<%= user.matricula %>"
@@ -1003,7 +997,7 @@
 
     // Cabeçalhos, ignorando o índice 16 (coluna de ações)
     table.querySelectorAll("thead tr th").forEach(function(th, index) {
-      if (index !== 0 && index !== 18) {
+      if (index !== 16) {
         headers.push(th.innerText.trim());
       }
     });
@@ -1014,7 +1008,7 @@
       if (window.getComputedStyle(tr).display !== "none") {
         var rowData = [];
         tr.querySelectorAll("td").forEach(function(td, index) {
-          if (index !== 0 && index !== 16) {
+          if (index !== 16) {
             rowData.push(td.innerText.trim());
           }
         });

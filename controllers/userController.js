@@ -23,8 +23,15 @@ module.exports = {
       // Busca todos os usuários com suas férias
       const users = await User.findAll({
         include: [{ model: Vacation, required: false }],
-        order: [['categoria', 'ASC'], ['classificacao', 'ASC']],
+        order: [['classificacao', 'ASC']],
       });
+      
+      // Filtro manual para manter apenas as férias do ano correto
+      users.forEach(user => {
+        user.Vacations = user.Vacations?.filter(vac => vac.ano_referencia === user.ano_referencia) || [];
+      });
+      
+
       // Separa os usuários por categoria
       const ipcUsers = users.filter(u => u.categoria === 'IPC');
       const epcUsers = users.filter(u => u.categoria === 'EPC');
@@ -384,12 +391,16 @@ showClassification: async (req, res) => {
 
 migrateUsers: async (req, res) => {
   try {
-    // Ano de origem vindo do formulário (ex: 2024)
-    const origem = Number(req.body.ano_origem);
-    // Ano de destino: geralmente o ano corrente (ex: 2025)
-    const destino = new Date().getFullYear();
+    // Agora o ano de origem e de destino vêm do formulário
+    const origem = Number(req.body.sourceYear);
+    const destino = Number(req.body.targetYear);
 
-    // Busca todos os usuários com o ano de referência de origem
+    // Impede migração para o mesmo ano
+    if (origem === destino) {
+      req.flash('error_msg', 'O ano de origem e o ano de destino não podem ser iguais.');
+      return res.redirect('/users/dashboard');
+    }
+
     const usersToMigrate = await User.findAll({
       where: { ano_referencia: origem }
     });
@@ -399,24 +410,18 @@ migrateUsers: async (req, res) => {
       return res.redirect('/users/dashboard');
     }
 
-    // Para cada usuário, recalcula os campos que dependem do ano de referência e insere ou atualiza o registro para o ano destino
     for (const user of usersToMigrate) {
-      // Data de referência para os cálculos: 31 de dezembro do ano destino
       const refDate = new Date(destino, 11, 31);
 
-      // Recalcular "data_ingresso_dias" e "data_nascimento_dias" com base no novo ano
       const novoDataIngressoDias = diffInDays(user.data_ingresso, refDate);
       const novoDataNascimentoDias = diffInDays(user.data_nascimento, refDate);
 
-      // Recalcular o período aquisitivo: começando com a data de ingresso e definindo o ano para o destino
       const novoPeriodoInicio = new Date(user.data_ingresso);
       novoPeriodoInicio.setFullYear(destino);
-      // O período aquisitivo termina um ano depois do início, menos um dia
       const novoPeriodoFim = new Date(novoPeriodoInicio);
       novoPeriodoFim.setFullYear(novoPeriodoFim.getFullYear() + 1);
       novoPeriodoFim.setDate(novoPeriodoFim.getDate() - 1);
 
-      // Verifica se já existe um registro para esse usuário no ano destino
       const existingUser = await User.findOne({
         where: {
           matricula: user.matricula,
@@ -425,14 +430,11 @@ migrateUsers: async (req, res) => {
       });
 
       if (existingUser) {
-        // Atualiza o registro existente com os novos cálculos
         existingUser.nome = user.nome;
         existingUser.gestante = user.gestante;
         existingUser.qtd_filhos = user.qtd_filhos;
         existingUser.estudante = user.estudante;
         existingUser.doisvinculos = user.doisvinculos;
-        // Mantemos a data de ingresso e data de nascimento originais,
-        // mas atualizamos os campos derivados
         existingUser.data_ingresso_dias = novoDataIngressoDias;
         existingUser.data_nascimento_dias = novoDataNascimentoDias;
         existingUser.periodo_aquisitivo_inicio = novoPeriodoInicio;
@@ -440,7 +442,6 @@ migrateUsers: async (req, res) => {
         existingUser.categoria = user.categoria;
         await existingUser.save();
       } else {
-        // Cria um novo registro com os dados recalculados para o ano destino
         await User.create({
           matricula: user.matricula,
           nome: user.nome,
@@ -462,14 +463,101 @@ migrateUsers: async (req, res) => {
     }
 
     await module.exports.updateUserClassification();
-    req.flash('success_msg', 'Migração concluída com sucesso para o ano ' + destino);
+    req.flash('success_msg', `Migração concluída com sucesso de ${origem} para ${destino}.`);
     res.redirect('/users/dashboard');
   } catch (error) {
     console.error("Erro na migração:", error);
     req.flash('error_msg', 'Erro ao migrar os dados.');
     res.redirect('/users/dashboard');
   }
+},
+
+// Exibir o formulário com os dados atuais do usuário
+editUserForm: async (req, res) => {
+  const { matricula, ano } = req.params;
+  const { User, Vacation } = require('../models');
+
+  try {
+    const user = await User.findOne({
+      where: { matricula, ano_referencia: ano },
+      include: [{
+        model: Vacation,
+        where: { ano_referencia: ano },
+        required: false
+      }]
+    });
+
+    if (!user) {
+      req.flash('error_msg', 'Usuário não encontrado.');
+      return res.redirect('/users/dashboard');
+    }
+
+    res.render('user_edit_form', { user });
+  } catch (err) {
+    console.error(err);
+    req.flash('error_msg', 'Erro ao carregar dados do usuário.');
+    res.redirect('/users/dashboard');
+  }
+},
+
+// Atualizar os dados do usuário
+updateUser: async (req, res) => {
+  const { matricula, ano } = req.params;
+  const {
+    nome,
+    data_ingresso,
+    data_nascimento,
+    categoria,
+    gestante,
+    qtd_filhos,
+    estudante,
+    doisvinculos,
+    possui_conjuge
+  } = req.body;
+
+  try {
+    const user = await User.findOne({
+      where: { matricula, ano_referencia: ano }
+    });
+
+    if (!user) {
+      req.flash('error_msg', 'Usuário não encontrado.');
+      return res.redirect('/users/dashboard');
+    }
+
+    // Convertendo datas
+    const dataIngressoDate = new Date(data_ingresso);
+    const dataNascimentoDate = new Date(data_nascimento);
+    const refDate = new Date(Number(ano), 11, 31); // 31 de dezembro do ano de referência
+
+    // Atualizando dados
+    user.nome = nome;
+    user.data_ingresso = dataIngressoDate;
+    user.data_nascimento = dataNascimentoDate;
+    user.categoria = categoria;
+    user.gestante = gestante === 'on';
+    user.qtd_filhos = qtd_filhos;
+    user.estudante = estudante === 'on';
+    user.doisvinculos = doisvinculos === 'on';
+    user.possui_conjuge = possui_conjuge === 'on';
+
+    // Atualizando campos calculados
+    user.data_ingresso_dias = diffInDays(dataIngressoDate, refDate);
+    user.data_nascimento_dias = diffInDays(dataNascimentoDate, refDate);
+
+    await user.save();
+    await module.exports.updateUserClassification();
+    req.flash('success_msg', 'Usuário atualizado com sucesso.');
+    res.redirect('/users/dashboard');
+  } catch (err) {
+    console.error('Erro ao atualizar usuário:', err);
+    req.flash('error_msg', 'Erro ao atualizar usuário.');
+    res.redirect('/users/dashboard');
+                  
+  }
 }
+
+
 
 
 

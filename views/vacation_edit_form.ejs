@@ -1,0 +1,54 @@
+
+<div class="container mt-1">
+  <h2>Editar Férias de <%= user.nome %> (<%= user.matricula %>)</h2>
+
+  <% ferias.forEach(function(vacation) { %>
+    <form action="/vacations/edit/<%= vacation.matricula %>/<%= vacation.ano_referencia %>" method="POST">
+      <input type="hidden" name="_method" value="PUT" />
+      <input type="hidden" name="periodo" value="<%= vacation.periodo %>" />
+  
+      <h5>Período <%= vacation.periodo %></h5>
+  
+      <div class="mb-3">
+        <label for="data_inicio_<%= vacation.id %>" class="form-label">Data de Início</label>
+        <input
+          type="date"
+          class="form-control"
+          id="data_inicio_<%= vacation.id %>"
+          name="data_inicio"
+          value="<%= vacation.data_inicio.toISOString().split('T')[0] %>"
+          required
+        />
+      </div>
+  
+      <div class="mb-3">
+        <label for="data_fim_<%= vacation.id %>" class="form-label">Data de Fim</label>
+        <input
+          type="date"
+          class="form-control"
+          id="data_fim_<%= vacation.id %>"
+          name="data_fim"
+          value="<%= vacation.data_fim.toISOString().split('T')[0] %>"
+          required
+        />
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Ano de Referência</label>
+        <input
+          type="number"
+          class="form-control"
+          value="<%= vacation.ano_referencia %>"
+          readonly
+        />
+      </div>
+  
+      <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    </form>
+    <hr />
+  <% }) %>
+  
+  
+</div>
+
+

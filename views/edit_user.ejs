@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+
+<div class="container mt-5">
+  <h2>Editar Usuário - <%= user.nome %> (<%= user.matricula %>)</h2>
+  <form action="/users/edit/<%= user.matricula %>/<%= user.ano_referencia %>" method="POST">
+    <div class="row">
+      <div class="col-md-4">
+        <label for="nome">Nome:</label>
+        <input type="text" class="form-control" name="nome" value="<%= user.nome %>" required>
+      </div>
+      <div class="col-md-4">
+        <label for="data_nascimento">Data de Nascimento:</label>
+        <input type="date" class="form-control" name="data_nascimento" value="<%= user.data_nascimento.toISOString().split('T')[0] %>" required>
+      </div>
+      <div class="col-md-4">
+        <label for="data_ingresso">Data de Ingresso:</label>
+        <input type="date" class="form-control" name="data_ingresso" value="<%= user.data_ingresso.toISOString().split('T')[0] %>" required>
+      </div>
+    </div>
+
+    <!-- Adicione os outros campos necessários: gestante, categoria, etc -->
+
+    <button type="submit" class="btn btn-success mt-3">Salvar Alterações</button>
+    <a href="/users/dashboard" class="btn btn-secondary mt-3">Cancelar</a>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
