@@ -495,7 +495,7 @@ showAdminVacationForm: async (req, res) => {
         }
         const maxDate = new Date(user.periodo_aquisitivo_fim);
         maxDate.setFullYear(maxDate.getFullYear() + 1);
-        maxDate.setDate(maxDate.getDate() + 1);
+        maxDate.setDate(maxDate.getDate() + 2);
         if (period.fim > maxDate) {
           const maxDateStr = maxDate.toLocaleDateString('pt-BR');
           return res.render('admin_vacation_form', {
