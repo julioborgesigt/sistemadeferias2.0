@@ -40,19 +40,10 @@ function parseEndDateBR(dateStr) {
   return new Date(year, month - 1, day, 23, 59, 59);
 }
 
-// Função para verificar os limites de férias para uma categoria no período informado
 const checkVacationLimits = async (userCategory, startDate, endDate, ano_referencia) => {
-  console.log('checkVacationLimits chamado com:');
-  console.log('userCategory:', userCategory);
-  console.log('startDate:', startDate);
-  console.log('endDate:', endDate);
-  console.log('ano_referencia:', ano_referencia);
-
   const settings = await Settings.findOne({ where: { id: 1 } });
   const ano = Number(ano_referencia);
-  console.log('Valor convertido de ano_referencia:', ano);
 
-  // Mapeamento de grupo: tanto o cargo sem sufixo quanto com "-P" pertencem ao mesmo grupo
   const groupMapping = {
     'IPC': ['IPC', 'IPC-P'],
     'IPC-P': ['IPC', 'IPC-P'],
@@ -61,92 +52,68 @@ const checkVacationLimits = async (userCategory, startDate, endDate, ano_referen
     'DPC': ['DPC', 'DPC-P'],
     'DPC-P': ['DPC', 'DPC-P']
   };
-
-  // Define o grupo para a categoria corrente
   const userGroup = groupMapping[userCategory];
 
-  // Consulta todas as férias para o ano especificado que se sobrepõem ao período desejado
+  // Busca todas as férias do grupo no ano que se sobrepõem ao novo intervalo
   const vacations = await Vacation.findAll({
     include: [{
       model: User,
       attributes: ['categoria'],
-      where: { ano_referencia: ano },
+      where: { categoria: userGroup, ano_referencia: ano },
       required: true
     }],
     where: {
       ano_referencia: ano,
       [Op.or]: [
-        { data_inicio: { [Op.between]: [startDate, endDate] } },
-        { data_fim: { [Op.between]: [startDate, endDate] } }
+        {
+          data_inicio: { [Op.lte]: endDate },
+          data_fim: { [Op.gte]: startDate }
+        }
       ]
     }
   });
 
-  console.log(`Vacations encontrados para o ano ${ano}:`, vacations.map(v => ({
-    matricula: v.matricula,
-    data_inicio: v.data_inicio,
-    data_fim: v.data_fim,
-    ano_referencia: v.ano_referencia,
-    categoria: v.User ? v.User.categoria : 'N/A'
-  })));
+  // Constrói um mapa de contagem diária
+  const countByDate = {};
 
-  // Calcula a contagem individual para a categoria informada
-  let individualCount = 0;
-  vacations.forEach(vacation => {
-    if (vacation.User && vacation.User.categoria === userCategory) {
-      const overlapStart = vacation.data_inicio > startDate ? vacation.data_inicio : startDate;
-      const overlapEnd = vacation.data_fim < endDate ? vacation.data_fim : endDate;
-      const overlapDays = diffInDays(overlapStart, overlapEnd);
-      console.log(`Vacação de ${vacation.matricula} - sobreposição (${userCategory}): ${overlapDays} dias`);
-      if (overlapDays >= 1) {
-        individualCount++;
-      }
+  for (const v of vacations) {
+    let current = new Date(v.data_inicio);
+    const end = new Date(v.data_fim);
+
+    while (current <= end) {
+      const key = current.toISOString().split('T')[0]; // formato YYYY-MM-DD
+      countByDate[key] = (countByDate[key] || 0) + 1;
+      current.setDate(current.getDate() + 1);
     }
-  });
-  console.log('Contagem individual para', userCategory, ':', individualCount);
-
-  // Calcula a contagem total para o grupo (ex: IPC e IPC-P juntos)
-  let groupCount = 0;
-  vacations.forEach(vacation => {
-    if (vacation.User && userGroup.includes(vacation.User.categoria)) {
-      const overlapStart = vacation.data_inicio > startDate ? vacation.data_inicio : startDate;
-      const overlapEnd = vacation.data_fim < endDate ? vacation.data_fim : endDate;
-      const overlapDays = diffInDays(overlapStart, overlapEnd);
-      if (overlapDays >= 1) {
-        groupCount++;
-      }
-    }
-  });
-  console.log('Contagem total para grupo', userGroup.join('/'), ':', groupCount);
-
-  // Limite individual disponível para a categoria
-  let availableIndividual = 0;
-  if (userCategory === 'IPC') availableIndividual = settings.max_ipc - individualCount;
-  else if (userCategory === 'EPC') availableIndividual = settings.max_epc - individualCount;
-  else if (userCategory === 'DPC') availableIndividual = settings.max_dpc - individualCount;
-  else if (userCategory === 'IPC-P') availableIndividual = settings.max_ipc_p - individualCount;
-  else if (userCategory === 'EPC-P') availableIndividual = settings.max_epc_p - individualCount;
-  else if (userCategory === 'DPC-P') availableIndividual = settings.max_dpc_p - individualCount;
-
-  // Limite total disponível para o grupo – determina o campo de configuração adequado
-  let availableGroup = 0;
-  if (userGroup[0] === 'IPC') availableGroup = settings.max_ipc_t - groupCount;
-  else if (userGroup[0] === 'EPC') availableGroup = settings.max_epc_t - groupCount;
-  else if (userGroup[0] === 'DPC') availableGroup = settings.max_dpc_t - groupCount;
-
-  console.log('Vagas disponíveis individualmente para', userCategory, ':', availableIndividual);
-  console.log('Vagas disponíveis no grupo', userGroup.join('/'), ':', availableGroup);
-
-  // O número de vagas disponíveis é o mínimo entre o limite individual e o limite total do grupo
-  const availableSlots = Math.min(availableIndividual, availableGroup);
-  if (availableSlots <= 0) {
-    return {
-      allowed: false,
-      message: `Sua marcação de férias não foi autorizada, pois o limite total para o grupo ${userGroup.join('/')} para o ano ${ano} foi atingido. Já há ${groupCount} funcionário(s) nesse período.`,
-      availableSlots: 0
-    };
   }
-  return { allowed: true, availableSlots };
+
+  // Agora verificamos o novo intervalo dia a dia
+  const maxGroupLimit = 
+    userGroup[0] === 'IPC' ? settings.max_ipc_t :
+    userGroup[0] === 'EPC' ? settings.max_epc_t :
+    userGroup[0] === 'DPC' ? settings.max_dpc_t : 0;
+
+  let current = new Date(startDate);
+  const end = new Date(endDate);
+
+  while (current <= end) {
+    const key = current.toISOString().split('T')[0];
+    const count = countByDate[key] || 0;
+
+    if (count >= maxGroupLimit) {
+      return {
+        allowed: false,
+        message: `A data ${key.split('-').reverse().join('/')} já possui o limite de ${maxGroupLimit} funcionários de férias no grupo ${userGroup.join('/')}.`,
+        availableSlots: 0
+      };
+    }
+    current.setDate(current.getDate() + 1);
+  }
+
+  return {
+    allowed: true,
+    availableSlots: maxGroupLimit
+  };
 };
 
 
