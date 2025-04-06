@@ -6,23 +6,84 @@
   <title>Login - Administrador</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <style>
-    /* Container menor e centralizado para o login */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f8f9fa;
+    }
+  
     .login-container {
-      max-width: 400px;
-      margin: 50px auto;  /* Centraliza e adiciona margem superior/inferior */
-      margin-top: 10vh;
+      position: relative;
+      max-width: 300px;
+      width: 100%;
       padding: 20px;
       background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      overflow: visible;
+    }
+  
+    /* Elementos decorativos */
+    .decor-top-right,
+    .decor-bottom-left {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 2px dotted #007bff;
+      z-index: 0;
+    }
+  
+    .decor-top-right {
+      top: -10px;
+      right: -10px;
+      border-left: none;
+      border-bottom: none;
+      border-top-right-radius: 12px;
+    }
+  
+    .decor-top-right.second {
+      top: -20px;
+      right: -20px; /* 60px de largura + 10px de margem */
+      opacity: 0.6;
+      border-width: 2px;
+    }
+  
+    .decor-bottom-left {
+      bottom: -10px;
+      left: -10px;
+      border-right: none;
+      border-top: none;
+      border-bottom-left-radius: 12px;
+    }
+  
+    .decor-bottom-left.second {
+      bottom: -20px;
+      left: -20px; /* 60px de largura + 10px de margem */
+      opacity: 0.6;
+      border-width: 2px;
+    }
+  
+    .login-container > *:not(.decor-top-right):not(.decor-bottom-left) {
+      position: relative;
+      z-index: 1;
     }
   </style>
+  
 </head>
-<body class="bg-light">
+<body>
   <div class="login-container">
-    <h2 class="text-center mb-4">Login - Administrador</h2>
-    
-    <!-- Mensagens de feedback - Alertas ocultos por padrão -->
+    <!-- Elementos decorativos -->
+    <div class="decor-top-right"></div>
+    <div class="decor-top-right second"></div>
+    <div class="decor-bottom-left"></div>
+    <div class="decor-bottom-left second"></div>
+
+    <h2 class="text-center mb-4">Administrador</h2>
+
+    <!-- Mensagens de feedback -->
     <div id="flash-messages">
       <% if (success_msg) { %>
         <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
@@ -30,7 +91,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       <% } %>
-      
+
       <% if (error_msg) { %>
         <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
           <%= error_msg %>
@@ -38,7 +99,7 @@
         </div>
       <% } %>
     </div>
-    
+
     <form action="/auth/login" method="POST">
       <div class="mb-3">
         <label>Email:</label>
@@ -51,13 +112,9 @@
       <div class="mt-3">
         <button type="submit" class="btn btn-primary w-100">Entrar</button>
       </div>
-      <div class="mt-3">
-        <a href="/user" class="btn btn-secondary w-100">Página Inicial</a>
-      </div>
     </form>
   </div>
 
-  <!-- Script para exibir os alertas com fade in -->
   <script>
     document.addEventListener("DOMContentLoaded", function(){
       function showAlert(alertId) {
@@ -72,8 +129,6 @@
       showAlert("error-alert");
     });
   </script>
-  
-  <!-- Bootstrap JS Bundle -->
   <script src="/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

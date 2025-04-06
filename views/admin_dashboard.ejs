@@ -3,13 +3,13 @@
 <head>
   <title>Dashboard do Administrador</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link href="/css/bootstrap.min.css" rel="stylesheet" >
+  <link href="/css/bootstrap-icons.css" rel="stylesheet">
+
   <style>
     body {
       background-color: #f8f9fa;
-      
     }
-   
     .dashboard-header {
       margin-top: 20px;
       margin-bottom: 20px;
@@ -81,115 +81,97 @@
       padding: 0.25rem 0.5rem;
       font-size: 0.875rem;
     }
-
-
-     /* Para telas abaixo de 990px */
-  @media (max-width: 990px) {
-    .filter-container label,
-    .filter-container input,
-    .filter-container select {
-      font-size: 0.85rem;
-      padding: 0.25rem;
+    /* Para telas abaixo de 990px */
+    @media (max-width: 990px) {
+      .filter-container label,
+      .filter-container input,
+      .filter-container select {
+        font-size: 0.85rem;
+        padding: 0.25rem;
+      }
     }
-  }
-  /* Para telas abaixo de 768px */
-  @media (max-width: 768px) {
-    .filter-container label,
-    .filter-container input,
-    .filter-container select {
-      font-size: 0.75rem;
-      padding: 0.2rem;
+    /* Para telas abaixo de 768px */
+    @media (max-width: 768px) {
+      .filter-container label,
+      .filter-container input,
+      .filter-container select {
+        font-size: 0.75rem;
+        padding: 0.2rem;
+      }
     }
-  }
-    
-  .offcanvas {
-    max-width: 220px;	
-   
-  }
-  
-  .nav-link {
-    color: #000 !important;
-    
-  }
-
-  /* Limita a largura do container da navbar */
-  .navbar-container {
-    max-width: 460px;
-    margin: 0 auto;
-  }
-  /* Define largura fixa para o offcanvas em dispositivos móveis */
-  @media (max-width: 768px) {
     .offcanvas {
-      width: 50% !important;
-      max-width: 200px;	
-      min-width: 150px;	
-     
+      max-width: 220px;	
     }
-
     .nav-link {
-    font-size: 0.9rem; /* tamanho menor para dispositivos móveis */
-  }
-  }
-
-  @media (max-width: 400px) {
-   
-
-    .nav-link {
-    font-size: 0.7rem; /* tamanho menor para dispositivos móveis */
-  }
-  }
-
-
-
+      color: #000 !important;
+    }
+    /* Limita a largura do container da navbar */
+    .navbar-container {
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    /* Define largura fixa para o offcanvas em dispositivos móveis */
+    @media (max-width: 768px) {
+      .offcanvas {
+        width: 50% !important;
+        max-width: 200px;	
+        min-width: 150px;	
+      }
+      .nav-link {
+        font-size: 0.9rem; /* tamanho menor para dispositivos móveis */
+      }
+    }
+    @media (max-width: 400px) {
+      .nav-link {
+        font-size: 0.7rem; /* tamanho menor para dispositivos móveis */
+      }
+    }
   </style>
 </head>
 <body>
 
 <!-- NavBar -->
-<!-- Navbar com Offcanvas (Menu Lateral) -->
-<nav class="navbar navbar-dark bg-primary" >
+<nav class="navbar navbar-dark bg-primary">
   <div class="container" style="max-width: 1400px;">
-
     <a class="navbar-brand" href="#">Sistema de Férias</a>
-    <!-- Botão que dispara o offcanvas -->
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <!-- Offcanvas: Menu lateral à esquerda -->
+
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
+
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <li class="nav-item">
-            <a class="nav-link" href="/users/dashboard">Início</a>
+            <a class="nav-link" href="/users/dashboard"><i class="bi bi-house-door-fill me-2"></i>Início</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/users/register">Cadastrar Usuário</a>
+            <a class="nav-link" href="/users/register"><i class="bi bi-person-plus-fill me-2"></i>Cadastrar Usuário</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/vacations/admin-form">Cadastrar Férias</a>
+            <a class="nav-link" href="/vacations/admin-form"><i class="bi bi-calendar-plus me-2"></i>Cadastrar Férias</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/vacations/calendar-options">Calendário</a>
-          </li>
-          <!-- Outros links, como o de configuração de limites, resetar férias, apagar matrícula, etc. -->
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#configLimitsModal">Configurar Limites</a>
+            <a class="nav-link" href="/vacations/calendar-options"><i class="bi bi-calendar-event me-2"></i>Calendário</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#resetVacationsModal">Resetar Férias</a>
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#configLimitsModal"><i class="bi bi-sliders2-vertical me-2"></i>Configurar Limites</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#deleteUserModal">Apagar Matrícula</a>
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#resetVacationsModal"><i class="bi bi-arrow-repeat me-2"></i>Resetar Férias</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#migrateModal">Migrar base de dados</a>
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#deleteUserModal"><i class="bi bi-person-dash me-2"></i>Apagar Matrícula</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/auth/logout">Logout</a>
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#migrateModal"><i class="bi bi-cloud-arrow-up me-2"></i>Migrar dados</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
           </li>
         </ul>
       </div>
@@ -208,7 +190,6 @@
       <div class="modal-body">
         <form action="/users/update-limits" method="POST">
           <div class="row">
-            <!-- Limites para cargos originais -->
             <div class="col-4">
               <label for="max_ipc" class="form-label">IPC</label>
               <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control form-control-sm">
@@ -223,7 +204,6 @@
             </div>
           </div>
           <div class="row mt-2">
-            <!-- Limites para cargos com sufixo -P -->
             <div class="col-4">
               <label for="max_ipc_p" class="form-label">IPC-P</label>
               <input type="number" name="max_ipc_p" id="max_ipc_p" value="<%= settings.max_ipc_p %>" class="form-control form-control-sm">
@@ -238,7 +218,6 @@
             </div>
           </div>
           <div class="row mt-2">
-            <!-- Limites totais para cada grupo -->
             <div class="col-4">
               <label for="max_ipc_t" class="form-label">IPC-T</label>
               <input type="number" name="max_ipc_t" id="max_ipc_t" value="<%= settings.max_ipc_t %>" class="form-control form-control-sm">
@@ -311,933 +290,422 @@
   </div>
 </div>
 
-  <!-- Modal de Migração de Base de Dados -->
-  <div class="modal fade" id="migrateModal" tabindex="-1" aria-labelledby="migrateModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form action="/users/migrate" method="POST">
-          <div class="modal-header">
-            <h5 class="modal-title" id="migrateModalLabel">Migrar Base de Dados</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <p>Essa ação irá copiar os dados de férias de um ano anterior para um ano específico.</p>
-            
-            <div class="mb-3">
-              <label for="sourceYear" class="form-label">Ano de Origem</label>
-              <input type="number" class="form-control" id="sourceYear" name="sourceYear" required placeholder="Ex: 2024">
-            </div>
-            
-            <div class="mb-3">
-              <label for="targetYear" class="form-label">Ano de Destino</label>
-              <input type="number" class="form-control" id="targetYear" name="targetYear" required placeholder="Ex: 2025">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Migrar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Alterar Férias -->
-  <div class="modal fade" id="editFeriasModal" tabindex="-1" aria-labelledby="editFeriasModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+<!-- Modal de Migração de Base de Dados -->
+<div class="modal fade" id="migrateModal" tabindex="-1" aria-labelledby="migrateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/users/migrate" method="POST">
         <div class="modal-header">
-          <h5 class="modal-title">Alterar Férias</h5>
-          <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" id="feriasModalBody">
-          <p>Carregando dados de férias...</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- Modal Alterar Usuário -->
-  <div class="modal fade" id="editUsuarioModal" tabindex="-1" aria-labelledby="editUsuarioModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Editar Usuário</h5>
+          <h5 class="modal-title" id="migrateModalLabel">Migrar Base de Dados</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
-        <div class="modal-body" id="usuarioModalBody">
-          <!-- Formulário de usuário será carregado aqui -->
+        <div class="modal-body">
+          <p>Essa ação irá copiar os dados de férias de um ano anterior para um ano específico.</p>
+          <div class="mb-3">
+            <label for="sourceYear" class="form-label">Ano de Origem</label>
+            <input type="number" class="form-control" id="sourceYear" name="sourceYear" required placeholder="Ex: 2024">
+          </div>
+          <div class="mb-3">
+            <label for="targetYear" class="form-label">Ano de Destino</label>
+            <input type="number" class="form-control" id="targetYear" name="targetYear" required placeholder="Ex: 2025">
+          </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Migrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Alterar Férias -->
+<div class="modal fade" id="editFeriasModal" tabindex="-1" aria-labelledby="editFeriasModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Alterar Férias</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="feriasModalBody">
+        <p>Carregando dados de férias...</p>
       </div>
     </div>
   </div>
+</div>
 
-
-
-  
-  <!-- Conteúdo do Dashboard -->
-  <div class="container mt-4" style="max-width: 1400px;">
-
-    
-    
-    <!-- Mensagens de feedback -->
-    <div id="flash-messages">
-      <% if (success_msg) { %>
-        <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
-          <%= success_msg %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      <% } %>
-      <% if (error_msg) { %>
-        <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
-          <%= error_msg %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      <% } %>
+<!-- Modal Alterar Usuário -->
+<div class="modal fade" id="editUsuarioModal" tabindex="-1" aria-labelledby="editUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Usuário</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body" id="usuarioModalBody">
+        <!-- Formulário de usuário será carregado aqui -->
+      </div>
     </div>
-    
-    
-    
-            
-      
-    
+  </div>
+</div>
 
-    <div class="container mt-4" style="max-width: 1400px;">
-
-      <div class="row">
-        <!-- Tabela de Limites (60% da largura) -->
-        <div class="col-12 col-md-7">
-          <div class="dashboard-header text-left">
-            <h3>Tabela de Limites</h3>
-          </div>
-          <%
-            // Obtém o ano corrente
-            let currentYear = new Date().getFullYear();
-            // Inicializa os contadores para usuários com ano_referencia igual ao ano corrente
-            let totalIPC = 0, totalIPC_P = 0, totalEPC = 0, totalEPC_P = 0, totalDPC = 0, totalDPC_P = 0;
-            users.forEach(function(u) {
-              if(u.ano_referencia == currentYear) {
-                if(u.categoria === 'IPC') totalIPC++;
-                else if(u.categoria === 'IPC-P') totalIPC_P++;
-                else if(u.categoria === 'EPC') totalEPC++;
-                else if(u.categoria === 'EPC-P') totalEPC_P++;
-                else if(u.categoria === 'DPC') totalDPC++;
-                else if(u.categoria === 'DPC-P') totalDPC_P++;
-              }
-            });
-          %>
-          <div class="table-responsive">
-            <table class="table table-bordered text-center styled-table">
-              <thead>
-                <tr>
-                  <th>Atributo</th>
-                  <th>IPC</th>
-                  <th>IPC‑P</th>
-                  <th>EPC</th>
-                  <th>EPC‑P</th>
-                  <th>DPC</th>    
-                  <th>DPC‑P</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Limite Individual</td>
-                  <td><%= settings.max_ipc %></td>
-                  <td><%= settings.max_ipc_p %></td>
-                  <td><%= settings.max_epc %></td>
-                  <td><%= settings.max_epc_p %></td>
-                  <td><%= settings.max_dpc %></td>
-                  <td><%= settings.max_dpc_p %></td>
-                </tr>
-                <tr>
-                  <td>Limite Total</td>
-                  <td colspan="2"><%= settings.max_ipc_t %></td>
-                  <td colspan="2"><%= settings.max_epc_t %></td>
-                  <td colspan="2"><%= settings.max_dpc_t %></td>
-                </tr>
-                <tr>
-                  <td>Cadastrados Total</td>
-                  <td><%= totalIPC %></td>
-                  <td><%= totalIPC_P %></td>
-                  <td><%= totalEPC %></td>
-                  <td><%= totalEPC_P %></td>
-                  <td><%= totalDPC %></td>
-                  <td><%= totalDPC_P %></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+<!-- Conteúdo do Dashboard -->
+<div class="container mt-4" style="max-width: 1400px;">
+  <div id="flash-messages">
+    <% if (success_msg) { %>
+      <div class="alert alert-success alert-dismissible fade" role="alert" id="success-alert" style="display: none;">
+        <%= success_msg %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+    <% if (error_msg) { %>
+      <div class="alert alert-danger alert-dismissible fade" role="alert" id="error-alert" style="display: none;">
+        <%= error_msg %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+  </div>
+  
+  <div class="container mt-4" style="max-width: 1400px;">
+    <div class="row">
+      <!-- Tabela de Limites (60% da largura) -->
+      <div class="col-12 col-md-7">
+        <div class="dashboard-header text-left">
+          <h3>Tabela de Limites</h3>
         </div>
-        
-        <!-- Filtros (40% da largura) -->
-        <div class="col-12 col-md-5">
-          <div class="dashboard-header text-left">
-            <h3>Filtros</h3>
-          </div>
-          <div class="card shadow-sm">
-            <div class="card-body filter-container">
-              <!-- Primeira linha: Filtros por Mês e Nome -->
-              <div class="row g-3">
-                <div class="col-6">
-                  <label for="filter-mes" class="form-label">por mês:</label>
-                  <select id="filter-mes" class="form-select form-select-sm">
-                    <option value="">Todos</option>
-                    <option value="01">Janeiro</option>
-                    <option value="02">Fevereiro</option>
-                    <option value="03">Março</option>
-                    <option value="04">Abril</option>
-                    <option value="05">Maio</option>
-                    <option value="06">Junho</option>
-                    <option value="07">Julho</option>
-                    <option value="08">Agosto</option>
-                    <option value="09">Setembro</option>
-                    <option value="10">Outubro</option>
-                    <option value="11">Novembro</option>
-                    <option value="12">Dezembro</option>
-                  </select>
-                </div>
-                <div class="col-6">
-                  <label for="filter-nome" class="form-label">por nome:</label>
-                  <input type="text" id="filter-nome" class="form-control form-select-sm" placeholder="Digite o nome">
-                </div>
+        <%
+          let currentYear = new Date().getFullYear();
+          let totalIPC = 0, totalIPC_P = 0, totalEPC = 0, totalEPC_P = 0, totalDPC = 0, totalDPC_P = 0;
+          users.forEach(function(u) {
+            if(u.ano_referencia == currentYear) {
+              if(u.categoria === 'IPC') totalIPC++;
+              else if(u.categoria === 'IPC-P') totalIPC_P++;
+              else if(u.categoria === 'EPC') totalEPC++;
+              else if(u.categoria === 'EPC-P') totalEPC_P++;
+              else if(u.categoria === 'DPC') totalDPC++;
+              else if(u.categoria === 'DPC-P') totalDPC_P++;
+            }
+          });
+        %>
+        <div class="table-responsive">
+          <table class="table table-bordered text-center styled-table">
+            <thead>
+              <tr>
+                <th>Atributo</th>
+                <th>IPC</th>
+                <th>IPC‑P</th>
+                <th>EPC</th>
+                <th>EPC‑P</th>
+                <th>DPC</th>    
+                <th>DPC‑P</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Limite Individual</td>
+                <td><%= settings.max_ipc %></td>
+                <td><%= settings.max_ipc_p %></td>
+                <td><%= settings.max_epc %></td>
+                <td><%= settings.max_epc_p %></td>
+                <td><%= settings.max_dpc %></td>
+                <td><%= settings.max_dpc_p %></td>
+              </tr>
+              <tr>
+                <td>Limite Total</td>
+                <td colspan="2"><%= settings.max_ipc_t %></td>
+                <td colspan="2"><%= settings.max_epc_t %></td>
+                <td colspan="2"><%= settings.max_dpc_t %></td>
+              </tr>
+              <tr>
+                <td>Cadastrados Total</td>
+                <td><%= totalIPC %></td>
+                <td><%= totalIPC_P %></td>
+                <td><%= totalEPC %></td>
+                <td><%= totalEPC_P %></td>
+                <td><%= totalDPC %></td>
+                <td><%= totalDPC_P %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Filtros (40% da largura) -->
+      <div class="col-12 col-md-5">
+        <div class="dashboard-header text-left">
+          <h3>Filtros</h3>
+        </div>
+        <div class="card shadow-sm">
+          <div class="card-body filter-container">
+            <div class="row g-3">
+              <div class="col-6">
+                <label for="filter-mes" class="form-label">por mês:</label>
+                <select id="filter-mes" class="form-select form-select-sm">
+                  <option value="">Todos</option>
+                  <option value="01">Janeiro</option>
+                  <option value="02">Fevereiro</option>
+                  <option value="03">Março</option>
+                  <option value="04">Abril</option>
+                  <option value="05">Maio</option>
+                  <option value="06">Junho</option>
+                  <option value="07">Julho</option>
+                  <option value="08">Agosto</option>
+                  <option value="09">Setembro</option>
+                  <option value="10">Outubro</option>
+                  <option value="11">Novembro</option>
+                  <option value="12">Dezembro</option>
+                </select>
               </div>
-              <!-- Segunda linha: Filtros por Matrícula e Ano -->
-              <div class="row g-3 mt-2">
-                <div class="col-6">
-                  <label for="filter-matricula" class="form-label">por matrícula:</label>
-                  <input type="text" id="filter-matricula" class="form-control form-select-sm" placeholder="Digite a matrícula">
-                </div>
-                <div class="col-6">
-                  <label for="filter-ano" class="form-label">por ano:</label>
-                  <select id="filter-ano" class="form-select form-select-sm">
-                    <option value="">Todos</option>
-                    <% distinctYears.forEach(function(ano) { %>
-                      <option value="<%= ano %>" <%= ano == currentYear ? 'selected' : '' %>><%= ano %></option>
-                    <% }); %>
-                  </select>
-                </div>
+              <div class="col-6">
+                <label for="filter-nome" class="form-label">por nome:</label>
+                <input type="text" id="filter-nome" class="form-control form-select-sm" placeholder="Digite o nome">
+              </div>
+            </div>
+            <div class="row g-3 mt-2">
+              <div class="col-6">
+                <label for="filter-matricula" class="form-label">por matrícula:</label>
+                <input type="text" id="filter-matricula" class="form-control form-select-sm" placeholder="Digite a matrícula">
+              </div>
+              <div class="col-6">
+                <label for="filter-ano" class="form-label">por ano:</label>
+                <select id="filter-ano" class="form-select form-select-sm">
+                  <option value="">Todos</option>
+                  <% distinctYears.forEach(function(ano) { %>
+                    <option value="<%= ano %>" <%= ano == currentYear ? 'selected' : '' %>><%= ano %></option>
+                  <% }); %>
+                </select>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
-    
-    
-    
-    <!-- Classificação dos usuários -->
-    <!-- Para facilitar, vamos filtrar os usuários em cada categoria no template -->
-    <% let ipcUsers = users.filter(u => u.categoria === 'IPC' || u.categoria === 'IPC-P'); %>
+  </div>
 
-    <% let epcUsers = users.filter(u => u.categoria === 'EPC' || u.categoria === 'EPC-P'); %>
+  <% let ipcUsers = users.filter(u => u.categoria === 'IPC' || u.categoria === 'IPC-P'); %>
+  <% let epcUsers = users.filter(u => u.categoria === 'EPC' || u.categoria === 'EPC-P'); %>
+  <% let dpcUsers = users.filter(u => u.categoria === 'DPC' || u.categoria === 'DPC-P'); %>
 
-    <% let dpcUsers = users.filter(u => u.categoria === 'DPC' || u.categoria === 'DPC-P'); %>
+  <div class="dashboard-header text-left">
+    <h3>Cassificação dos IPCs</h3>
+    <button class="btn btn-secondary btn-sm" id="download-ipc">Download PDF</button>
+    <button class="btn btn-secondary btn-sm" id="download-simplificado-ipc">Download Simplificado</button>
+  </div>
 
-    
-    <div class="dashboard-header text-left">
-      <h3>Cassificação dos IPCs</h3>
-      <button class="btn btn-secondary btn-sm" id="download-ipc">Download PDF</button>
-      <button class="btn btn-secondary btn-sm" id="download-simplificado-ipc">Download Simplificado</button>
-      
-    </div>
-
-    <!-- Tabela Completa de Servidores IPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4 small" id="ipcTableContainer">
-      <table class="table classification-table" id="ipcTable">
-        <thead style="background-color: #007bff; color: white;">
-          <tr>
-            <th>ID</th>
-            <th>Nº</th>
-            <th class="hide-mobile">Cargo</th>
-            <th>Matrícula</th>
-            <th>Nome</th>
-            <th class="hide-mobile">Ano</th>
-            <th class="hide-mobile">Gest.</th>
-            <th class="hide-mobile">Qtd. Filhos</th>
-            <th class="hide-mobile">Estud.</th>
-            <th class="hide-mobile">Dois Vinc.</th>
-            <th class="hide-mobile">Dat. Ingresso</th>
-            <th class="hide-mobile">Antig.</th>
-            <th class="hide-mobile">Cônj. serv</th>
-            <th class="hide-mobile">Dat. de Nasc.</th>
-            <th class="hide-mobile">Idade</th>
-            <th class="hide-mobile">P. Aq. (Início)</th>
-            <th class="hide-mobile">P. Aq. (Fim)</th>
-            <th>Ações</th>
-            <th>Férias</th>
-            
-
-
+  <div class="table-responsive mt-4 small" id="ipcTableContainer">
+    <table class="table classification-table" id="ipcTable">
+      <thead style="background-color: #007bff; color: white;">
+        <tr>
+          <th class="hide-mobile">ID</th>
+          <th>Nº</th>
+          <th class="hide-mobile">Cargo</th>
+          <th class="hide-mobile">Matrícula</th>
+          <th>Nome</th>
+          <th class="hide-mobile">Ano</th>
+          <th class="hide-mobile">Gest.</th>
+          <th class="hide-mobile">Qtd. Filhos</th>
+          <th class="hide-mobile">Estud.</th>
+          <th class="hide-mobile">Dois Vinc.</th>
+          <th class="hide-mobile">Dat. Ingresso</th>
+          <th class="hide-mobile">Antig.</th>
+          <th class="hide-mobile">Cônj. serv</th>
+          <th class="hide-mobile">Dat. de Nasc.</th>
+          <th class="hide-mobile">Idade</th>
+          <th class="hide-mobile">P. Aq. (Início)</th>
+          <th class="hide-mobile">P. Aq. (Fim)</th>
+          <th>Ações</th>
+          <th>Férias</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% ipcUsers.forEach(user => { %>
+          <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <td class="hide-mobile"><%= user.id %></td>
+            <td><%= user.classificacao %></td>
+            <td class="hide-mobile"><%= user.categoria %></td>
+            <td class="hide-mobile"><%= user.matricula %></td>
+            <td><%= user.nome %></td>
+            <td class="hide-mobile"><%= user.ano_referencia %></td>
+            <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= user.qtd_filhos %></td>
+            <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
+            <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
+            <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
+            <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
+            <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
+            <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
+            <td>
+              <button class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 2px 6px;" data-toggle="modal" data-target="#editUsuarioModal" data-matricula="<%= user.matricula %>" data-nome="<%= user.nome %>" data-email="<%= user.email %>">
+                Alterar Usuário
+              </button>
+            </td>
+            <td>
+              <% if (user.Vacations && user.Vacations.length > 0) { %>
+                <% user.Vacations.forEach(vacation => { %>
+                  <p><%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
+                <% }); %>
+              <% } else { %>
+                <span class="text-muted">Nenhuma</span>
+              <% } %>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% ipcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
 
-              <td><%= user.id %></td>
-              <td><%= user.classificacao %></td>
-              <td class="hide-mobile"><%= user.categoria %></td>
-              <td><%= user.matricula %></td>
-              <td><%= user.nome %></td>
-              <td class="hide-mobile"><%= user.ano_referencia %></td>
-              <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.qtd_filhos %></td>
-              <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
-              <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
-              <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
-              <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
-              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
-              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
-              <td>
-                <!-- desativado porque não obedece critérios de férias
-                <button
-                  class="btn btn-warning btn-sm"
-                  data-toggle="modal"
-                  data-target="#editFeriasModal"
-                  data-matricula="<%= user.matricula %>"
-                  data-nome="<%= user.nome %>"
-                  data-ano="<%= user.ano_referencia %>""
-                >
-                  Alterar Férias
-                </button>
-                -->
-                <button
-                  class="btn btn-info btn-sm"
-                  style="font-size: 0.75rem; padding: 2px 6px;"
-                  data-toggle="modal"
-                  data-target="#editUsuarioModal"
-                  data-matricula="<%= user.matricula %>"
-                  data-nome="<%= user.nome %>"
-                  data-email="<%= user.email %>"
-                >
-                  Alterar Usuário
-                </button>
-              </td>
-              
-              <td>
-                <% if (user.Vacations && user.Vacations.length > 0) { %>
-                  <% user.Vacations.forEach(vacation => { %>
-                    <p><%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
-                  <% }); %>
-                <% } else { %>
-                  <span class="text-muted">Nenhuma</span>
-                <% } %>
-              </td>
-              
-              
-              
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
-    
+  <div class="dashboard-header text-left">
+    <h3>Cassificação dos EPCs</h3>
+    <button class="btn btn-secondary btn-sm" id="download-epc">Download PDF</button>
+    <button class="btn btn-secondary btn-sm" id="download-simplificado-epc">Download Simplificado</button>
+  </div>
 
-    
-    <div class="dashboard-header text-left">
-      <h3>Cassificação dos EPCs</h3>
-      <button class="btn btn-secondary btn-sm" id="download-epc">Download PDF</button>
-      <button class="btn btn-secondary btn-sm" id="download-simplificado-epc">Download Simplificado</button>
-    </div>
-
-    <!-- Tabela Completa de Servidores EPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive mt-4 small" id="ipcTableContainer">
-      <table class="table classification-table" id="epcTable">
-        <thead style="background-color: #007bff; color: white;">
-          <tr>
-            <th>ID</th>
-            <th>Nº</th>
-            <th class="hide-mobile">Cargo</th>
-            <th>Matrícula</th>
-            <th>Nome</th>
-            <th class="hide-mobile">Ano</th>
-            <th class="hide-mobile">Gest.</th>
-            <th class="hide-mobile">Qtd. Filhos</th>
-            <th class="hide-mobile">Estud.</th>
-            <th class="hide-mobile">Dois Vinc.</th>
-            <th class="hide-mobile">Dat. Ingresso</th>
-            <th class="hide-mobile">Antig.</th>
-            <th class="hide-mobile">Cônj. serv</th>
-            <th class="hide-mobile">Dat. de Nasc.</th>
-            <th class="hide-mobile">Idade</th>
-            <th class="hide-mobile">P. Aq. (Início)</th>
-            <th class="hide-mobile">P. Aq. (Fim)</th>
-            <th>Ações</th>
-            <th>Férias</th>
+  <div class="table-responsive mt-4 small" id="ipcTableContainer">
+    <table class="table classification-table" id="epcTable">
+      <thead style="background-color: #007bff; color: white;">
+        <tr>
+          <th class="hide-mobile">ID</th>
+          <th>Nº</th>
+          <th class="hide-mobile">Cargo</th>
+          <th class="hide-mobile">Matrícula</th>
+          <th>Nome</th>
+          <th class="hide-mobile">Ano</th>
+          <th class="hide-mobile">Gest.</th>
+          <th class="hide-mobile">Qtd. Filhos</th>
+          <th class="hide-mobile">Estud.</th>
+          <th class="hide-mobile">Dois Vinc.</th>
+          <th class="hide-mobile">Dat. Ingresso</th>
+          <th class="hide-mobile">Antig.</th>
+          <th class="hide-mobile">Cônj. serv</th>
+          <th class="hide-mobile">Dat. de Nasc.</th>
+          <th class="hide-mobile">Idade</th>
+          <th class="hide-mobile">P. Aq. (Início)</th>
+          <th class="hide-mobile">P. Aq. (Fim)</th>
+          <th>Ações</th>
+          <th>Férias</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% epcUsers.forEach(user => { %>
+          <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <td class="hide-mobile"><%= user.id %></td>
+            <td><%= user.classificacao %></td>
+            <td class="hide-mobile"><%= user.categoria %></td>
+            <td class="hide-mobile"><%= user.matricula %></td>
+            <td><%= user.nome %></td>
+            <td class="hide-mobile"><%= user.ano_referencia %></td>
+            <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= user.qtd_filhos %></td>
+            <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
+            <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
+            <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
+            <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
+            <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
+            <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
+            <td>
+              <button class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 2px 6px;" data-toggle="modal" data-target="#editUsuarioModal" data-matricula="<%= user.matricula %>" data-nome="<%= user.nome %>" data-email="<%= user.email %>">
+                Alterar Usuário
+              </button>
+            </td>
+            <td>
+              <% if (user.Vacations && user.Vacations.length > 0) { %>
+                <% user.Vacations.forEach(vacation => { %>
+                  <p><%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
+                <% }); %>
+              <% } else { %>
+                <span class="text-muted">Nenhuma</span>
+              <% } %>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% epcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
-              <td><%= user.id %></td>
-              <td><%= user.classificacao %></td>
-              <td class="hide-mobile"><%= user.categoria %></td>
-              <td><%= user.matricula %></td>
-              <td><%= user.nome %></td>
-              <td class="hide-mobile"><%= user.ano_referencia %></td>
-              <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.qtd_filhos %></td>
-              <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
-              <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
-              <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
-              <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
-              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
-              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
-              <td>
-                <!-- desativado porque não obedece critérios de férias
-                <button
-                  class="btn btn-warning btn-sm"
-                  data-toggle="modal"
-                  data-target="#editFeriasModal"
-                  data-matricula="<%= user.matricula %>"
-                  data-nome="<%= user.nome %>"
-                  data-ano="<%= user.ano_referencia %>""
-                >
-                  Alterar Férias
-                </button>
-                -->
-                <button
-                  class="btn btn-info btn-sm"
-                  style="font-size: 0.75rem; padding: 2px 6px;"
-                  data-toggle="modal"
-                  data-target="#editUsuarioModal"
-                  data-matricula="<%= user.matricula %>"
-                  data-nome="<%= user.nome %>"
-                  data-email="<%= user.email %>"
-                >
-                  Alterar Usuário
-                </button>
-              </td>
-              
-              <td>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
 
-                <% if (user.Vacations && user.Vacations.length > 0) { %>
-                  <% user.Vacations.forEach(vacation => { %>
-                    <p><%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
-                  <% }); %>
-                <% } else { %>
-                  <span class="text-muted">Nenhuma</span>
-                <% } %>
-              </td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
-    
+  <div class="dashboard-header text-left">
+    <h3>Cassificação dos DPCs</h3>
+    <button class="btn btn-secondary btn-sm" id="download-dpc">Download PDF</button>
+    <button class="btn btn-secondary btn-sm" id="download-simplificado-dpc">Download Simplificado</button>
+  </div>
 
-    <div class="dashboard-header text-left">
-      <h3>Cassificação dos DPCs</h3>
-      <button class="btn btn-secondary btn-sm" id="download-dpc">Download PDF</button>
-      <button class="btn btn-secondary btn-sm" id="download-simplificado-dpc">Download Simplificado</button>
-    </div>
-
-    <!-- Tabela Completa de Servidores DPC (adaptada para dispositivos móveis) -->
-    <div class="table-responsive small mt-4" id="dpcTableContainer">
-      <table class="table classification-table" id="dpcTable">
-        <thead style="background-color: #007bff; color: white;">
-          <tr>
-            <th>ID</th>
-            <th>Nº</th>
-            <th class="hide-mobile">Cargo</th>
-            <th>Matrícula</th>
-            <th>Nome</th>
-            <th class="hide-mobile">Ano</th>
-            <th class="hide-mobile">Gest.</th>
-            <th class="hide-mobile">Qtd. Filhos</th>
-            <th class="hide-mobile">Estud.</th>
-            <th class="hide-mobile">Dois Vinc.</th>
-            <th class="hide-mobile">Dat. Ingresso</th>
-            <th class="hide-mobile">Antig.</th>
-            <th class="hide-mobile">Cônj. serv</th>
-            <th class="hide-mobile">Dat. de Nasc.</th>
-            <th class="hide-mobile">Idade</th>
-            <th class="hide-mobile">P. Aq. (Início)</th>
-            <th class="hide-mobile">P. Aq. (Fim)</th>
-            <th>Ações</th>
-            <th>Férias</th>
+  <div class="table-responsive small mt-4" id="dpcTableContainer">
+    <table class="table classification-table" id="dpcTable">
+      <thead style="background-color: #007bff; color: white;">
+        <tr>
+          <th class="hide-mobile">ID</th>
+          <th>Nº</th>
+          <th class="hide-mobile">Cargo</th>
+          <th class="hide-mobile">Matrícula</th>
+          <th>Nome</th>
+          <th class="hide-mobile">Ano</th>
+          <th class="hide-mobile">Gest.</th>
+          <th class="hide-mobile">Qtd. Filhos</th>
+          <th class="hide-mobile">Estud.</th>
+          <th class="hide-mobile">Dois Vinc.</th>
+          <th class="hide-mobile">Dat. Ingresso</th>
+          <th class="hide-mobile">Antig.</th>
+          <th class="hide-mobile">Cônj. serv</th>
+          <th class="hide-mobile">Dat. de Nasc.</th>
+          <th class="hide-mobile">Idade</th>
+          <th class="hide-mobile">P. Aq. (Início)</th>
+          <th class="hide-mobile">P. Aq. (Fim)</th>
+          <th>Ações</th>
+          <th>Férias</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% dpcUsers.forEach(user => { %>
+          <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
+            <td class="hide-mobile"><%= user.id %></td>
+            <td><%= user.classificacao %></td>
+            <td class="hide-mobile"><%= user.categoria %></td>
+            <td class="hide-mobile"><%= user.matricula %></td>
+            <td><%= user.nome %></td>
+            <td class="hide-mobile"><%= user.ano_referencia %></td>
+            <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= user.qtd_filhos %></td>
+            <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
+            <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
+            <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
+            <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
+            <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
+            <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
+            <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
+            <td>
+              <button class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 2px 6px;" data-toggle="modal" data-target="#editUsuarioModal" data-matricula="<%= user.matricula %>" data-nome="<%= user.nome %>" data-email="<%= user.email %>">
+                Alterar Usuário
+              </button>
+            </td>
+            <td>
+              <% if (user.Vacations && user.Vacations.length > 0) { %>
+                <% user.Vacations.forEach(vacation => { %>
+                  <p><%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
+                <% }); %>
+              <% } else { %>
+                <span class="text-muted">Nenhuma</span>
+              <% } %>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% dpcUsers.forEach(user => { %>
-            <tr data-cargo="<%= user.categoria %>" data-ano="<%= user.ano_referencia %>" data-mes-ferias="<%= user.Vacations && user.Vacations.length > 0 ? user.Vacations.map(vac => new Date(vac.data_inicio).toISOString().split('-')[1]).join(',') : '' %>">
-              <td><%= user.id %></td>
-              <td><%= user.classificacao %></td>
-              <td class="hide-mobile"><%= user.categoria %></td>
-              <td><%= user.matricula %></td>
-              <td><%= user.nome %></td>
-              <td class="hide-mobile"><%= user.ano_referencia %></td>
-              <td class="hide-mobile"><%= user.gestante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.qtd_filhos %></td>
-              <td class="hide-mobile"><%= user.estudante ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= user.doisvinculos ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= formatDate(user.data_ingresso) %></td>
-              <td class="hide-mobile"><%= user.data_ingresso_dias %></td>
-              <td class="hide-mobile"><%= user.possui_conjuge ? 'Sim' : 'Não' %></td>
-              <td class="hide-mobile"><%= formatDate(user.data_nascimento) %></td>
-              <td class="hide-mobile"><%= user.data_nascimento_dias %></td>
-              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
-              <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
-              <td>
-                <!-- desativado porque não obedece critérios de férias
-                <button
-                  class="btn btn-warning btn-sm"
-                  data-toggle="modal"
-                  data-target="#editFeriasModal"
-                  data-matricula="<%= user.matricula %>"
-                  data-nome="<%= user.nome %>"
-                  data-ano="<%= user.ano_referencia %>""
-                >
-                  Alterar Férias
-                </button>
-                -->
-                <button
-                  class="btn btn-info btn-sm"
-                  style="font-size: 0.75rem; padding: 2px 6px;"
-                  data-toggle="modal"
-                  data-target="#editUsuarioModal"
-                  data-matricula="<%= user.matricula %>"
-                  data-nome="<%= user.nome %>"
-                  data-email="<%= user.email %>"
-                >
-                  Alterar Usuário
-                </button>
-              </td>
-              
-              <td>
-                <% if (user.Vacations && user.Vacations.length > 0) { %>
-                  <% user.Vacations.forEach(vacation => { %>
-                    <p><%= new Date(vacation.data_inicio).toLocaleDateString('pt-BR') %> até <%= new Date(vacation.data_fim).toLocaleDateString('pt-BR') %></p>
-                  <% }); %>
-                <% } else { %>
-                  <span class="text-muted">Nenhuma</span>
-                <% } %>
-              </td>
-              
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-  <!-- Bootstrap 5 JS Bundle e Scripts extras -->
-  <script src="/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-  
-  <!-- Script para exibir alertas com fade in -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function(){
-      function showAlert(alertId) {
-        const alertEl = document.getElementById(alertId);
-        if (alertEl && alertEl.textContent.trim() !== "") {
-          alertEl.style.display = "block";
-          void alertEl.offsetWidth;
-          alertEl.classList.add("show");
-        }
-      }
-      showAlert("success-alert");
-      showAlert("error-alert");
-    });
-  </script>
-  
-  <!-- Script para atualizar os campos de data final com base nos inícios e na opção selecionada -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      function addDays(date, days) {
-        const result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-      }
-      function formatDate(date) {
-        return date.toISOString().split("T")[0];
-      }
-      function updateEndDate(periodIndex, durationDays) {
-        const inicioInput = document.getElementById(`periodo${periodIndex}_inicio`);
-        const fimInput = document.getElementById(`periodo${periodIndex}_fim`);
-        if (inicioInput.value) {
-          const startDate = new Date(inicioInput.value);
-          const endDate = addDays(startDate, durationDays - 1);
-          fimInput.value = formatDate(endDate);
-        }
-      }
-      function updateAllEndDates() {
-        const qtd = document.getElementById('qtd_periodos').value;
-        if (qtd === "1") {
-          updateEndDate(1, 30);
-        } else if (qtd === "2_10_20") {
-          updateEndDate(1, 10);
-          updateEndDate(2, 20);
-        } else if (qtd === "2_15_15") {
-          updateEndDate(1, 15);
-          updateEndDate(2, 15);
-        } else if (qtd === "2_20_10") {
-          updateEndDate(1, 20);
-          updateEndDate(2, 10);
-        } else if (qtd === "3") {
-          updateEndDate(1, 10);
-          updateEndDate(2, 10);
-          updateEndDate(3, 10);
-        }
-      }
-      ['periodo1_inicio', 'periodo2_inicio', 'periodo3_inicio'].forEach(function(id) {
-        const input = document.getElementById(id);
-        if (input) {
-          input.addEventListener("change", updateAllEndDates);
-        }
-      });
-      document.getElementById("qtd_periodos").addEventListener("change", updateAllEndDates);
-    });
-  </script>
-  
-  <!-- Script para seleção de data de ingresso via lista suspensa -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const btnSelecionarData = document.getElementById("btnSelecionarData");
-      const listaDatas = document.getElementById("listaDatas");
-      const inputData = document.getElementById("data_ingresso");
-  
-      btnSelecionarData.addEventListener("click", function () {
-        listaDatas.style.display = listaDatas.style.display === "none" ? "block" : "none";
-      });
-  
-      document.querySelectorAll(".selecionar-data").forEach(item => {
-        item.addEventListener("click", function () {
-          const dataBr = this.textContent.trim();
-          const [dia, mes, ano] = dataBr.split("/");
-          const dataIso = `${ano}-${mes}-${dia}`;
-          inputData.value = dataIso;
-          listaDatas.style.display = "none";
-        });
-      });
-  
-      document.addEventListener("click", function (event) {
-        if (!btnSelecionarData.contains(event.target) && !listaDatas.contains(event.target)) {
-          listaDatas.style.display = "none";
-        }
-      });
-    });
-  </script>
-  
- 
- <!-- Script para filtrar a tabela de servidores -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Definir o ano atual no filtro "Ano", se não estiver preenchido
-    const filterAnoInput = document.getElementById("filter-ano");
-    const anoAtual = new Date().getFullYear().toString();
-    if (filterAnoInput && !filterAnoInput.value) {
-      filterAnoInput.value = anoAtual;
-    }
+<!-- Bibliotecas externas -->
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
-    function applyAllFilters() {
-      const filterMes = document.getElementById("filter-mes").value;
-      const filterNome = document.getElementById("filter-nome").value.trim().toLowerCase();
-      const filterMatricula = document.getElementById("filter-matricula").value.trim().toLowerCase();
-      const filterAno = document.getElementById("filter-ano").value;
-
-      const tableIds = ['ipcTable', 'epcTable', 'dpcTable'];
-      tableIds.forEach(function (tableId) {
-        document.querySelectorAll(`#${tableId} tbody tr`).forEach(function (row) {
-          const rowMes = row.getAttribute('data-mes-ferias') || '';
-          const rowAno = row.getAttribute('data-ano') || '';
-          const nome = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
-          const matricula = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
-
-          const matchMes = !filterMes || rowMes.split(',').includes(filterMes);
-          const matchNome = !filterNome || nome.includes(filterNome);
-          const matchMatricula = !filterMatricula || matricula.includes(filterMatricula);
-          const matchAno = !filterAno || rowAno === filterAno;
-
-          const feriasText = row.querySelector('td:nth-child(18)')?.textContent.trim().toLowerCase() || '';
-          const hasFerias = feriasText !== 'nenhuma';
-
-          row.style.display = (matchMes && matchNome && matchMatricula && matchAno && hasFerias) ? '' : 'none';
-
-        });
-      });
-    }
-
-    const filterElements = [
-      document.getElementById("filter-mes"),
-      document.getElementById("filter-nome"),
-      document.getElementById("filter-matricula"),
-      document.getElementById("filter-ano")
-    ];
-    filterElements.forEach(el => {
-      if (el) {
-        el.addEventListener('input', applyAllFilters);
-        el.addEventListener('change', applyAllFilters);
-      }
-    });
-
-    const btnFilterAno = document.getElementById("btn-filter-ano");
-    if (btnFilterAno) btnFilterAno.addEventListener('click', applyAllFilters);
-
-    const btnClearMes = document.getElementById("btn-clear-mes");
-    const btnClearNome = document.getElementById("btn-clear-nome");
-    const btnClearMatricula = document.getElementById("btn-clear-matricula");
-    const btnClearAno = document.getElementById("btn-clear-ano");
-
-    
-    // Aplica os filtros após preencher o ano atual
-    applyAllFilters();
-  });
-</script>
-
-  
-  <!-- Scripts para PDF (não alterados) -->
-  <script>
-    function getTableData(tableId) {
-    var table = document.getElementById(tableId);
-    var data = [];
-    var headers = [];
-
-    // Cabeçalhos, ignorando o índice 16 (coluna de ações)
-    table.querySelectorAll("thead tr th").forEach(function(th, index) {
-      if (index !== 0 && index !== 18) {
-        headers.push(th.innerText.trim());
-      }
-    });
-    data.push(headers);
-
-    // Linhas do corpo da tabela, também ignorando a coluna 17
-    table.querySelectorAll("tbody tr").forEach(function(tr) {
-      if (window.getComputedStyle(tr).display !== "none") {
-        var rowData = [];
-        tr.querySelectorAll("td").forEach(function(td, index) {
-          if (index !== 0 && index !== 16) {
-            rowData.push(td.innerText.trim());
-          }
-        });
-        data.push(rowData);
-      }
-    });
-
-    return data;
-  }
-
-
-    function getAppliedFilters() {
-      var filters = [];
-      var filterMes = document.getElementById("filter-mes").value;
-      var filterNome = document.getElementById("filter-nome").value;
-      var filterMatricula = document.getElementById("filter-matricula").value;
-      var filterAno = document.getElementById("filter-ano").value;
-      if (filterMes) filters.push("Mês: " + filterMes);
-      if (filterNome) filters.push("Nome: " + filterNome);
-      if (filterMatricula) filters.push("Matrícula: " + filterMatricula);
-      if (filterAno) filters.push("Ano: " + filterAno);
-      return filters.length ? filters.join(" | ") : "Sem filtros aplicados";
-    }
-    function downloadPDF(tableId, title, filename) {
-      var tableData = getTableData(tableId);
-      var filters = getAppliedFilters();
-      var docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'landscape',
-        pageMargins: [20, 30, 10, 20],
-        header: {
-          text: title + " - " + filters,
-          margin: [20, 20, 10, 0],
-          fontSize: 8
-        },
-        content: [
-          {
-            table: {
-              headerRows: 1,
-              widths: [
-                25, 30, 50, 50, 30, 30, 30, 30, 30, 60, 35, 30, 55, 30, 55, 55, '*'
-              ],
-              body: tableData
-            },
-            layout: {
-              paddingLeft: function(i, node) { return 2; },
-              paddingRight: function(i, node) { return 2; },
-              paddingTop: function(i, node) { return 1; },
-              paddingBottom: function(i, node) { return 1; }
-            }
-          }
-        ],
-        defaultStyle: {
-          fontSize: 10
-        }
-      };
-      pdfMake.createPdf(docDefinition).download(filename);
-    }
-
-
-    
-
-    function getSimplifiedTableData(tableId) {
-      var table = document.getElementById(tableId);
-      var data = [];
-    
-      // Extrai somente os cabeçalhos relevantes
-     var headers = [];
-     table.querySelectorAll("thead tr th").forEach(function(th, index) {
-        // Se o índice for 0, 2, 3 ou o último (último índice = total - 1)
-        if (index === 0 || index === 2 || index === 3 || index === table.querySelectorAll("thead tr th").length - 1) {
-          headers.push(th.innerText.trim());
-        }
-      });
-      data.push(headers);
-    
-      // Extrai as linhas do corpo, considerando somente as linhas visíveis
-      table.querySelectorAll("tbody tr").forEach(function(tr) {
-        if (window.getComputedStyle(tr).display !== "none") {
-          var rowData = [];
-          var tds = tr.querySelectorAll("td");
-          tds.forEach(function(td, index) {
-            if (index === 0 || index === 2 || index === 3 || index === tds.length - 1) {
-              rowData.push(td.innerText.trim());
-            }
-          });
-          data.push(rowData);
-        }
-      });
-      
-      return data;
-    }
-
-
-    function downloadSimplifiedPDF(tableId, title, filename) {
-      var tableData = getSimplifiedTableData(tableId);
-      var filters = getAppliedFilters();
-      var docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'portrait',
-        pageMargins: [40, 40, 20, 20],
-        header: {
-          text: title + " - " + filters,
-          margin: [10, 10, 10, 0],
-          fontSize: 8
-        },
-        content: [
-          {
-            table: {
-              headerRows: 1,
-              widths: [
-                25, 70, 70, 100
-              ],
-              body: tableData
-            },
-            layout: {
-              paddingLeft: function(i, node) { return 2; },
-              paddingRight: function(i, node) { return 2; },
-              paddingTop: function(i, node) { return 1; },
-              paddingBottom: function(i, node) { return 1; }
-            }
-          }
-        ],
-        defaultStyle: {
-          fontSize: 10
-        }
-      };
-      pdfMake.createPdf(docDefinition).download(filename);
-    }
-
-
-
-    document.getElementById("download-ipc").addEventListener("click", function(){
-      downloadPDF("ipcTable", "Classificação dos IPCs", "classificacao_IPC.pdf");
-    });
-    document.getElementById("download-epc").addEventListener("click", function(){
-      downloadPDF("epcTable", "Classificação dos EPCs", "classificacao_EPC.pdf");
-    });
-    document.getElementById("download-dpc").addEventListener("click", function(){
-      downloadPDF("dpcTable", "Classificação dos DPCs", "classificacao_DPC.pdf");
-    });
-    document.getElementById("download-simplificado-ipc").addEventListener("click", function(){
-      downloadSimplifiedPDF("ipcTable", "Classificação Simplificada dos IPCs", "classificacao_simplificada_IPC.pdf");
-    });
-    document.getElementById("download-simplificado-epc").addEventListener("click", function(){
-      downloadSimplifiedPDF("epcTable", "Classificação Simplificada dos EPCs", "classificacao_simplificada_EPC.pdf");
-    });
-    document.getElementById("download-simplificado-dpc").addEventListener("click", function(){
-      downloadSimplifiedPDF("dpcTable", "Classificação Simplificada dos DPCs", "classificacao_simplificada_DPC.pdf");
-    });
-
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-      // Fecha o offcanvas automaticamente antes de abrir um modal
-      document.querySelectorAll('[data-bs-toggle="modal"]').forEach(link => {
-        link.addEventListener('click', function () {
-          const offcanvasEl = document.querySelector('.offcanvas.show');
-          if (offcanvasEl) {
-            const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
-            offcanvas.hide();
-          }
-        });
-      });
-    });
-
-
- 
-  document.addEventListener('DOMContentLoaded', () => {
-    
-
-  
-    // Botão Alterar Férias (sem uso pois não obedece critérios de férias)
-    /*
-    document.querySelectorAll('[data-target="#editFeriasModal"]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const matricula = btn.getAttribute('data-matricula');
-        const ano = btn.getAttribute('data-ano');
-
-        try {
-          const res = await fetch(`/vacations/edit/${matricula}/${ano}`);
-          const html = await res.text();
-          document.getElementById('feriasModalBody').innerHTML = html;
-
-          const modal = new bootstrap.Modal(document.getElementById('editFeriasModal'));
-          modal.show();
-        } catch (err) {
-          console.error('Erro ao carregar formulário de férias:', err);
-          document.getElementById('feriasModalBody').innerHTML = `<p class="text-danger">Erro ao carregar os dados.</p>`;
-        }
-      });
-    });
-    */
-
-
-    // Botão Alterar Usuário
-    document.querySelectorAll('[data-target="#editUsuarioModal"]').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const matricula = btn.getAttribute('data-matricula');
-        const ano = prompt('Confirme ano de referência:');
-        if (!ano) return;
-
-        try {
-          const res = await fetch(`/users/edit/${matricula}/${ano}`);
-          const html = await res.text();
-          document.getElementById('usuarioModalBody').innerHTML = html;
-
-          const modal = new bootstrap.Modal(document.getElementById('editUsuarioModal'));
-          modal.show();
-        } catch (err) {
-          console.error('Erro ao carregar formulário de usuário:', err);
-        }
-      });
-    });
-  });
-
- 
-
-
-
-
-  
-
-  </script>
+<!-- Arquivo de scripts customizados -->
+<script src="/js/scripts.js"></script>
 </body>
 </html>
