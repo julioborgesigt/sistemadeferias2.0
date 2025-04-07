@@ -162,7 +162,7 @@
                        var dayNum = week[j];
                        if (dayNum) {
                          var currentDate = new Date(year, month - 1, dayNum);
-                         var dateStr = currentDate.toISOString().split('T')[0];
+                         var dateStr = year + '-' + String(month).padStart(2, '0') + '-' + String(dayNum).padStart(2, '0');
                          var names = calendarData[dateStr] || [];
                   %>
                     <td class="fixed-cell">
