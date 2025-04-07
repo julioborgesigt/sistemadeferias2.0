@@ -158,26 +158,25 @@
                    if (week.every(function(day){ return day === null; })) continue;
               %>
                 <tr>
-                  <% for (var j = 0; j < 7; j++) { 
-                       var dayNum = week[j];
-                       if (dayNum) {
-                         var currentDate = new Date(year, month - 1, dayNum);
-                         var dateStr = year + '-' + String(month).padStart(2, '0') + '-' + String(dayNum).padStart(2, '0');
-                         var names = calendarData[dateStr] || [];
-                  %>
-                    <td class="fixed-cell">
-                      <div class="day-number"><%= dayNum %></div>
-                      <% if (names.length > 0) { %>
-                        <ul class="names-list" style="list-style: none; padding-left: 0;">
-                          <% names.forEach(function(name) { %>
-                            <li><%= name %></li>
-                          <% }); %>
-                        </ul>
-                      <% } %>
-                    </td>
-                  <% } else { %>
-                    <td class="fixed-cell"></td>
-                  <% } } %>
+                    <% for (var j = 0; j < 7; j++) { 
+                      var dayNum = week[j];   
+                      if (dayNum) {
+                        var dateStr = year + '-' + String(month).padStart(2, '0') + '-' + String(dayNum).padStart(2, '0');
+                        var names = calendarData[dateStr] || [];
+                %>
+                  <td class="fixed-cell">
+                    <div class="day-number"><%= dayNum %></div>
+                    <% if (names.length > 0) { %>
+                      <ul class="names-list" style="list-style: none; padding-left: 0;">
+                        <% names.forEach(function(name) { %>
+                          <li><%= name %></li>
+                        <% }); %>
+                      </ul>
+                    <% } %>
+                  </td>
+                <% } else { %>
+                  <td class="fixed-cell"></td>
+                <% } } %>
                 </tr>
               <% } %>
             </tbody>
@@ -193,53 +192,72 @@
 <script src="https://unpkg.com/html-to-pdfmake/browser.js"></script>
 
 <script>
-  document.getElementById('download-calendar').addEventListener('click', function(){
-    // Captura os containers de cada mês
-    var monthContainers = document.querySelectorAll('.month-container');
-    var contentArray = [];
-    monthContainers.forEach(function(monthDiv, index) {
-      var groupHtml = monthDiv.outerHTML;
-      var converted = htmlToPdfmake(groupHtml);
-      
-      // Função recursiva que ajusta os "widths" de cada tabela para que cada coluna ocupe espaço igual (100% da largura)
+  document.getElementById('download-calendar').addEventListener('click', function () {
+    const monthContainers = document.querySelectorAll('.month-container');
+    const contentArray = [];
+
+    monthContainers.forEach(function (monthDiv, index) {
+      const cloned = monthDiv.cloneNode(true);
+
+      // Ajuste de estilo inline para PDF (backgrounds etc.)
+      cloned.querySelector(".month-title").style.backgroundColor = "#007bff";
+      cloned.querySelector(".month-title").style.color = "#fff";
+      cloned.querySelectorAll("th").forEach(th => {
+        th.style.backgroundColor = "#535353c0";
+        th.style.color = "#fff";
+      });
+
+      const groupHtml = cloned.outerHTML;
+      const converted = htmlToPdfmake(groupHtml);
+
+      // Função recursiva para ajustar larguras das colunas
       function adjustTableWidths(content) {
         if (Array.isArray(content)) {
           content.forEach(adjustTableWidths);
         } else if (typeof content === 'object' && content !== null) {
           if (content.table && content.table.body && content.table.body.length > 0) {
-            // Define a largura de cada coluna como '*'
-            var numCols = content.table.body[0].length;
-            content.table.widths = Array(numCols).fill('*');
+            const numCols = content.table.body[0].length;
+            content.table.widths = Array(numCols).fill("*");
           }
-          for (var key in content) {
+          for (const key in content) {
             if (content.hasOwnProperty(key) && typeof content[key] === 'object') {
               adjustTableWidths(content[key]);
             }
           }
         }
       }
-      
+
       adjustTableWidths(converted);
-      
-      // Adiciona o conteúdo do mês com quebra de página "after"
+
       contentArray.push({ stack: converted, pageBreak: 'after' });
     });
-    
-    var docDefinition = {
+
+    const docDefinition = {
       header: {
-        text: "Calendário de Férias - " + ("<%= category ? category + ' ' : '' %>") + "<%= year %>",
+        text: "Calendário de Férias - " + "<%= category ? category + ' ' : '' %>" + "<%= year %>",
         alignment: 'center',
+        fontSize: 14,
+        bold: true,
         margin: [0, 10, 0, 10]
       },
+      content: contentArray,
       pageSize: 'A4',
       pageOrientation: 'portrait',
-      pageMargins: [40, 60, 40, 60],
-      content: contentArray,
+      pageMargins: [30, 60, 30, 40],
       defaultStyle: {
-        fontSize: 10
+        fontSize: 10,
+        lineHeight: 1.2
+      },
+      styles: {
+        tableHeader: {
+          bold: true,
+          fillColor: '#535353c0',
+          color: 'white',
+          alignment: 'center'
+        }
       }
     };
-    
+
     pdfMake.createPdf(docDefinition).download('calendario.pdf');
   });
 </script>
