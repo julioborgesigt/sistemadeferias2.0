@@ -14,15 +14,15 @@ async function validateVacationPeriods({ user, periods, qtd_periodos, ano_refere
   }
 
   let durations = periods.map(p => diffInDays(p.inicio, p.fim));
-  if (qtd_periodos === '1' && durations[0] !== 31) {
-    return { valid: false, message: 'Para 1 período, as férias devem ter exatamente 30 dias.' };
+  if (qtd_periodos === '1' && durations[0] !== 30) {
+    return { valid: false, message: 'Para 1 período, as férias devem ter exatamente 30 dias!.' };
   } else if (qtd_periodos === '2') {
-    const allowedCombos = [[11, 21], [16, 16], [21, 11]];
+    const allowedCombos = [[10, 20], [15, 15], [20, 10]];
     const match = allowedCombos.some(([a, b]) => a === durations[0] && b === durations[1]);
     if (!match) {
       return { valid: false, message: 'Para 2 períodos, as durações devem ser 10+20, 15+15 ou 20+10 dias.' };
     }
-  } else if (qtd_periodos === '3' && !durations.every(d => d === 11)) {
+  } else if (qtd_periodos === '3' && !durations.every(d => d === 10)) {
     return { valid: false, message: 'Para 3 períodos, cada período deve ter exatamente 10 dias.' };
   }
 

@@ -7,7 +7,7 @@ const validateVacationPeriods = async (user, periods, qtd_periodos, ano_referenc
   // Validações de quantidade de dias
   let durations = periods.map(p => diffInDays(p.inicio, p.fim));
   if (qtd_periodos === '1' && durations[0] !== 30) {
-    errors.push('Para 1 período, as férias devem ter exatamente 30 dias.');
+    errors.push('Para 1 período, as férias devem ter exatamente 30 dias!.');
   } else if (qtd_periodos === '2') {
     const valid = [[10, 20], [15, 15], [20, 10]].some(
       ([a, b]) => (durations[0] === a && durations[1] === b)
