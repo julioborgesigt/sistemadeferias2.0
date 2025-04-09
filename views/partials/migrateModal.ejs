@@ -1,0 +1,35 @@
+<!-- Modal de Migração de Base de Dados -->
+<div class="modal fade" id="migrateModal" tabindex="-1" aria-labelledby="migrateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-primary">
+        <form action="/users/migrate" method="POST">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="migrateModalLabel">
+              <i class="bi bi-arrow-left-right me-2"></i>Migrar Base de Dados
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p>Essa ação irá <strong>copiar os dados de férias</strong> de um ano de origem para um ano de destino.</p>
+            <div class="mb-3">
+              <label for="sourceYear" class="form-label">Ano de Origem</label>
+              <input type="number" class="form-control form-control-sm" id="sourceYear" name="sourceYear" required placeholder="Ex: 2024" min="2000">
+            </div>
+            <div class="mb-3">
+              <label for="targetYear" class="form-label">Ano de Destino</label>
+              <input type="number" class="form-control form-control-sm" id="targetYear" name="targetYear" required placeholder="Ex: 2025" min="2000">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-download"></i> Migrar Dados
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard do Administrador</title>
+  <title>Dashboard do Administrador!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="/css/bootstrap.min.css" rel="stylesheet" >
   <link href="/css/bootstrap-icons.css" rel="stylesheet">
@@ -126,6 +126,26 @@
         font-size: 0.8rem; /* tamanho menor para dispositivos móveis */
       }
     }
+
+    
+    .toast-success {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .toast-error {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .toast-progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      animation: progressBar 4s linear forwards;
+    }
+    @keyframes progressBar {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+
   </style>
 </head>
 <body>
@@ -179,175 +199,30 @@
   </div>
 </nav>
 
-<!-- Modal Configuração de Limites -->
-<div class="modal fade" id="configLimitsModal" tabindex="-1" aria-labelledby="configLimitsModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="configLimitsModalLabel">Configuração de Limites</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/users/update-limits" method="POST">
-          <div class="row">
-            <div class="col-4">
-              <label for="max_ipc" class="form-label">IPC</label>
-              <input type="number" name="max_ipc" id="max_ipc" value="<%= settings.max_ipc %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_epc" class="form-label">EPC</label>
-              <input type="number" name="max_epc" id="max_epc" value="<%= settings.max_epc %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_dpc" class="form-label">DPC</label>
-              <input type="number" name="max_dpc" id="max_dpc" value="<%= settings.max_dpc %>" class="form-control form-control-sm">
-            </div>
-          </div>
-          <div class="row mt-2">
-            <div class="col-4">
-              <label for="max_ipc_p" class="form-label">IPC-P</label>
-              <input type="number" name="max_ipc_p" id="max_ipc_p" value="<%= settings.max_ipc_p %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_epc_p" class="form-label">EPC-P</label>
-              <input type="number" name="max_epc_p" id="max_epc_p" value="<%= settings.max_epc_p %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_dpc_p" class="form-label">DPC-P</label>
-              <input type="number" name="max_dpc_p" id="max_dpc_p" value="<%= settings.max_dpc_p %>" class="form-control form-control-sm">
-            </div>
-          </div>
-          <div class="row mt-2">
-            <div class="col-4">
-              <label for="max_ipc_t" class="form-label">IPC-T</label>
-              <input type="number" name="max_ipc_t" id="max_ipc_t" value="<%= settings.max_ipc_t %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_epc_t" class="form-label">EPC-T</label>
-              <input type="number" name="max_epc_t" id="max_epc_t" value="<%= settings.max_epc_t %>" class="form-control form-control-sm">
-            </div>
-            <div class="col-4">
-              <label for="max_dpc_t" class="form-label">DPC-T</label>
-              <input type="number" name="max_dpc_t" id="max_dpc_t" value="<%= settings.max_dpc_t %>" class="form-control form-control-sm">
-            </div>
-          </div>
-          <div class="mt-3">
-            <button type="submit" class="btn btn-primary btn-sm w-100">Confirmar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Modal Resetar Férias -->
-<div class="modal fade" id="resetVacationsModal" tabindex="-1" aria-labelledby="resetVacationsModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="resetVacationsModalLabel">Resetar Férias</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/users/reset-vacations" method="POST">
-          <div class="mb-3">
-            <label for="matricula_reset" class="form-label">Matrícula:</label>
-            <input type="text" name="matricula" id="matricula_reset" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8">
-          </div>
-          <div class="mb-3">
-            <label for="ano_referencia_reset" class="form-label">Ano de Referência:</label>
-            <input type="number" name="ano_referencia" id="ano_referencia_reset" class="form-control form-control-sm" value="<%= new Date().getFullYear() %>" required>
-          </div>
-          <button type="submit" class="btn btn-warning">Resetar</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Modal Apagar Matrícula -->
-<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteUserModalLabel">Apagar Matrícula</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/users/delete-user" method="POST">
-          <div class="mb-3">
-            <label for="matricula_delete" class="form-label">Matrícula:</label>
-            <input type="text" name="matricula" id="matricula_delete" class="form-control form-control-sm" placeholder="Digite a matrícula" required maxlength="8">
-          </div>
-          <div class="mb-3">
-            <label for="ano_referencia_delete" class="form-label">Ano de Referência:</label>
-            <input type="number" name="ano_referencia" id="ano_referencia_delete" class="form-control form-control-sm" value="<%= new Date().getFullYear() %>" required>
-          </div>
-          <button type="submit" class="btn btn-danger">Apagar</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+<%- include('partials/editUsuarioModal') %>
+<%- include('partials/editFeriasModal') %>
+<%- include('partials/resetVacationsModal') %>
+<%- include('partials/deleteUserModal') %>
+<%- include('partials/configLimitsModal') %>
+<%- include('partials/migrateModal') %>
 
-<!-- Modal de Migração de Base de Dados -->
-<div class="modal fade" id="migrateModal" tabindex="-1" aria-labelledby="migrateModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/users/migrate" method="POST">
-        <div class="modal-header">
-          <h5 class="modal-title" id="migrateModalLabel">Migrar Base de Dados</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-          <p>Essa ação irá copiar os dados de férias de um ano anterior para um ano específico.</p>
-          <div class="mb-3">
-            <label for="sourceYear" class="form-label">Ano de Origem</label>
-            <input type="number" class="form-control" id="sourceYear" name="sourceYear" required placeholder="Ex: 2024">
-          </div>
-          <div class="mb-3">
-            <label for="targetYear" class="form-label">Ano de Destino</label>
-            <input type="number" class="form-control" id="targetYear" name="targetYear" required placeholder="Ex: 2025">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Migrar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 
-<!-- Modal Alterar Férias -->
-<div class="modal fade" id="editFeriasModal" tabindex="-1" aria-labelledby="editFeriasModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Alterar Férias</h5>
-        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="feriasModalBody">
-        <p>Carregando dados de férias...</p>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Modal Alterar Usuário -->
-<div class="modal fade" id="editUsuarioModal" tabindex="-1" aria-labelledby="editUsuarioModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Editar Usuário</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <div class="modal-body" id="usuarioModalBody">
-        <!-- Formulário de usuário será carregado aqui -->
-      </div>
-    </div>
-  </div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- Conteúdo do Dashboard -->
 <div class="container mt-4" style="max-width: 1400px;">
@@ -538,10 +413,30 @@
             <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
             <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
             <td>
-              <button class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 2px 6px;" data-toggle="modal" data-target="#editUsuarioModal" data-matricula="<%= user.matricula %>" data-nome="<%= user.nome %>" data-email="<%= user.email %>">
+              <button 
+                class="btn btn-info btn-sm" 
+                style="font-size: 0.75rem; padding: 2px 6px;"
+                data-toggle="modal" 
+                data-target="#editUsuarioModal"
+                data-matricula="<%= user.matricula %>" 
+                data-nome="<%= user.nome %>" 
+                data-email="<%= user.email %>" 
+                data-ano="<%= user.ano_referencia %>">
                 Alterar Usuário
               </button>
+            
+              <button
+                class="btn btn-warning btn-sm"
+                style="font-size: 0.75rem; padding: 2px 6px;"
+                data-toggle="modal"
+                data-target="#editFeriasModal"
+                data-matricula="<%= user.matricula %>"
+                data-ano="<%= user.ano_referencia %>">
+                Alterar Férias  
+              </button>
             </td>
+            
+            
             <td>
               <% if (user.Vacations && user.Vacations.length > 0) { %>
                 <% user.Vacations.forEach(vacation => { %>
@@ -699,6 +594,76 @@
     </table>
   </div>
 </div>
+
+<!-- Toast Container -->
+<%
+  const successMessage = Array.isArray(success_msg) ? success_msg[0] : success_msg;
+  const errorMessage = Array.isArray(error_msg) ? error_msg[0] : error_msg;
+%>
+
+<% if (successMessage && successMessage.trim()) { %>
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+    <div class="toast toast-progress toast-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body"><%= successMessage %></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+      </div>
+      <div class="toast-progress-bar"></div>
+    </div>
+  </div>
+<% } %>
+
+<% if (errorMessage && errorMessage.trim()) { %>
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+    <div class="toast toast-progress toast-error border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body"><%= errorMessage %></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+      </div>
+      <div class="toast-progress-bar"></div>
+    </div>
+  </div>
+<% } %>
+
+
+
+
+
+
+<script>
+  window.onload = function () {
+    const toastElements = document.querySelectorAll('.toast.toast-progress');
+  
+    toastElements.forEach(toast => {
+      const progressBar = toast.querySelector('.toast-progress-bar');
+      const closeBtn = toast.querySelector('.btn-close');
+      const duration = 3000;
+  
+      if (progressBar) {
+        progressBar.style.width = '100%';
+        progressBar.style.transition = `width ${duration}ms linear`;
+        setTimeout(() => {
+          progressBar.style.width = '0%';
+        }, 100);
+      }
+  
+      const timeout = setTimeout(() => {
+        toast.classList.remove('show');
+        toast.remove();
+      }, duration);
+  
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          clearTimeout(timeout);
+          toast.classList.remove('show');
+          toast.remove();
+        });
+      }
+    });
+  };
+  </script>
+  
+
 
 <!-- Bibliotecas externas -->
 <script src="/js/bootstrap.bundle.min.js"></script>

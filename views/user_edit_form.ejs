@@ -1,7 +1,7 @@
 
 
 <div class="container mt-1">
-  <h2>Editar Usuário <%= user.nome %> (<%= user.matricula %>)</h2>
+  <h2>Editar Usuário <%= user.nome %> (<%= user.matricula %>) Ano (<%= user.ano_referencia %>)</h2>
 
   <form action="/users/update/<%= user.matricula %>/<%= user.ano_referencia %>" method="POST">
     <input type="hidden" name="_method" value="PUT" />
@@ -55,8 +55,9 @@
       <label for="qtd_filhos" class="form-label">Quantidade de Filhos</label>
       <input type="number" class="form-control" name="qtd_filhos" id="qtd_filhos" value="<%= user.qtd_filhos %>" />
     </div>
-
+    <div class="d-grid">  
     <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    </div>
   </form>
 </div>
 

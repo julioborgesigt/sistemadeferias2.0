@@ -1,0 +1,56 @@
+<!-- Modal Resetar Férias -->
+<div class="modal fade" id="resetVacationsModal" tabindex="-1" aria-labelledby="resetVacationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-warning">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title" id="resetVacationsModalLabel">
+            <i class="bi bi-arrow-counterclockwise me-2"></i>Resetar Férias
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/users/reset-vacations" method="POST" id="formResetVacations">
+            <div class="alert alert-warning small" role="alert">
+              <strong>Atenção:</strong> Esta ação irá remover todas as férias cadastradas para a matrícula e ano de referência informados.
+            </div>
+  
+            <div class="mb-3">
+              <label for="matricula_reset" class="form-label">Matrícula:</label>
+              <input
+                type="text"
+                name="matricula"
+                id="matricula_reset"
+                class="form-control form-control-sm"
+                placeholder="Digite a matrícula"
+                required
+                maxlength="8"
+                pattern="\d{8}"
+                title="A matrícula deve conter até 8 dígitos!"
+              >
+            </div>
+  
+            <div class="mb-3">
+              <label for="ano_referencia_reset" class="form-label">Ano de Referência:</label>
+              <input
+                type="number"
+                name="ano_referencia"
+                id="ano_referencia_reset"
+                class="form-control form-control-sm"
+                value="<%= new Date().getFullYear() %>"
+                min="2000"
+                max="2100"
+                required
+              >
+            </div>
+  
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-warning">
+                <i class="bi bi-arrow-counterclockwise"></i> Resetar Férias
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

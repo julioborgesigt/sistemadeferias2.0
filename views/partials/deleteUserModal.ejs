@@ -1,0 +1,57 @@
+<!-- Modal Apagar Matrícula -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-danger">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="deleteUserModalLabel">
+            <i class="bi bi-trash-fill me-2"></i>Confirmar Exclusão
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/users/delete-user" method="POST" id="formDeleteUser">
+            <div class="alert alert-warning small" role="alert">
+              <strong>Atenção:</strong> Essa ação apagará a matrícula informada apenas para o ano de referência escolhido, incluindo suas férias.
+            </div>
+  
+            <div class="mb-3">
+              <label for="matricula_delete" class="form-label">Matrícula:</label>
+              <input
+                type="text"
+                name="matricula"
+                id="matricula_delete"
+                class="form-control form-control-sm"
+                placeholder="Digite a matrícula"
+                required
+                maxlength="8"
+                pattern="\d{8}"
+                title="A matrícula deve conter até 8 dígitos!"
+              >
+            </div>
+  
+            <div class="mb-3">
+              <label for="ano_referencia_delete" class="form-label">Ano de Referência:</label>
+              <input
+                type="number"
+                name="ano_referencia"
+                id="ano_referencia_delete"
+                class="form-control form-control-sm"
+                value="<%= new Date().getFullYear() %>"
+                min="2000"
+                max="2100"
+                required
+              >
+            </div>
+  
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Apagar Matrícula
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

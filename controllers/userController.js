@@ -57,7 +57,7 @@ module.exports = {
       });
       const distinctYears = distinctYearsRaw.map(item => item.ano_referencia).sort();
       const currentYear = new Date().getFullYear();
-  
+      
       res.render('admin_dashboard', {
         admin: req.session.admin,
         users,

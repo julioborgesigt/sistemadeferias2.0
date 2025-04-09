@@ -1,0 +1,68 @@
+<!-- Modal Configuração de Limites -->
+<div class="modal fade" id="configLimitsModal" tabindex="-1" aria-labelledby="configLimitsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-info">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title" id="configLimitsModalLabel">
+            <i class="bi bi-sliders2 me-2"></i>Configuração de Limites
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/users/update-limits" method="POST">
+            <div class="row">
+              <div class="col-4">
+                <label for="max_ipc" class="form-label">IPC</label>
+                <input type="number" name="max_ipc" id="max_ipc" min="0" value="<%= settings.max_ipc %>" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-4">
+                <label for="max_epc" class="form-label">EPC</label>
+                <input type="number" name="max_epc" id="max_epc" min="0" value="<%= settings.max_epc %>" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-4">
+                <label for="max_dpc" class="form-label">DPC</label>
+                <input type="number" name="max_dpc" id="max_dpc" min="0" value="<%= settings.max_dpc %>" class="form-control form-control-sm" required>
+              </div>
+            </div>
+  
+            <div class="row mt-2">
+              <div class="col-4">
+                <label for="max_ipc_p" class="form-label">IPC-P</label>
+                <input type="number" name="max_ipc_p" id="max_ipc_p" min="0" value="<%= settings.max_ipc_p %>" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-4">
+                <label for="max_epc_p" class="form-label">EPC-P</label>
+                <input type="number" name="max_epc_p" id="max_epc_p" min="0" value="<%= settings.max_epc_p %>" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-4">
+                <label for="max_dpc_p" class="form-label">DPC-P</label>
+                <input type="number" name="max_dpc_p" id="max_dpc_p" min="0" value="<%= settings.max_dpc_p %>" class="form-control form-control-sm" required>
+              </div>
+            </div>
+  
+            <div class="row mt-2">
+              <div class="col-4">
+                <label for="max_ipc_t" class="form-label">IPC-T</label>
+                <input type="number" name="max_ipc_t" id="max_ipc_t" min="0" value="<%= settings.max_ipc_t %>" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-4">
+                <label for="max_epc_t" class="form-label">EPC-T</label>
+                <input type="number" name="max_epc_t" id="max_epc_t" min="0" value="<%= settings.max_epc_t %>" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-4">
+                <label for="max_dpc_t" class="form-label">DPC-T</label>
+                <input type="number" name="max_dpc_t" id="max_dpc_t" min="0" value="<%= settings.max_dpc_t %>" class="form-control form-control-sm" required>
+              </div>
+            </div>
+  
+            <div class="mt-4 d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-info">
+                <i class="bi bi-check2-circle"></i> Confirmar Limites
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -7,6 +7,8 @@ const MySQLStore = require('express-mysql-session')(session);
 const flash = require('connect-flash');
 const path = require('path');
 
+
+
 const app = express();
 app.use(express.static('public'));
 
@@ -16,7 +18,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // 📌 Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 📌 Configuração do MySQL para armazenamento de sessões
@@ -38,6 +41,9 @@ app.use(session({
 }));
 
 app.use(flash());
+
+
+
 
 // 📌 Middleware para monitorar a sessão em cada requisição
 app.use((req, res, next) => {

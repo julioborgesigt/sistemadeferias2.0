@@ -5,6 +5,9 @@ const Vacation = db.Vacation;
 const Settings = db.Settings;
 const { Op, col, literal } = require('sequelize');
 
+const { parseStartDateBR, parseEndDateBR } = require('../utils/dateUtils');
+const { validarPeriodos } = require('../utils/vacationValidation');
+const validateVacationPeriods = require('../utils/validateVacationPeriods'); // Importa a função
 
 
 
@@ -23,22 +26,29 @@ function diffInDays(date1, date2) {
 /**
  * Converte uma string "YYYY-MM-DD" para um objeto Date que representa o início do dia (00:00)
  * no fuso horário de Brasília (UTC-3).
- */
+
 function parseStartDateBR(dateStr) {
   const [year, month, day] = dateStr.split('-').map(Number);
   // Cria data local e converte para UTC automaticamente
   return new Date(year, month - 1, day, 0, 0, 1);
 }
+ */
+
+
+
 
 /**
  * Converte uma string "YYYY-MM-DD" para um objeto Date que representa o final do dia (23:59)
  * no fuso horário de Brasília (UTC-3). Isso equivale a 02:59 UTC do dia seguinte.
- */
+ 
 function parseEndDateBR(dateStr) {
   const [year, month, day] = dateStr.split('-').map(Number);
   // 23:59:59 no horário local
   return new Date(year, month - 1, day, 23, 59, 59);
 }
+*/
+
+
 
 const checkVacationLimits = async (userCategory, startDate, endDate, ano_referencia) => {
   const settings = await Settings.findOne({ where: { id: 1 } });
@@ -500,90 +510,120 @@ showAdminVacationForm: async (req, res) => {
     }
   },
 
-  // Exibir formulário de edição das férias
-  editVacationForm: async (req, res) => {
-    const { matricula, ano } = req.params;
-  
-    try {
-      const user = await User.findOne({
-        where: { matricula, ano_referencia: ano },
-        include: [{
-          model: Vacation,
-          as: 'Vacations' // Certifique-se que esse alias é o mesmo usado em User.js
-        }]
-      });
-  
-      if (!user) {
-        console.log('Usuário não encontrado:', matricula, ano);
-        req.flash('error_msg', 'Usuário não encontrado.');
-        return res.redirect('/users/dashboard');
-      }
-  
-      if (!user.Vacations || user.Vacations.length === 0) {
-        console.log('Nenhuma férias encontradas para o usuário:', matricula, ano);
-        req.flash('error_msg', 'Dados de férias não encontrados.');
-        return res.redirect('/users/dashboard');
-      }
-  
-      console.log('Usuário e férias encontrados:', user.Vacations);
-  
-      res.render('vacation_edit_form', {
-        user,
-        ferias: user.Vacations
-      });
-    } catch (err) {
-      console.error('Erro ao buscar dados de férias:', err);
-      req.flash('error_msg', 'Erro ao carregar dados de férias.');
-      res.redirect('/users/dashboard');
-    }
-  },
 
-// Atualizar os dados de férias
-updateVacation: async (req, res) => {
+
+editVacationForm: async (req, res) => {
   const { matricula, ano } = req.params;
-  const { data_inicio, data_fim, periodo } = req.body;
-
-  console.log(`[UPDATE] Iniciando atualização de férias`);
-  console.log(`Matrícula: ${matricula}, Ano: ${ano}`);
-  console.log(`Dados recebidos no body:`, req.body);
 
   try {
-    // Verifica se há férias para o período informado
-    const vacation = await Vacation.findOne({
-      where: {
-        matricula,
-        ano_referencia: ano,
-        periodo
-      }
+    const user = await User.findOne({
+      where: { matricula, ano_referencia: ano },
+      include: [{
+        model: Vacation,
+        where: { ano_referencia: ano },
+        required: false
+      }]
     });
 
-    if (!vacation) {
-      console.log('[ERRO] Férias não encontradas para o usuário/período.');
-      req.flash('error_msg', 'Férias não encontradas.');
+    if (!user || !user.Vacations || user.Vacations.length === 0) {
+      req.flash('error_msg', 'Dados de férias não encontrados.');
       return res.redirect('/users/dashboard');
     }
 
-    console.log('[SUCESSO] Férias encontradas:', vacation.toJSON());
-
-    // Atualiza os campos
-    vacation.data_inicio = data_inicio;
-    vacation.data_fim = data_fim;
-
-    await vacation.save();
-
-    console.log('[SUCESSO] Férias atualizadas com sucesso!');
-    req.flash('success_msg', 'Férias atualizadas com sucesso!');
-    res.redirect('/users/dashboard');
+    res.render('vacation_edit_form', {
+      user,
+      ferias: user.Vacations
+    });
   } catch (err) {
-    console.error('[EXCEPTION] Erro ao atualizar férias:', err);
-    req.flash('error_msg', 'Erro ao atualizar férias.');
+    console.error(err);
+    req.flash('error_msg', 'Erro ao carregar dados de férias.');
     res.redirect('/users/dashboard');
   }
+},
+
+// Atualizar os dados de férias
+
+
+// controllers/vacationController.js (trecho do updateVacation atualizado)
+
+// controllers/vacationController.js (parte de updateVacation com validações aplicadas modularmente)
+
+
+
+// Atualizar os dados de férias com validações
+
+
+updateVacation: async (req, res) => {
+  const { matricula, ano } = req.params;
+  const isJsonRequest = req.headers.accept.includes('application/json');
+
+  try {
+    console.log(`[UPDATE] Requisição recebida para matrícula ${matricula}, ano ${ano}`);
+    console.log(`[BODY RECEBIDO]`, req.body);
+
+    const { qtd_periodos } = req.body;
+    const updates = [];
+
+    for (let i = 1; i <= qtd_periodos; i++) {
+      const inicioRaw = req.body[`data_inicio_${i}`];
+      const fimRaw = req.body[`data_fim_${i}`];
+      const periodo = req.body[`periodo_${i}`];
+
+      if (!inicioRaw || !fimRaw || !periodo) {
+        const message = 'Todos os campos são obrigatórios.';
+        return isJsonRequest
+          ? res.json({ success: false, message })
+          : res.redirect('/users/dashboard');
+      }
+
+      updates.push({
+        inicio: parseStartDateBR(inicioRaw),
+        fim: parseEndDateBR(fimRaw),
+        periodo: parseInt(periodo)
+      });
+    }
+
+    const user = await User.findOne({ where: { matricula, ano_referencia: ano } });
+    if (!user) {
+      const message = 'Usuário não encontrado.';
+      return isJsonRequest
+        ? res.json({ success: false, message })
+        : res.redirect('/users/dashboard');
+    }
+
+    // Aplica a validação unificada
+    const validation = await validateVacationPeriods({
+      user,
+      periods: updates,
+      qtd_periodos,
+      ano_referencia: ano
+    });
+
+    if (!validation.valid) {
+      return res.json({ success: false, message: validation.message });
+    }
+
+    for (const { inicio, fim, periodo } of updates) {
+      const result = await Vacation.update(
+        { data_inicio: inicio, data_fim: fim },
+        { where: { matricula, ano_referencia: ano, periodo } }
+      );
+
+      if (result[0] === 0) {
+        return res.json({ success: false, message: `Nenhum registro encontrado para o período ${periodo}.` });
+      }
+    }
+
+    return res.json({ success: true, message: 'Férias atualizadas com sucesso!' });
+
+  } catch (err) {
+    console.error('[ERRO] Ao atualizar férias:', err);
+    const message = 'Erro ao atualizar férias.';
+    return isJsonRequest
+      ? res.json({ success: false, message })
+      : res.redirect('/users/dashboard');
+  }
 }
-
-  
-
-
 
 
 

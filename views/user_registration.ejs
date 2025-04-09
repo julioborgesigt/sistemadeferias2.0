@@ -84,6 +84,7 @@
       <div class="mb-3">
         <label>Ano de Referência:</label>
         <div class="btn-group w-100" role="group">
+          <button type="button" class="btn btn-outline-primary" id="btn-ano-anteriormenosum"></button>
           <button type="button" class="btn btn-outline-primary" id="btn-ano-anterior"></button>
           <button type="button" class="btn btn-outline-primary active" id="btn-ano-atual"></button>
         </div>
@@ -190,6 +191,8 @@
     document.addEventListener("DOMContentLoaded", function() {
       const anoAtual = new Date().getFullYear();
       const anoAnterior = anoAtual - 1;
+      const anoAnteriorMenosUm = anoAtual - 2;
+      const btnAnoAnteriorMenosUm = document.getElementById("btn-ano-anteriormenosum");
       const btnAnoAnterior = document.getElementById("btn-ano-anterior");
       const btnAnoAtual = document.getElementById("btn-ano-atual");
       const anoReferenciaInput = document.getElementById("ano_referencia");
@@ -197,12 +200,22 @@
       const periodoInicioInput = document.getElementById("periodo_aquisitivo_inicio");
       const periodoFimInput = document.getElementById("periodo_aquisitivo_fim");
 
+      btnAnoAnteriorMenosUm.textContent = anoAnteriorMenosUm;
       btnAnoAnterior.textContent = anoAnterior;
       btnAnoAtual.textContent = anoAtual;
       anoReferenciaInput.value = anoAtual;
 
+      btnAnoAnteriorMenosUm.addEventListener("click", function() {
+        anoReferenciaInput.value = anoAnteriorMenosUm;
+        btnAnoAnteriorMenosUm.classList.add("active");
+        btnAnoAnterior.classList.remove("active");
+        btnAnoAtual.classList.remove("active");
+        calcularPeriodoAquisitivo();
+      });
+
       btnAnoAnterior.addEventListener("click", function() {
         anoReferenciaInput.value = anoAnterior;
+        btnAnoAnteriorMenosUm.classList.remove("active");
         btnAnoAnterior.classList.add("active");
         btnAnoAtual.classList.remove("active");
         calcularPeriodoAquisitivo();
@@ -210,8 +223,9 @@
 
       btnAnoAtual.addEventListener("click", function() {
         anoReferenciaInput.value = anoAtual;
-        btnAnoAtual.classList.add("active");
+        btnAnoAnteriorMenosUm.classList.remove("active");
         btnAnoAnterior.classList.remove("active");
+        btnAnoAtual.classList.add("active");
         calcularPeriodoAquisitivo();
       });
 

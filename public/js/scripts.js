@@ -1,6 +1,6 @@
 // ==============================
 // Alertas com fade in
-// ==============================
+/*
 document.addEventListener("DOMContentLoaded", function(){
     function showAlert(alertId) {
       const alertEl = document.getElementById(alertId);
@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", function(){
     showAlert("success-alert");
     showAlert("error-alert");
   });
-  
+  */
+
   // ==============================
   // Atualização de data final com base na data de início e duração
   // ==============================
@@ -324,8 +325,9 @@ document.addEventListener("DOMContentLoaded", function(){
     document.querySelectorAll('[data-target="#editUsuarioModal"]').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const matricula = btn.getAttribute('data-matricula');
-        const ano = prompt('Confirme ano de referência:');
+        const ano = btn.getAttribute('data-ano'); // ← pega do botão
         if (!ano) return;
+  
         try {
           const res = await fetch(`/users/edit/${matricula}/${ano}`);
           const html = await res.text();
@@ -338,4 +340,107 @@ document.addEventListener("DOMContentLoaded", function(){
       });
     });
   });
+  document.addEventListener('DOMContentLoaded', () => {
+    // Clique no botão "Alterar Férias"
+    document.querySelectorAll('[data-target="#editFeriasModal"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const matricula = btn.getAttribute('data-matricula');
+        const ano = btn.getAttribute('data-ano');
+  
+        try {
+          const res = await fetch(`/vacations/edit/${matricula}/${ano}`);
+          const html = await res.text();
+          document.getElementById('feriasModalBody').innerHTML = html;
+  
+          // Reanexar evento após carregar novo HTML
+          attachEditVacationFormHandler();
+  
+          const modal = new bootstrap.Modal(document.getElementById('editFeriasModal'));
+          modal.show();
+        } catch (err) {
+          showToast('Erro ao carregar formulário.', 'error');
+        }
+      });
+    });
+  });
+  
+  function attachEditVacationFormHandler() {
+    console.log('[JS] handler de edição de férias carregado!');
+  
+    const editForm = document.querySelector('#editFeriasModal form');
+    if (!editForm) return;
+  
+    editForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+  
+      const formData = new URLSearchParams(new FormData(editForm)); // ✅ alteração aqui
+      const matricula = editForm.dataset.matricula;
+      const ano = editForm.dataset.ano;
+  
+      try {
+        const res = await fetch(`/vacations/edit/${matricula}/${ano}`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+  
+        const result = await res.json();
+  
+        if (result.success) {
+          showToast(result.message, 'success');
+          const modal = bootstrap.Modal.getInstance(document.getElementById('editFeriasModal'));
+          modal.hide();
+          setTimeout(() => location.reload(), 2500);
+        } else {
+          showToast(result.message, 'error');
+        }
+      } catch (err) {
+        console.error('Erro no envio:', err);
+        showToast('Erro ao atualizar as férias.', 'error');
+      }
+    });
+  }
+  
+  
+  
+  function showToast(message, type = 'success') {
+    const container = document.createElement('div');
+    container.className = 'toast-container position-fixed top-0 end-0 p-3';
+    container.style.zIndex = 9999;
+  
+    const toast = document.createElement('div');
+    toast.className = `toast show toast-progress toast-${type}`;
+    toast.role = 'alert';
+    toast.ariaLive = 'assertive';
+    toast.ariaAtomic = 'true';
+  
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Fechar"></button>
+      </div>
+      <div class="toast-progress-bar"></div>
+    `;
+  
+    container.appendChild(toast);
+    document.body.appendChild(container);
+  
+    // 🟢 Fecha automaticamente após 4 segundos
+    setTimeout(() => {
+      toast.classList.remove('show');
+      container.remove();
+    }, 4000);
+  
+    // 🔴 Permite fechar manualmente
+    const closeBtn = toast.querySelector('.btn-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        toast.classList.remove('show');
+        container.remove();
+      });
+    }
+  }
+  
   
