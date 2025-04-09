@@ -591,7 +591,14 @@ updateVacation: async (req, res) => {
         : res.redirect('/users/dashboard');
     }
 
-    // Aplica a validação unificada
+    // 🔹 Backup férias antigas
+    const oldVacations = await Vacation.findAll({ where: { matricula, ano_referencia: ano } });
+    const backup = oldVacations.map(v => v.toJSON());
+
+    // 🔹 Remove férias atuais
+    await Vacation.destroy({ where: { matricula, ano_referencia: ano } });
+
+    // 🔹 Validação unificada com férias removidas
     const validation = await validateVacationPeriods({
       user,
       periods: updates,
@@ -600,18 +607,19 @@ updateVacation: async (req, res) => {
     });
 
     if (!validation.valid) {
+      await Vacation.bulkCreate(backup); // Restaura férias
       return res.json({ success: false, message: validation.message });
     }
 
+    // 🔹 Cria as férias novas
     for (const { inicio, fim, periodo } of updates) {
-      const result = await Vacation.update(
-        { data_inicio: inicio, data_fim: fim },
-        { where: { matricula, ano_referencia: ano, periodo } }
-      );
-
-      if (result[0] === 0) {
-        return res.json({ success: false, message: `Nenhum registro encontrado para o período ${periodo}.` });
-      }
+      await Vacation.create({
+        matricula,
+        periodo,
+        data_inicio: inicio,
+        data_fim: fim,
+        ano_referencia: ano
+      });
     }
 
     return res.json({ success: true, message: 'Férias atualizadas com sucesso!' });
@@ -624,8 +632,6 @@ updateVacation: async (req, res) => {
       : res.redirect('/users/dashboard');
   }
 }
-
-
 
 
 
