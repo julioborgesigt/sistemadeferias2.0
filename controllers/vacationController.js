@@ -6,7 +6,7 @@ const Settings = db.Settings;
 const { Op, col, literal } = require('sequelize');
 
 const { parseStartDateBR, parseEndDateBR } = require('../utils/dateUtils');
-const { validarPeriodos } = require('../utils/vacationValidation');
+
 const validateVacationPeriods = require('../utils/validateVacationPeriods'); // Importa a função
 
 

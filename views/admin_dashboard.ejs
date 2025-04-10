@@ -415,19 +415,19 @@
             <td>
               <button 
                 class="btn btn-info btn-sm" 
-                style="font-size: 0.75rem; padding: 2px 6px;"
+                style="font-size: 0.75rem; width: auto; "
                 data-toggle="modal" 
                 data-target="#editUsuarioModal"
                 data-matricula="<%= user.matricula %>" 
                 data-nome="<%= user.nome %>" 
                 data-email="<%= user.email %>" 
                 data-ano="<%= user.ano_referencia %>">
-                Alterar Usuário
+                Alterar Perfil
               </button>
             
               <button
-                class="btn btn-warning btn-sm"
-                style="font-size: 0.75rem; padding: 2px 6px;"
+                class="btn btn-warning btn-sm mt-2"
+                style="font-size: 0.75rem; width: auto; "
                 data-toggle="modal"
                 data-target="#editFeriasModal"
                 data-matricula="<%= user.matricula %>"
@@ -504,8 +504,26 @@
             <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
             <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
             <td>
-              <button class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 2px 6px;" data-toggle="modal" data-target="#editUsuarioModal" data-matricula="<%= user.matricula %>" data-nome="<%= user.nome %>" data-email="<%= user.email %>">
-                Alterar Usuário
+              <button 
+                class="btn btn-info btn-sm" 
+                style="font-size: 0.75rem; width: auto; "
+                data-toggle="modal" 
+                data-target="#editUsuarioModal"
+                data-matricula="<%= user.matricula %>" 
+                data-nome="<%= user.nome %>" 
+                data-email="<%= user.email %>" 
+                data-ano="<%= user.ano_referencia %>">
+                Alterar Perfil
+              </button>
+            
+              <button
+                class="btn btn-warning btn-sm mt-2"
+                style="font-size: 0.75rem; width: auto; "
+                data-toggle="modal"
+                data-target="#editFeriasModal"
+                data-matricula="<%= user.matricula %>"
+                data-ano="<%= user.ano_referencia %>">
+                Alterar Férias  
               </button>
             </td>
             <td>
@@ -575,8 +593,26 @@
             <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_inicio) %></td>
             <td class="hide-mobile"><%= formatDate(user.periodo_aquisitivo_fim) %></td>
             <td>
-              <button class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 2px 6px;" data-toggle="modal" data-target="#editUsuarioModal" data-matricula="<%= user.matricula %>" data-nome="<%= user.nome %>" data-email="<%= user.email %>">
-                Alterar Usuário
+              <button 
+                class="btn btn-info btn-sm" 
+                style="font-size: 0.75rem; width: auto; "
+                data-toggle="modal" 
+                data-target="#editUsuarioModal"
+                data-matricula="<%= user.matricula %>" 
+                data-nome="<%= user.nome %>" 
+                data-email="<%= user.email %>" 
+                data-ano="<%= user.ano_referencia %>">
+                Alterar Perfil
+              </button>
+            
+              <button
+                class="btn btn-warning btn-sm mt-2"
+                style="font-size: 0.75rem; width: auto; "
+                data-toggle="modal"
+                data-target="#editFeriasModal"
+                data-matricula="<%= user.matricula %>"
+                data-ano="<%= user.ano_referencia %>">
+                Alterar Férias  
               </button>
             </td>
             <td>

@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function(){
       if (window.getComputedStyle(tr).display !== "none") {
         var rowData = [];
         tr.querySelectorAll("td").forEach(function(td, index) {
-          if (index !== 0 && index !== 16) {
+          if (index !== 0 && index !== 17) {
             rowData.push(td.innerText.trim());
           }
         });
@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function(){
     var data = [];
     var headers = [];
     table.querySelectorAll("thead tr th").forEach(function(th, index) {
-      if (index === 0 || index === 2 || index === 3 || index === table.querySelectorAll("thead tr th").length - 1) {
+      if (index === 1 || index === 2 || index === 4 ||  index === table.querySelectorAll("thead tr th").length - 1) {
         headers.push(th.innerText.trim());
       }
     });
@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function(){
         var rowData = [];
         var tds = tr.querySelectorAll("td");
         tds.forEach(function(td, index) {
-          if (index === 0 || index === 2 || index === 3 || index === tds.length - 1) {
+          if (index === 1 || index === 2 || index === 4 || index === tds.length - 1) {
             rowData.push(td.innerText.trim());
           }
         });
