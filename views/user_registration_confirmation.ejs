@@ -6,6 +6,26 @@
   <title>Confirmação de Cadastro de Usuário</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
+<style>
+
+.toast-success {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .toast-error {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .toast-progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      animation: progressBar 4s linear forwards;
+    }
+    @keyframes progressBar {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+</style>
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -21,11 +41,36 @@
   
   <!-- Conteúdo Principal -->
   <div class="container mt-5 text-center">
-    <% if (success_msg && success_msg.length > 0) { %>
-      <div class="alert alert-success">
-        <%= success_msg.join(', ') %>
-      </div>
-    <% } %>
+   <!-- Toast Container -->
+   <%
+   const successMessage = Array.isArray(success_msg) ? success_msg[0] : success_msg;
+   const errorMessage = Array.isArray(error_msg) ? error_msg[0] : error_msg;
+   %>
+
+   <% if (successMessage && successMessage.trim()) { %>
+   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+     <div class="toast toast-progress toast-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+       <div class="d-flex">
+         <div class="toast-body"><%= successMessage %></div>
+         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+       </div>
+       <div class="toast-progress-bar"></div>
+     </div>
+   </div>
+   <% } %>
+
+   <% if (errorMessage && errorMessage.trim()) { %>
+   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+     <div class="toast toast-progress toast-error border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+       <div class="d-flex">
+         <div class="toast-body"><%= errorMessage %></div>
+         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+       </div>
+       <div class="toast-progress-bar"></div>
+     </div>
+   </div>
+   <% } %>
+
     <h2>Usuário cadastrado com sucesso!</h2>
     <p>Deseja fazer mais um cadastro ou voltar para a página inicial?</p>
     <a href="/users/register" class="btn btn-primary">Cadastrar outro usuário</a>
@@ -33,5 +78,39 @@
   </div>
   
   <script src="/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    window.onload = function () {
+      const toastElements = document.querySelectorAll('.toast.toast-progress');
+    
+      toastElements.forEach(toast => {
+        const progressBar = toast.querySelector('.toast-progress-bar');
+        const closeBtn = toast.querySelector('.btn-close');
+        const duration = 3000;
+    
+        if (progressBar) {
+          progressBar.style.width = '100%';
+          progressBar.style.transition = `width ${duration}ms linear`;
+          setTimeout(() => {
+            progressBar.style.width = '0%';
+          }, 100);
+        }
+    
+        const timeout = setTimeout(() => {
+          toast.classList.remove('show');
+          toast.remove();
+        }, duration);
+    
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            clearTimeout(timeout);
+            toast.classList.remove('show');
+            toast.remove();
+          });
+        }
+      });
+    };
+    </script>
 </body>
+
 </html>

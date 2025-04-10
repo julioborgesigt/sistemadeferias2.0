@@ -16,33 +16,7 @@
     max-width: 900px;
     margin: 0 auto;
   }
-  .offcanvas {
-      max-width: 220px;	
-    }
-    .nav-link {
-      color: #000 !important;
-    }
-    /* Limita a largura do container da navbar */
-    .navbar-container {
-      max-width: 460px;
-      margin: 0 auto;
-    }
-    /* Define largura fixa para o offcanvas em dispositivos móveis */
-    @media (max-width: 768px) {
-      .offcanvas {
-        width: 50% !important;
-        max-width: 200px;	
-        min-width: 150px;	
-      }
-      .nav-link {
-        font-size: 0.9rem; /* tamanho menor para dispositivos móveis */
-      }
-    }
-    @media (max-width: 400px) {
-      .nav-link {
-        font-size: 0.8rem; /* tamanho menor para dispositivos móveis */
-      }
-    }
+  
   </style>
 </head>
 <body>
@@ -81,23 +55,36 @@
       <div class="card-body">
     <h2 class="text-center">Cadastro de Usuário</h2>
 
-    <!-- Mensagens de feedback - Alertas ocultos por padrão -->
-   
-    <div id="flash-messages">
-      <% if (success_msg && success_msg.length > 0) { %>
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
-          <%= success_msg.join(', ') %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <!-- Toast Container -->
+      <%
+      const successMessage = Array.isArray(success_msg) ? success_msg[0] : success_msg;
+      const errorMessage = Array.isArray(error_msg) ? error_msg[0] : error_msg;
+      %>
+  
+      <% if (successMessage && successMessage.trim()) { %>
+      <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+        <div class="toast toast-progress toast-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body"><%= successMessage %></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+          </div>
+          <div class="toast-progress-bar"></div>
         </div>
+      </div>
       <% } %>
-      
-      <% if (error_msg && error_msg.length > 0) { %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
-          <%= error_msg.join(', ') %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  
+      <% if (errorMessage && errorMessage.trim()) { %>
+      <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+        <div class="toast toast-progress toast-error border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body"><%= errorMessage %></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+          </div>
+          <div class="toast-progress-bar"></div>
         </div>
+      </div>
       <% } %>
-    </div>
+  
     
 
     <form action="/users/register" method="POST">
@@ -315,6 +302,39 @@
     });
   });
 </script>
+
+<script>
+  window.onload = function () {
+    const toastElements = document.querySelectorAll('.toast.toast-progress');
+  
+    toastElements.forEach(toast => {
+      const progressBar = toast.querySelector('.toast-progress-bar');
+      const closeBtn = toast.querySelector('.btn-close');
+      const duration = 3000;
+  
+      if (progressBar) {
+        progressBar.style.width = '100%';
+        progressBar.style.transition = `width ${duration}ms linear`;
+        setTimeout(() => {
+          progressBar.style.width = '0%';
+        }, 100);
+      }
+  
+      const timeout = setTimeout(() => {
+        toast.classList.remove('show');
+        toast.remove();
+      }, duration);
+  
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          clearTimeout(timeout);
+          toast.classList.remove('show');
+          toast.remove();
+        });
+      }
+    });
+  };
+  </script>
 
 <!-- Arquivo de scripts customizados -->
 <script src="/js/scripts.js"></script>

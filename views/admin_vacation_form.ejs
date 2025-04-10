@@ -50,6 +50,7 @@
         font-size: 0.8rem; /* tamanho menor para dispositivos móveis */
       }
     }
+    
   </style>
 </head>
 <body>
@@ -92,22 +93,36 @@
       <div class="card-body">
         <h2 class="card-title text-center mb-4">Cadastro de Férias (Admin)</h2>
         
-        <!-- Mensagens de feedback -->
-        <div id="flash-messages">
-          <% if (success_msg && success_msg.length > 0) { %>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-              <%= success_msg.join(', ') %>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          <% } %>
-          <% if (error_msg && error_msg.length > 0) { %>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              <%= Array.isArray(error_msg) ? error_msg.join(', ') : error_msg %>
+        <!-- Toast Container -->
+    <%
+    const successMessage = Array.isArray(success_msg) ? success_msg[0] : success_msg;
+    const errorMessage = Array.isArray(error_msg) ? error_msg[0] : error_msg;
+    %>
 
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          <% } %>
+    <% if (successMessage && successMessage.trim()) { %>
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+      <div class="toast toast-progress toast-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body"><%= successMessage %></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
         </div>
+        <div class="toast-progress-bar"></div>
+      </div>
+    </div>
+    <% } %>
+
+    <% if (errorMessage && errorMessage.trim()) { %>
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+      <div class="toast toast-progress toast-error border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body"><%= errorMessage %></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+        </div>
+        <div class="toast-progress-bar"></div>
+      </div>
+    </div>
+    <% } %>
+
 
         <!-- Formulário -->
         <form action="/vacations/admin-mark" method="POST">
@@ -202,7 +217,7 @@
   </div>
 
   <!-- Offcanvas para seleção de usuário -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUsers" aria-labelledby="offcanvasUsersLabel">
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUsers" aria-labelledby="offcanvasUsersLabel" >
     <div class="offcanvas-header">
       <h5 id="offcanvasUsersLabel">Selecione o Usuário</h5>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -226,19 +241,38 @@
   <script src="/js/bootstrap.bundle.min.js"></script>
   <script>
     // Exibe alertas de feedback
-    document.addEventListener("DOMContentLoaded", function(){
-      function showAlert(alertId) {
-        const alertEl = document.getElementById(alertId);
-        if (alertEl && alertEl.textContent.trim() !== "") {
-          alertEl.style.display = "block";
-          void alertEl.offsetWidth;
-          alertEl.classList.add("show");
+    
+    window.onload = function () {
+      const toastElements = document.querySelectorAll('.toast.toast-progress');
+    
+      toastElements.forEach(toast => {
+        const progressBar = toast.querySelector('.toast-progress-bar');
+        const closeBtn = toast.querySelector('.btn-close');
+        const duration = 3000;
+    
+        if (progressBar) {
+          progressBar.style.width = '100%';
+          progressBar.style.transition = `width ${duration}ms linear`;
+          setTimeout(() => {
+            progressBar.style.width = '0%';
+          }, 100);
         }
-      }
-      showAlert("success-alert");
-      showAlert("error-alert");
-    });
-
+    
+        const timeout = setTimeout(() => {
+          toast.classList.remove('show');
+          toast.remove();
+        }, duration);
+    
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            clearTimeout(timeout);
+            toast.classList.remove('show');
+            toast.remove();
+          });
+        }
+      });
+    };
+   
     // Abre o offcanvas ao clicar no campo da matrícula
     document.getElementById('matricula').addEventListener('click', function(){
       var offcanvasEl = document.getElementById('offcanvasUsers');
